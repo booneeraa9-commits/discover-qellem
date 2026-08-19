@@ -30,6 +30,7 @@ LOCALE_PATHS = [BASE_DIR / "locale"]
 INSTALLED_APPS = [
     "home",
     "places",
+    "provenance",
     "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
