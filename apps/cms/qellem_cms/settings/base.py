@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     "home",
     "places",
     "provenance",
+    "archive",
+    "partners",
     "search",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
