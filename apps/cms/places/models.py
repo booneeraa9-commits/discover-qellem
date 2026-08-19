@@ -1,8 +1,18 @@
-from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from provenance.choices import SensitivityStatus, VerificationStatus
+from qellem_cms.content_validation import (
+    PUBLIC_RICH_TEXT_FEATURES,
+    AuthoritativeOromoPageMixin,
+    validate_approved_image,
+)
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.fields import RichTextField
+from wagtail.images import get_image_model_string
+from wagtail.models import Page
 from wagtail.snippets.models import register_snippet
 
 
@@ -110,8 +120,11 @@ class Geography(models.Model):
         return super().save(*args, **kwargs)
 
     def clean(self):
-        super().clean()
         errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
 
         if self.canonical_name and self.canonical_name != self.canonical_name.strip():
             errors["canonical_name"] = _(
@@ -256,8 +269,11 @@ class GeographyAlias(models.Model):
         return super().save(*args, **kwargs)
 
     def clean(self):
-        super().clean()
         errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
 
         if self.name and self.name != self.name.strip():
             errors["name"] = _("Aliases cannot begin or end with whitespace.")
@@ -292,6 +308,334 @@ class GeographyAlias(models.Model):
 
         if self.slug and Geography.objects.filter(slug=self.slug).exists():
             errors["slug"] = _("An alias cannot reuse a canonical geography slug.")
+
+        if errors:
+            raise ValidationError(errors)
+
+
+class GeographyIndexPage(AuthoritativeOromoPageMixin, Page):
+    """Translated Woredas and Towns landing page."""
+
+    introduction = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+
+    parent_page_types = ["home.HomePage"]
+    subpage_types = ["places.GeographyProfilePage"]
+    max_count_per_parent = 1
+
+    required_om_fields = ("introduction",)
+    public_rich_text_fields = ("introduction",)
+    translation_invariant_fields = ("slug",)
+
+    content_panels = Page.content_panels + [FieldPanel("introduction")]
+
+    def clean(self):
+        errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
+
+        if self.slug != "places":
+            errors["slug"] = _("Use the stable ‘places’ slug in every language.")
+
+        if errors:
+            raise ValidationError(errors)
+
+
+class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
+    """Translated public profile for one woreda or town administration."""
+
+    geography = models.ForeignKey(
+        Geography,
+        on_delete=models.PROTECT,
+        related_name="profile_page_translations",
+        limit_choices_to={
+            "level__in": [GeographyLevel.WOREDA, GeographyLevel.TOWN],
+        },
+    )
+    introduction = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+    overview = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+    naming_origin = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+    history = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+    area_location = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+    )
+    featured_image = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="+",
+        help_text=_("Only an image with approved rights may be selected."),
+    )
+
+    parent_page_types = ["places.GeographyIndexPage"]
+    subpage_types = []
+
+    required_om_fields = ("introduction", "overview")
+    public_rich_text_fields = (
+        "introduction",
+        "overview",
+        "naming_origin",
+        "history",
+        "area_location",
+    )
+    translation_invariant_fields = ("geography", "slug")
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel("geography"),
+                FieldPanel("introduction"),
+                FieldPanel("overview"),
+                FieldPanel("featured_image"),
+            ],
+            heading=_("Profile overview"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("naming_origin"),
+                FieldPanel("history"),
+                FieldPanel("area_location"),
+            ],
+            heading=_("Profile detail"),
+        ),
+    ]
+
+    def clean(self):
+        errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
+
+        if self.geography_id:
+            if self.geography.level == GeographyLevel.ZONE:
+                errors["geography"] = _(
+                    "Qellem Wallaggaa uses the combined homepage, not a profile page."
+                )
+            if self.title != self.geography.canonical_name:
+                errors["title"] = _(
+                    "Use the canonical Afaan Oromoo geography name in every language."
+                )
+            if self.slug != self.geography.slug:
+                errors["slug"] = _(
+                    "The page slug must match the geography’s stable canonical slug."
+                )
+
+        if (
+            self.geography_id
+            and self.locale_id
+            and GeographyProfilePage.objects.filter(
+                geography_id=self.geography_id,
+                locale_id=self.locale_id,
+            )
+            .exclude(pk=self.pk)
+            .exists()
+        ):
+            errors.setdefault(NON_FIELD_ERRORS, []).append(
+                _("This geography already has a profile in the selected language.")
+            )
+
+        validate_approved_image(self, "featured_image", errors)
+
+        if errors:
+            raise ValidationError(errors)
+
+
+@register_snippet
+class DatedStatistic(models.Model):
+    """A source-backed historical statistic that never overwrites another year."""
+
+    geography = models.ForeignKey(
+        Geography,
+        on_delete=models.PROTECT,
+        related_name="dated_statistics",
+    )
+    indicator_om = models.CharField(
+        max_length=255,
+        verbose_name=_("Afaan Oromoo indicator"),
+    )
+    indicator_en = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("English indicator"),
+    )
+    value = models.DecimalField(max_digits=20, decimal_places=4)
+    unit_om = models.CharField(
+        max_length=120,
+        verbose_name=_("Afaan Oromoo unit"),
+    )
+    unit_en = models.CharField(
+        max_length=120,
+        blank=True,
+        verbose_name=_("English unit"),
+    )
+    subgroup_om = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Afaan Oromoo subgroup or definition"),
+    )
+    subgroup_en = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("English subgroup or definition"),
+    )
+    reference_year_ec = models.CharField(
+        max_length=20,
+        help_text=_("For example: 2016 E.C."),
+    )
+    reference_year_gc = models.CharField(
+        max_length=20,
+        help_text=_("For example: 2023/24 G.C."),
+    )
+    method_note_om = models.TextField(
+        blank=True,
+        verbose_name=_("Afaan Oromoo method or explanatory note"),
+    )
+    method_note_en = models.TextField(
+        blank=True,
+        verbose_name=_("English method or explanatory note"),
+    )
+    source = models.ForeignKey(
+        "provenance.SourceRecord",
+        on_delete=models.PROTECT,
+        related_name="dated_statistics",
+    )
+    verification_status = models.CharField(
+        max_length=12,
+        choices=VerificationStatus.choices,
+        default=VerificationStatus.UNVERIFIED,
+    )
+    reviewed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="reviewed_dated_statistics",
+    )
+    verified_on = models.DateField(null=True, blank=True)
+    verification_notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel("geography"),
+                FieldPanel("indicator_om"),
+                FieldPanel("indicator_en"),
+                FieldPanel("value"),
+                FieldPanel("unit_om"),
+                FieldPanel("unit_en"),
+                FieldPanel("subgroup_om"),
+                FieldPanel("subgroup_en"),
+            ],
+            heading=_("Statistic"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("reference_year_ec"),
+                FieldPanel("reference_year_gc"),
+                FieldPanel("method_note_om"),
+                FieldPanel("method_note_en"),
+                FieldPanel("source"),
+            ],
+            heading=_("Reference period and source"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("verification_status"),
+                FieldPanel("reviewed_by"),
+                FieldPanel("verified_on"),
+                FieldPanel("verification_notes"),
+            ],
+            heading=_("Verification"),
+        ),
+    ]
+
+    class Meta:
+        ordering = [
+            "geography__display_order",
+            "indicator_om",
+            "-reference_year_ec",
+        ]
+        verbose_name = _("dated statistic")
+        verbose_name_plural = _("dated statistics")
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "geography",
+                    "indicator_om",
+                    "subgroup_om",
+                    "reference_year_ec",
+                    "reference_year_gc",
+                ],
+                name="places_statistic_unique_snapshot",
+            )
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.geography.canonical_name}: {self.indicator_om} "
+            f"({self.reference_year_ec})"
+        )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def clean(self):
+        errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
+
+        if self.verification_status in {
+            VerificationStatus.VERIFIED,
+            VerificationStatus.REJECTED,
+        }:
+            if not self.reviewed_by_id:
+                errors["reviewed_by"] = _(
+                    "A completed statistic review requires a reviewer."
+                )
+            if not self.verified_on:
+                errors["verified_on"] = _(
+                    "A completed statistic review requires a verification date."
+                )
+
+        if self.verification_status == VerificationStatus.VERIFIED and self.source_id:
+            if self.source.verification_status != VerificationStatus.VERIFIED:
+                errors["source"] = _(
+                    "Verify the linked source before verifying this statistic."
+                )
+            elif self.source.sensitivity_status != SensitivityStatus.CLEARED:
+                errors["source"] = _(
+                    "Clear the linked source’s sensitivity screening first."
+                )
+
+        if (
+            self.verification_status == VerificationStatus.REJECTED
+            and not self.verification_notes.strip()
+        ):
+            errors["verification_notes"] = _("Explain why this statistic was rejected.")
 
         if errors:
             raise ValidationError(errors)
