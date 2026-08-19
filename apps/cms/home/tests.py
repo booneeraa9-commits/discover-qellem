@@ -1,7 +1,7 @@
-from home.models import HomePage
-
 from wagtail.models import Page, Site
 from wagtail.test.utils import WagtailPageTestCase
+
+from home.models import HomePage
 
 
 class HomeSetUpTests(WagtailPageTestCase):
@@ -13,11 +13,11 @@ class HomeSetUpTests(WagtailPageTestCase):
         root_page = Page.objects.get(pk=1)
         self.assertIsNotNone(root_page)
 
-    def test_homepage_create(self):
+    def test_homepage_is_limited_to_one_instance(self):
         root_page = Page.objects.get(pk=1)
-        homepage = HomePage(title="Home")
-        root_page.add_child(instance=homepage)
-        self.assertTrue(HomePage.objects.filter(title="Home").exists())
+
+        self.assertEqual(HomePage.objects.count(), 1)
+        self.assertFalse(HomePage.can_create_at(root_page))
 
 
 class HomeTests(WagtailPageTestCase):
@@ -26,13 +26,12 @@ class HomeTests(WagtailPageTestCase):
     """
 
     def setUp(self):
-        """
-        Create a homepage instance for testing.
-        """
-        root_page = Page.get_first_root_node()
-        Site.objects.create(hostname="testsite", root_page=root_page, is_default_site=True)
-        self.homepage = HomePage(title="Home")
-        root_page.add_child(instance=self.homepage)
+        """Use the single homepage created by the foundation migrations."""
+        self.homepage = HomePage.objects.get()
+        site = Site.objects.get(is_default_site=True)
+        site.hostname = "testserver"
+        site.root_page = self.homepage
+        site.save(update_fields=["hostname", "root_page"])
 
     def test_homepage_is_renderable(self):
         self.assertPageIsRenderable(self.homepage)
