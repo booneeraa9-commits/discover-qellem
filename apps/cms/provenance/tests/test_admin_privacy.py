@@ -1,6 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
+from editorial.choices import (
+    EditorialAction,
+    EditorialLanguage,
+    EditorialRole,
+    EditorialSubject,
+)
+from editorial.models import EditorialAssignment
+from places.models import Geography
 from wagtail.snippets.models import get_snippet_models
 
 from provenance.choices import SourceDocumentType, SourceSubject
@@ -47,6 +55,44 @@ class ProvenanceAdminPrivacyTests(TestCase):
             subject=SourceSubject.MIXED,
             private_description="NEVER-PUBLIC-PRIVATE-SOURCE-DESCRIPTION",
         )
+        zone = Geography.objects.get(slug="qellem-wallaggaa")
+        EditorialAssignment.objects.create(
+            user=cls.source_staff,
+            role=EditorialRole.SUBJECT_EDITOR,
+            subject=EditorialSubject.SOURCES,
+            geography=zone,
+            language=EditorialLanguage.OROMO,
+            action=EditorialAction.VIEW,
+            granted_by=cls.superuser,
+            reason="Allow this cataloguer to view Afaan Oromoo source records.",
+        )
+        for subject, language, action in (
+            (
+                EditorialSubject.SOURCES,
+                EditorialLanguage.OROMO,
+                EditorialAction.VIEW,
+            ),
+            (
+                EditorialSubject.SOURCES,
+                EditorialLanguage.BOTH,
+                EditorialAction.VIEW,
+            ),
+            (
+                EditorialSubject.MEDIA,
+                EditorialLanguage.BOTH,
+                EditorialAction.MANAGE_MEDIA,
+            ),
+        ):
+            EditorialAssignment.objects.create(
+                user=cls.superuser,
+                role=EditorialRole.MANAGING_EDITOR,
+                subject=subject,
+                geography=zone,
+                language=language,
+                action=action,
+                granted_by=cls.superuser,
+                reason="Explicit scope for the provenance administrator test.",
+            )
 
     def test_provenance_models_are_registered_as_wagtail_snippets(self):
         snippet_models = get_snippet_models()
@@ -85,7 +131,7 @@ class ProvenanceAdminPrivacyTests(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
 
-    def test_superuser_can_access_all_provenance_admin_lists(self):
+    def test_superuser_with_explicit_scope_can_access_all_provenance_admin_lists(self):
         self.client.force_login(self.superuser)
 
         for url in (
