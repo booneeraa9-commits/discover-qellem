@@ -1,0 +1,46 @@
+# Secrets and environment settings
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# Private source and submission material
+source-materials/
+private-source-materials/
+private-media/
+quarantine/
+uploads/
+
+# JavaScript and Next.js
+node_modules/
+.next/
+out/
+dist/
+coverage/
+npm-debug.log*
+
+# Python and Django
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+staticfiles/
+media/
+*.sqlite3
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.swp
