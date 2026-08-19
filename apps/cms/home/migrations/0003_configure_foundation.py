@@ -20,6 +20,7 @@ def configure_foundation(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("home", "0002_create_homepage"),
+        ("wagtailcore", "0054_initial_locale"),
     ]
 
     operations = [
