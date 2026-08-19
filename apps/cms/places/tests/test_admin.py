@@ -1,5 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from editorial.choices import (
+    EditorialAction,
+    EditorialLanguage,
+    EditorialRole,
+    EditorialSubject,
+)
+from editorial.models import EditorialAssignment
 from wagtail.snippets.models import get_snippet_models
 
 from places.models import Geography, GeographyAlias
@@ -12,6 +19,16 @@ class GeographySnippetAdminTests(TestCase):
             username="geography-admin",
             email="geography-admin@example.invalid",
             password="test-only-password",
+        )
+        EditorialAssignment.objects.create(
+            user=cls.superuser,
+            role=EditorialRole.SUBJECT_EDITOR,
+            subject=EditorialSubject.GEOGRAPHY,
+            geography=Geography.objects.get(slug="qellem-wallaggaa"),
+            language=EditorialLanguage.BOTH,
+            action=EditorialAction.VIEW,
+            granted_by=cls.superuser,
+            reason="Allow this administrator to verify geography snippets.",
         )
 
     def setUp(self):
