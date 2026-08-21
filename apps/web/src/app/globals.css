@@ -1,1 +1,282 @@
 @import "tailwindcss";
+
+/* ============================================================
+   Discover Qellem — design tokens (ported from demo-vanilla-reference)
+   Light theme is the default; [data-theme="dark"] overrides below.
+   ============================================================ */
+
+:root {
+  --brand-900: #07281e;
+  --brand-800: #0b3d2e;
+  --brand-700: #0f5540;
+  --brand-600: #16704f;
+  --brand-500: #1f8a63;
+  --brand-400: #2da57a;
+  --brand-300: #63c49d;
+  --brand-200: #a8dcc2;
+  --brand-100: #d9efe4;
+  --brand-50: #f1f8f4;
+
+  --gold-700: #8a6418;
+  --gold-500: #c7963a;
+  --gold-400: #d4a24a;
+  --gold-300: #e3c07a;
+  --gold-100: #f4e7c9;
+
+  --ink-900: #0c1210;
+  --ink-800: #151d19;
+  --ink-700: #1f2a24;
+  --ink-600: #2d3b35;
+  --ink-500: #52645b;
+  --ink-400: #798b81;
+  --ink-300: #a6b4ac;
+  --ink-200: #cfd9d3;
+  --ink-100: #e8efeb;
+  --ink-50: #f6f8f7;
+  --paper: #ffffff;
+  --paper-2: #fbfaf6;
+
+  --danger: #c0392b;
+  --warn: #d98b1c;
+  --success: #1f8a63;
+
+  /* next/font injects --font-fraunces / --font-inter on <html> */
+  --serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  --shadow-sm: 0 1px 2px rgba(7, 40, 30, 0.06), 0 1px 1px rgba(7, 40, 30, 0.04);
+  --shadow: 0 6px 20px rgba(7, 40, 30, 0.08), 0 2px 6px rgba(7, 40, 30, 0.05);
+  --shadow-lg: 0 24px 60px rgba(7, 40, 30, 0.14), 0 8px 20px rgba(7, 40, 30, 0.08);
+  --shadow-xl: 0 40px 80px rgba(7, 40, 30, 0.2), 0 12px 30px rgba(7, 40, 30, 0.1);
+
+  --container: 1240px;
+  --nav-h: 72px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --brand-900: #dff3e7;
+  --brand-800: #b9e3cd;
+  --brand-700: #8bd3af;
+  --brand-600: #52b889;
+  --brand-500: #2da57a;
+  --brand-400: #1f8a63;
+  --brand-300: #16704f;
+  --brand-200: #0f5540;
+  --brand-100: #0d4534;
+  --brand-50: #0a3528;
+
+  --gold-700: #e3c07a;
+  --gold-500: #d4a24a;
+  --gold-400: #c7963a;
+  --gold-300: #8a6418;
+  --gold-100: #3a2c10;
+
+  --ink-900: #eef3f0;
+  --ink-800: #dfe7e2;
+  --ink-700: #c6d2cb;
+  --ink-600: #9eafaa;
+  --ink-500: #7d8f87;
+  --ink-400: #64776f;
+  --ink-300: #46544d;
+  --ink-200: #2c3a33;
+  --ink-100: #1a2520;
+  --ink-50: #121a16;
+  --paper: #0e1713;
+  --paper-2: #0b1310;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
+  --shadow-xl: 0 40px 80px rgba(0, 0, 0, 0.6);
+}
+
+/* Expose the runtime tokens to Tailwind utilities (bg-brand-800, text-gold-500, ...).
+   `inline` keeps the var() reference so values follow [data-theme] at runtime. */
+@theme inline {
+  --color-brand-900: var(--brand-900);
+  --color-brand-800: var(--brand-800);
+  --color-brand-700: var(--brand-700);
+  --color-brand-600: var(--brand-600);
+  --color-brand-500: var(--brand-500);
+  --color-brand-400: var(--brand-400);
+  --color-brand-300: var(--brand-300);
+  --color-brand-200: var(--brand-200);
+  --color-brand-100: var(--brand-100);
+  --color-brand-50: var(--brand-50);
+
+  --color-gold-700: var(--gold-700);
+  --color-gold-500: var(--gold-500);
+  --color-gold-400: var(--gold-400);
+  --color-gold-300: var(--gold-300);
+  --color-gold-100: var(--gold-100);
+
+  --color-ink-900: var(--ink-900);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ink-300: var(--ink-300);
+  --color-ink-200: var(--ink-200);
+  --color-ink-100: var(--ink-100);
+  --color-ink-50: var(--ink-50);
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-success: var(--success);
+
+  --font-serif: var(--serif);
+  --font-sans: var(--sans);
+
+  --radius-sm: var(--radius-sm);
+  --radius: var(--radius);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+}
+
+/* ============================================================
+   Base / reset (ported from demo-vanilla-reference)
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-800);
+  background: var(--paper);
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+  overflow-x: hidden;
+  position: relative;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--brand-600);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+
+a:hover {
+  color: var(--brand-500);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--serif);
+  font-weight: 600;
+  color: var(--ink-900);
+  margin: 0 0 0.4em;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--ink-200);
+  margin: 2rem 0;
+}
+
+::selection {
+  background: var(--gold-300);
+  color: var(--brand-900);
+}
+
+/* Accessible, visible focus without removing the default outline wholesale. */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 96px 0;
+  position: relative;
+}
+
+.section.tight {
+  padding: 64px 0;
+}
+
+/* Respect prefers-reduced-motion for every animation/transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
