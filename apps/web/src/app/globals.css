@@ -2086,3 +2086,100 @@ body.photo-nav .nav:not(.scrolled) {
     transition: none !important;
   }
 }
+
+/* ============================================================
+   Zone map (stylized schematic)
+   ============================================================ */
+
+.map-wrap {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background:
+    radial-gradient(600px 400px at 30% 30%, rgba(31, 138, 99, 0.18), transparent 60%),
+    radial-gradient(500px 300px at 70% 70%, rgba(212, 162, 74, 0.14), transparent 60%),
+    linear-gradient(180deg, var(--brand-50), var(--paper-2));
+  border: 1px solid var(--ink-200);
+  padding: 36px;
+  box-shadow: var(--shadow);
+}
+
+[data-theme="dark"] .map-wrap {
+  background:
+    radial-gradient(600px 400px at 30% 30%, rgba(31, 138, 99, 0.18), transparent 60%),
+    radial-gradient(500px 300px at 70% 70%, rgba(212, 162, 74, 0.1), transparent 60%),
+    linear-gradient(180deg, var(--ink-50), var(--paper-2));
+}
+
+.map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.map-pin {
+  cursor: pointer;
+  transition: transform 0.25s var(--ease);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.map-pin:hover,
+.map-pin:focus-visible {
+  transform: scale(1.12);
+}
+
+.map-pin:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 3px;
+}
+
+.map-pin .pin-dot {
+  fill: var(--brand-600);
+  transition: fill 0.2s var(--ease);
+}
+
+.map-pin:hover .pin-dot,
+.map-pin:focus-visible .pin-dot {
+  fill: var(--gold-500);
+}
+
+.map-pin-capital .pin-dot {
+  fill: var(--gold-500);
+}
+
+.map-pin .pin-pulse {
+  fill: var(--gold-500);
+  opacity: 0.35;
+  transform-origin: center;
+  animation: pinPulse 2.2s infinite ease-out;
+}
+
+@keyframes pinPulse {
+  0% {
+    r: 6;
+    opacity: 0.6;
+  }
+  100% {
+    r: 18;
+    opacity: 0;
+  }
+}
+
+.map-pin text {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--ink-800);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+}
+
+@media (max-width: 720px) {
+  .map-wrap {
+    padding: 20px;
+  }
+}
