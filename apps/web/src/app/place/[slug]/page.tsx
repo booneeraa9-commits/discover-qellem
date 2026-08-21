@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PlaceView from "@/components/PlaceView";
 import { getPlace, placeSlugs } from "@/lib/places-data";
+import { buildMetadata } from "@/lib/seo";
 
 // Static route params for the 12 canonical slugs (qa/CONTENT_FACTS.md §3).
 export function generateStaticParams() {
@@ -16,10 +17,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const place = getPlace(slug);
   if (!place) return {};
-  return {
+  return buildMetadata({
     title: `${place.name.en} — Discover Qellem`,
     description: place.tagline.en,
-  };
+    path: `/place/${slug}`,
+    image: place.heroImage,
+  });
 }
 
 export default async function PlacePage({

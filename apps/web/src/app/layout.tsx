@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import Providers from "@/components/Providers";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import SkipLink from "@/components/SkipLink";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -24,9 +25,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Discover Qellem — Kellem Wollega · Oromia",
-  description:
-    "Discover Kellem Wollega (Qeellam Wallaggaa) — verified facts, stories, places and people of the twelve woredas and towns.",
+  description: SITE_DESCRIPTION,
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -39,6 +40,21 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Discover Qellem",
+  },
+  openGraph: {
+    title: "Discover Qellem — Kellem Wollega · Oromia",
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: SITE_NAME,
+    locale: "en_US",
+    type: "website",
+    images: [{ url: "/hero.jpg", alt: "Discover Qellem" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Discover Qellem — Kellem Wollega · Oromia",
+    description: SITE_DESCRIPTION,
+    images: ["/hero.jpg"],
   },
 };
 
