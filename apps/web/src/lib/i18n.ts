@@ -117,6 +117,10 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.features.history.text": "From Sayyoo to today — a history drawn from named sources.",
     "home.features.visit.title": "Plan Your Visit",
     "home.features.visit.text": "Seasons, routes and respect — make your visit a welcome one.",
+
+    "home.map.kicker": "Map",
+    "home.map.title": "Zone Map",
+    "home.map.sub": "Tap a place to open its page.",
   },
   om: {
     "brand.title": "Discover Qellem",
@@ -209,6 +213,10 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.features.history.text": "Sayyoo irraa hamma har'aa — seenaa madda beekamaa irraa.",
     "home.features.visit.title": "[OM] Plan Your Visit",
     "home.features.visit.text": "Yeroo, karaa fi kabajaa — daawwannaan kee fudhatamaa haa ta'u.",
+
+    "home.map.kicker": "Kaartaa",
+    "home.map.title": "Kaartaa Godina",
+    "home.map.sub": "Bakka cuqaasi fuula isaa bana.",
   },
 };
 

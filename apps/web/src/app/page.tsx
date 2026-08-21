@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ArrowRight, Compass, Heart, Landmark, Map } from "lucide-react";
 import { CountUp } from "@/components/CountUp";
 import { Reveal } from "@/components/Reveal";
+import ZoneMap from "@/components/ZoneMap";
 import { useT } from "@/lib/i18n-client";
 
 interface StatItem {
@@ -113,6 +114,23 @@ export default function Home() {
                   </div>
                 </Reveal>
               ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.map.kicker")}</span>
+              <h2>{t("home.map.title")}</h2>
+              <p>{t("home.map.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="map-wrap">
+              <ZoneMap />
             </div>
           </Reveal>
         </div>
