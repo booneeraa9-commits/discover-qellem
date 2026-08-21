@@ -50,6 +50,12 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "common.readMore": "Read more",
 
+    "lightbox.label": "Photo viewer",
+    "lightbox.close": "Close",
+    "lightbox.previous": "Previous",
+    "lightbox.next": "Next",
+    "lightbox.open": "Open photo",
+
     "footer.about":
       "A verified, living guide to Kellem Wollega Zone — its twelve woredas and town, history, people and places. Built from official zone sources, the Kellem Wollega Zone Communication Office, and community knowledge.",
     "footer.explore": "Explore",
@@ -130,6 +136,13 @@ export const dict: Record<Lang, Record<string, string>> = {
     "theme.toggle": "[OM] Toggle dark mode",
 
     "common.readMore": "Dabalataan ilaali",
+
+    // TODO(i18n): get reviewed OM for the lightbox label from the content agent.
+    "lightbox.label": "[OM] Photo viewer",
+    "lightbox.close": "Cufi",
+    "lightbox.previous": "Duraa",
+    "lightbox.next": "Itti aanu",
+    "lightbox.open": "[OM] Open photo",
 
     "footer.about":
       "Qajeelfama jiraataa Qeellam Wallaggaa — aanaalee fi magaalota 12, seenaa, namoota fi bakkaalee. Ragaawwan ofiisaalii, Waajjira Oduu Godina Qeellam Wallaggaa fi beekumsa hawaasaa irraa ijaarame.",

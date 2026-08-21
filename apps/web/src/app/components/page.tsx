@@ -14,6 +14,15 @@ import {
   type StoryCardData,
   type SupporterCardData,
 } from "@/components/cards";
+import { Gallery, type GalleryProps } from "@/components/Gallery";
+
+const GALLERY_IMAGES: GalleryProps["images"] = [
+  { src: "/img/project13.jpg", caption: "Oliiqaa Dingil Hall — large event" },
+  { src: "/img/project6.jpg", caption: "Oliiqaa Dingil Grand Hall interior" },
+  { src: "/img/project3.jpg", caption: "Ceremony" },
+  { src: "/img/project1.jpg", caption: "Ribbon cutting" },
+  { src: "/img/project2.jpg", caption: "Main avenue of Dembi Dolo" },
+];
 
 const PLACES: PlaceCardData[] = [
   {
@@ -280,6 +289,12 @@ export default function ComponentsPreview() {
               <SupporterCard key={s.initials} data={s} />
             ))}
           </div>
+
+          <h2 style={{ fontSize: 24, marginTop: 56 }}>PhotoGallery + Lightbox</h2>
+          <p className="muted" style={{ color: "var(--ink-500)" }}>
+            Click a tile; then use Esc, arrow keys, Tab, or swipe left/right.
+          </p>
+          <Gallery images={GALLERY_IMAGES} />
         </div>
       </section>
     </main>
