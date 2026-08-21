@@ -44,13 +44,9 @@ class ScopedPageAccessTests(EditorialTestMixin, TestCase):
 
     @classmethod
     def make_profile(cls, geography):
-        page = GeographyProfilePage(
-            title=geography.canonical_name,
-            slug=geography.slug,
-            geography=geography,
-            introduction=f"Seensa {geography.canonical_name}.",
-            overview=f"Ibsa {geography.canonical_name}.",
-        )
+        from places.testing import geography_profile_kwargs
+
+        page = GeographyProfilePage(**geography_profile_kwargs(geography))
         cls.index.add_child(instance=page)
         return page
 
@@ -174,13 +170,9 @@ class PageActionEnforcementTests(EditorialTestMixin, TestCase):
             introduction="Iddoowwan Qellem Wallaggaa.",
         )
         cls.homepage.add_child(instance=cls.index)
-        cls.profile = GeographyProfilePage(
-            title=cls.dambi.canonical_name,
-            slug=cls.dambi.slug,
-            geography=cls.dambi,
-            introduction="Seensa Dambi Doolloo.",
-            overview="Ibsa Dambi Doolloo.",
-        )
+        from places.testing import geography_profile_kwargs
+
+        cls.profile = GeographyProfilePage(**geography_profile_kwargs(cls.dambi))
         cls.index.add_child(instance=cls.profile)
 
     def request(self, data=None):
