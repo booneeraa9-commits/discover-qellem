@@ -1,14 +1,13 @@
 "use client";
 
-// Placeholder provider tree. Future client context providers (i18n language,
-// dark/light theme) will be composed here so the whole app consumes them from a
-// single client boundary.
+// Client provider tree for the whole app. Context providers that need to
+// survive across client navigations are composed here so pages stay thin.
 //
-// TODO(i18n): add LangProvider once the EN/OM dictionary lands.
 // TODO(theme): add ThemeProvider once the dark/light toggle lands.
 
 import type { ReactNode } from "react";
+import { LangProvider } from "@/lib/i18n-client";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+  return <LangProvider>{children}</LangProvider>;
 }
