@@ -144,6 +144,8 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.visit.kicker": "Location",
     "place.visit.title": "Plan your visit",
     "place.map.comingSoon": "Interactive map coming soon",
+    "place.map.title": "Map of {name}",
+    "place.map.open": "Open in OpenStreetMap",
     "place.back": "Back to places",
 
     "places.title": "Woredas & Towns",
@@ -330,6 +332,8 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.visit.kicker": "Iddoo",
     "place.visit.title": "Daawwannaa qopheessaa",
     "place.map.comingSoon": "[OM] Interactive map coming soon",
+    "place.map.title": "[OM] Map of {name}",
+    "place.map.open": "[OM] Open in OpenStreetMap",
     "place.back": "Gara bakkaaleetti deebi'i",
 
     "places.title": "Aanaalee fi Magaalota",
