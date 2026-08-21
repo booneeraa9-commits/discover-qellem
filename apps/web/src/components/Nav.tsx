@@ -136,6 +136,8 @@ export default function Nav() {
         role="dialog"
         aria-modal="true"
         aria-label={t("nav.main")}
+        aria-hidden={drawerOpen ? undefined : "true"}
+        inert={!drawerOpen || undefined}
       >
         <div className="drawer-head">
           <span className="brand-text">
