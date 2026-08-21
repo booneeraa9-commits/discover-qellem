@@ -2,6 +2,7 @@ from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.api import APIField
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model_string
 from wagtail.models import Page
@@ -81,6 +82,26 @@ class HomePage(AuthoritativeOromoPageMixin, Page):
         "contribute_summary",
     )
     translation_invariant_fields = ("geography",)
+
+    api_fields = [
+        APIField("geography_slug"),
+        APIField("geography_name"),
+        APIField("introduction"),
+        APIField("overview"),
+        APIField("naming_summary"),
+        APIField("history_summary"),
+        APIField("culture_summary"),
+        APIField("contribute_summary"),
+        APIField("hero_image"),
+    ]
+
+    @property
+    def geography_slug(self):
+        return self.geography.slug if self.geography_id else None
+
+    @property
+    def geography_name(self):
+        return self.geography.canonical_name if self.geography_id else None
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(

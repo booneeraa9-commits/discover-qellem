@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.api import APIField
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model_string
 from wagtail.models import Page
@@ -330,6 +331,8 @@ class GeographyIndexPage(AuthoritativeOromoPageMixin, Page):
     public_rich_text_fields = ("introduction",)
     translation_invariant_fields = ("slug",)
 
+    api_fields = [APIField("introduction")]
+
     content_panels = Page.content_panels + [FieldPanel("introduction")]
 
     def clean(self):
@@ -398,6 +401,30 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         "area_location",
     )
     translation_invariant_fields = ("geography", "slug")
+
+    api_fields = [
+        APIField("geography_slug"),
+        APIField("geography_name"),
+        APIField("geography_level"),
+        APIField("introduction"),
+        APIField("overview"),
+        APIField("naming_origin"),
+        APIField("history"),
+        APIField("area_location"),
+        APIField("featured_image"),
+    ]
+
+    @property
+    def geography_slug(self):
+        return self.geography.slug if self.geography_id else None
+
+    @property
+    def geography_name(self):
+        return self.geography.canonical_name if self.geography_id else None
+
+    @property
+    def geography_level(self):
+        return self.geography.level if self.geography_id else None
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(

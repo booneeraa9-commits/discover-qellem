@@ -1,7 +1,7 @@
 import os
 
 from .base import *
-from .environment import value_list
+from .environment import boolean, value_list
 
 # Local development only.
 DEBUG = True
@@ -25,3 +25,23 @@ CSRF_TRUSTED_ORIGINS = value_list(
 )
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Cross-origin API access for the local frontend development server only.
+# The corsheaders app is wired exclusively in this development settings
+# module, so production can never serve CORS headers.
+INSTALLED_APPS = [*INSTALLED_APPS, "corsheaders"]
+MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    *MIDDLEWARE,
+]
+
+# Gate: set DJANGO_CORS_ENABLED=false to switch the API CORS headers off.
+CORS_ALLOWED_ORIGINS = (
+    value_list("DJANGO_CORS_ALLOWED_ORIGINS", "http://localhost:3000")
+    if boolean("DJANGO_CORS_ENABLED", True)
+    else []
+)
+
+# Only the public API may be called cross-origin; admin and page routes stay
+# same-origin.
+CORS_URLS_REGEX = r"^/api/"
