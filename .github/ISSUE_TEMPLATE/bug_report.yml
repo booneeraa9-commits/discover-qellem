@@ -1,0 +1,79 @@
+name: Bug report
+description: Something is broken or rendering incorrectly
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for filing a bug. Before submitting, please check that the issue hasn't already been reported.
+  - type: input
+    id: route
+    attributes:
+      label: Route / page
+      description: Which URL/hash does this happen on? (e.g. `#/place/dembi-dollo`, home page)
+      placeholder: "#/place/..."
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser / device
+      options:
+        - Chrome desktop
+        - Firefox desktop
+        - Safari desktop
+        - Chrome on Android
+        - Safari on iOS
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      options:
+        - Light mode
+        - Dark mode
+        - Both
+  - type: dropdown
+    id: lang
+    attributes:
+      label: Language
+      options:
+        - English
+        - Afaan Oromoo
+        - Both
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What should happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What actually happens?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Paste/drag screenshots if the bug is visual.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Console errors, proposed fix, etc.

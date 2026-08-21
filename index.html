@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b3d2e" />
+  <title>Discover Qellem — Kellem Wollega · Oromia</title>
+  <meta name="description" content="Discover Kellem Wollega (Qeellam Wallaggaa) — verified facts, stories, places and people of the twelve woredas and towns." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png" />
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Discover Qellem" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Top announcement bar -->
+  <div class="announce" id="announce">
+    <div class="announce-inner">
+      <span class="announce-dot"></span>
+      <span data-i18n="announce">Verified content from the Kellem Wollega zone profile · 2015/16 E.C.</span>
+      <button class="announce-close" id="announceClose" aria-label="Dismiss">
+        <i data-lucide="x" style="width:14px;height:14px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <header class="nav" id="nav">
+    <div class="container nav-inner">
+      <a href="#/" class="brand" id="brandLink">
+        <span class="brand-mark">
+          <img src="img/logo.png" alt="Discover Qellem logo" id="brandLogo" />
+        </span>
+        <span class="brand-text">
+          <span class="brand-title" data-i18n="brandTitle">Discover Qellem</span>
+          <span class="brand-sub" data-i18n="brandSub">Kellem Wollega · Oromia</span>
+        </span>
+      </a>
+
+      <nav class="nav-links" id="navLinks" aria-label="Primary">
+        <a href="#/" data-i18n="navHome">Home</a>
+        <a href="#/places" data-i18n="navPlaces">Woredas &amp; Towns</a>
+        <a href="#/news" data-i18n="navNews">News &amp; Events</a>
+        <a href="#/stories" data-i18n="navStories">Stories</a>
+        <a href="#/history" data-i18n="navHistory">History</a>
+        <a href="#/support" data-i18n="navSupport">Support</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="icon-btn lang-btn" id="langToggle" title="Switch language" aria-label="Switch language">
+          <i data-lucide="languages" style="width:18px;height:18px;"></i>
+          <span class="lang-label" id="langLabel">OM</span>
+        </button>
+        <button class="icon-btn" id="themeToggle" title="Toggle dark mode">
+          <i data-lucide="moon" id="themeIcon" style="width:18px;height:18px;"></i>
+        </button>
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" style="width:20px;height:20px;"></i>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+      <a href="#/" data-i18n="navHome">Home</a>
+      <a href="#/places" data-i18n="navPlaces">Woredas &amp; Towns</a>
+      <a href="#/news" data-i18n="navNews">News &amp; Events</a>
+      <a href="#/stories" data-i18n="navStories">Stories</a>
+      <a href="#/history" data-i18n="navHistory">History</a>
+      <a href="#/support" data-i18n="navSupport">Support</a>
+    </div>
+  </header>
+
+  <main id="app" class="app"></main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand brand-footer">
+            <span class="brand-mark">
+              <img src="img/logo.png" alt="" style="width:36px;height:36px;object-fit:contain;" />
+            </span>
+            <span class="brand-text">
+              <span class="brand-title" data-i18n="brandTitle">Discover Qellem</span>
+              <span class="brand-sub" data-i18n="brandSub">Kellem Wollega · Oromia</span>
+            </span>
+          </div>
+          <p class="footer-about" data-i18n="footerAbout">A verified, living guide to Kellem Wollega Zone — its twelve woredas and town, history, people and places. Built from official zone sources and community knowledge.</p>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="explore">Explore</h4>
+          <a href="#/places" data-i18n="navPlaces">Woredas &amp; Towns</a>
+          <a href="#/news" data-i18n="navNews">News &amp; Events</a>
+          <a href="#/stories" data-i18n="navStories">Stories</a>
+          <a href="#/history" data-i18n="navHistory">History</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="getInvolved">Get involved</h4>
+          <a href="#/support" data-i18n="navSupport">Support us</a>
+          <a href="#/contribute" data-i18n="contribute">Contribute a story</a>
+          <a href="#/about" data-i18n="about">About the project</a>
+        </div>
+        <div class="footer-col">
+          <h4 data-i18n="contact">Contact</h4>
+          <div class="contact-line"><i data-lucide="map-pin" style="width:15px;height:15px;color:var(--gold-400);"></i><span>Dembi Dolo, Kellem Wollega</span></div>
+          <div class="contact-line"><i data-lucide="mail" style="width:15px;height:15px;color:var(--gold-400);"></i><span>hello@discoverqellem.org</span></div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> Discover Qellem. <span data-i18n="rights">All rights reserved.</span></p>
+        <div class="footer-meta">
+          <a href="#/staff" class="staff-link" data-i18n="staff">Staff</a>
+          <span class="dot-sep">·</span>
+          <button class="staff-link" id="footerInstall" style="background:none;border:0;cursor:pointer;font:inherit;padding:0;color:inherit;">Install app</button>
+          <span class="dot-sep">·</span>
+          <span data-i18n="sources">Sources: Zone profile 2015/16 E.C.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Install app banner (hidden by default; shown when beforeinstallprompt fires or on iOS) -->
+  <div class="install-banner" id="installBanner" hidden>
+    <div class="install-banner-inner">
+      <i data-lucide="download" style="width:22px;height:22px;color:var(--gold-400);flex-shrink:0;"></i>
+      <div style="flex:1;min-width:0;">
+        <strong id="installTitle">Install Discover Qellem</strong>
+        <p id="installSub" style="margin:2px 0 0;font-size:13px;color:var(--ink-500);">Add to your home screen for offline access.</p>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-primary btn-sm" id="installBtn" style="padding:8px 14px;"><i data-lucide="download"></i> Install</button>
+        <button class="icon-btn" id="installClose" aria-label="Dismiss" style="width:34px;height:34px;padding:0;">
+          <i data-lucide="x" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(function(){});
+      });
+    }
+  </script>
+</body>
+</html>

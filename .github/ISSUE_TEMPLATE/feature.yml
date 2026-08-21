@@ -1,0 +1,46 @@
+name: Feature request
+description: Propose a new feature, integration, or improvement
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the feature clearly. Remember: this is a vanilla HTML/CSS/JS PWA — proposals that require adding a build step or framework will need strong justification.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+      description: What user need or gap does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should happen? Describe UI, behavior, data flow.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Frontend / UI / CSS
+        - Routing / JS logic
+        - PWA / service worker / offline
+        - Forms / backend integration (Chapa, Formspree, Supabase)
+        - Editor / staff panel
+        - SEO / analytics
+        - Accessibility
+        - Performance
+        - Content tooling / CMS
+  - type: textarea
+    id: refs
+    attributes:
+      label: References / examples
+      description: Links to similar features on other sites, docs, screenshots.

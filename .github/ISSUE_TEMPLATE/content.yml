@@ -1,0 +1,48 @@
+name: Content / fact
+description: Add, correct, or translate content (woredas, people, news, bios, i18n strings)
+title: "[content] "
+labels: ["content", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for content additions/corrections. Every factual claim must have a source.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of content?
+      options:
+        - Woreda/town page (history, facts, attractions, culture)
+        - Notable person / biography
+        - News article
+        - Story / community piece
+        - Translation (Afaan Oromoo / English)
+        - Correction to an existing fact/figure
+        - Photo (real woreda/attraction photo)
+        - UI string / i18n
+    validations:
+      required: true
+  - type: input
+    id: place
+    attributes:
+      label: Place / woreda
+      placeholder: "e.g. Dembi Dolo, Anfillo — or leave blank if zone-wide"
+  - type: textarea
+    id: content
+    attributes:
+      label: Proposed content / correction
+      description: Paste the text, translation, or correction here. For EN/OM pairs, please provide both if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Where did this come from? (Zone profile page/year, news outlet, official release, community interview, etc.)
+    validations:
+      required: true
+  - type: textarea
+    id: photo
+    attributes:
+      label: Photo / asset notes
+      description: If this is about a photo, describe what it shows and the filename (or attach the file).
