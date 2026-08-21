@@ -129,6 +129,7 @@ jobs:
     timeout-minutes: 25
 
     env:
+      DJANGO_SECRET_KEY: ci-only-django-key-never-use-in-production
       POSTGRES_DB: discover_qellem
       POSTGRES_USER: discover_qellem
       POSTGRES_PASSWORD: ci-postgres-password-not-for-production

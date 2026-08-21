@@ -66,6 +66,8 @@ RUN DJANGO_SETTINGS_MODULE=qellem_cms.settings.build \
 
 EXPOSE 8000
 
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+
 # Migrations are deliberately not run here. They must be executed as a
 # separate, reviewed deployment step before a new application version starts.
 CMD ["gunicorn", "qellem_cms.wsgi:application", "--bind=0.0.0.0:8000", "--workers=2", "--threads=2", "--timeout=60", "--graceful-timeout=30", "--keep-alive=5", "--access-logfile=-", "--error-logfile=-"]
