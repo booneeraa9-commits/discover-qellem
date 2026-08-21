@@ -3036,3 +3036,169 @@ body.photo-nav .nav:not(.scrolled) {
   outline: 2px solid var(--gold-400);
   outline-offset: 2px;
 }
+
+/* ============================================================
+   Home page polish: glance table, marquee, people strip, CTA
+   ============================================================ */
+
+.text-center {
+  text-align: center;
+}
+
+/* Gold pill button (home CTA band + support donate). */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-500), var(--gold-400));
+  color: #2a1f06;
+  box-shadow: 0 10px 24px rgba(199, 150, 58, 0.3);
+}
+
+.btn-gold:hover {
+  color: #2a1f06;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(199, 150, 58, 0.4);
+}
+
+/* Pretty "at a glance" table (demo styling). */
+.pretty-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--paper);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .pretty-table {
+  background: var(--ink-50);
+}
+
+.pretty-table thead th {
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-500);
+  background: var(--ink-50);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--ink-200);
+}
+
+[data-theme="dark"] .pretty-table thead th {
+  background: var(--ink-100);
+}
+
+.pretty-table td {
+  padding: 14px 18px;
+  font-size: 14.5px;
+  border-bottom: 1px solid var(--ink-100);
+  color: var(--ink-800);
+}
+
+.pretty-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pretty-table tbody tr {
+  transition: background 0.2s var(--ease);
+}
+
+.pretty-table tbody tr:hover {
+  background: var(--brand-50);
+}
+
+[data-theme="dark"] .pretty-table tbody tr:hover {
+  background: var(--brand-50);
+  color: var(--ink-900);
+}
+
+.pretty-table td.val {
+  font-weight: 600;
+  color: var(--ink-900);
+  font-variant-numeric: tabular-nums;
+}
+
+.pretty-table td.note {
+  color: var(--ink-500);
+  font-size: 13px;
+}
+
+/* Sponsors marquee. */
+.sponsors-section {
+  padding: 72px 0 0;
+  overflow: hidden;
+}
+
+.marquee {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 8px;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 18px;
+  width: max-content;
+  animation: marqueeScroll 38s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.marquee-dup {
+  display: contents;
+}
+
+@keyframes marqueeScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Horizontal scrollable strip of person cards. */
+.people-strip {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  scroll-snap-type: x proximity;
+}
+
+.people-strip .person-card {
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+}
+
+@media (max-width: 720px) {
+  .people-strip .person-card {
+    flex-basis: 260px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pretty-table td,
+  .pretty-table thead th {
+    padding: 12px 14px;
+  }
+}

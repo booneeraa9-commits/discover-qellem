@@ -224,3 +224,15 @@ export const newsSlugs = NEWS.map((item) => item.slug);
 export function getNews(slug: string): NewsArticle | undefined {
   return NEWS.find((item) => item.slug === slug);
 }
+
+/** Adapt a NewsArticle into NewsCard props (single source for the list + previews). */
+export function toNewsCardData(article: NewsArticle): import("@/components/cards").NewsCardData {
+  return {
+    href: `/news/${article.slug}`,
+    category: article.category,
+    date: article.date,
+    title: article.title,
+    excerpt: article.excerpt,
+    image: article.image,
+  };
+}
