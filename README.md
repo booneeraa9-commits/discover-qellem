@@ -166,3 +166,4 @@ Current phase: **port from vanilla demo to production stack.**
 - `demo-vanilla-reference` — the static SPA demo that serves as the visual/design/content reference.
 
 See the [**Project board**](https://github.com/booneeraa9-commits/discover-qellem/projects) for current work.
+# bounty-fix-ref: https://github.com/booneeraa9-commits/discover-qellem/issues/33
