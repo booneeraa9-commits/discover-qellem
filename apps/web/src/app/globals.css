@@ -280,3 +280,323 @@ hr {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   Sticky glass navigation (ported from demo-vanilla-reference;
+   mobile drawer adapted to slide in from the right per issue #11)
+   ============================================================ */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom: 1px solid transparent;
+  transition:
+    box-shadow 0.3s var(--ease),
+    border-color 0.3s var(--ease),
+    background 0.3s var(--ease);
+}
+
+@supports (background: color-mix(in oklab, white 88%, transparent)) {
+  .nav:not(.scrolled) {
+    background: color-mix(in oklab, var(--paper) 88%, transparent);
+  }
+}
+
+[data-theme="dark"] .nav {
+  background: rgba(14, 23, 19, 0.86);
+}
+
+@supports (background: color-mix(in oklab, white 88%, transparent)) {
+  [data-theme="dark"] .nav:not(.scrolled) {
+    background: color-mix(in oklab, var(--paper) 82%, transparent);
+  }
+}
+
+.nav.scrolled {
+  box-shadow: var(--shadow-sm);
+  border-bottom-color: var(--ink-200);
+}
+
+.nav-inner {
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-900);
+}
+
+.brand:hover {
+  color: var(--ink-900);
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.brand-title {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.brand-sub {
+  font-size: 11px;
+  color: var(--ink-500);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.nav-links a {
+  color: var(--ink-700);
+  font-size: 14.5px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 10px;
+  transition:
+    color 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.nav-links a:hover {
+  color: var(--brand-700);
+  background: var(--brand-50);
+}
+
+[data-theme="dark"] .nav-links a:hover {
+  background: var(--ink-100);
+  color: var(--brand-300);
+}
+
+.nav-links a.active {
+  color: var(--brand-700);
+  background: var(--brand-100);
+}
+
+[data-theme="dark"] .nav-links a.active {
+  color: var(--brand-400);
+  background: var(--brand-100);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 44x44 minimum target size for touch (a11y requirement). */
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--ink-700);
+  background: rgba(255, 255, 255, 0);
+  border: 1px solid transparent;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease),
+    transform 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--ink-100);
+  color: var(--ink-900);
+}
+
+[data-theme="dark"] .icon-btn:hover {
+  background: var(--ink-200);
+}
+
+.lang-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--brand-50);
+  color: var(--brand-700);
+  line-height: 1.2;
+}
+
+[data-theme="dark"] .lang-label {
+  background: var(--brand-100);
+  color: var(--brand-400);
+}
+
+.menu-btn {
+  display: none;
+  padding: 0 10px;
+}
+
+/* On photo-hero pages (body.photo-nav), the not-yet-scrolled nav inverts to a
+   translucent gradient so it stays readable over dark imagery. */
+body.photo-nav .nav:not(.scrolled) .icon-btn {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+body.photo-nav .nav:not(.scrolled) .icon-btn .lang-label {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+body.photo-nav .nav:not(.scrolled) .nav-links a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+body.photo-nav .nav:not(.scrolled) .nav-links a:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+body.photo-nav .nav:not(.scrolled) .brand {
+  color: #fff;
+}
+
+body.photo-nav .nav:not(.scrolled) .brand-sub {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+body.photo-nav .nav:not(.scrolled) {
+  background: linear-gradient(180deg, rgba(7, 40, 30, 0.45), rgba(7, 40, 30, 0));
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Mobile drawer (slides from the right over a translucent backdrop). */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(7, 40, 30, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease);
+}
+
+.drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 61;
+  width: min(320px, 85vw);
+  background: var(--paper);
+  border-left: 1px solid var(--ink-200);
+  box-shadow: var(--shadow-xl);
+  transform: translateX(100%);
+  transition: transform 0.32s var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.drawer a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--ink-800);
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.drawer a:hover {
+  background: var(--ink-100);
+  color: var(--ink-900);
+}
+
+.drawer a.active {
+  color: var(--brand-700);
+  background: var(--brand-100);
+}
+
+[data-theme="dark"] .drawer a.active {
+  color: var(--brand-400);
+}
+
+@media (max-width: 720px) {
+  .nav-links {
+    display: none;
+  }
+
+  .menu-btn {
+    display: inline-flex;
+  }
+
+  .brand-sub {
+    display: none;
+  }
+}

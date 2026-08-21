@@ -30,6 +30,9 @@ export const dict: Record<Lang, Record<string, string>> = {
     "nav.news": "News",
     "nav.history": "History",
     "nav.support": "Support",
+    "nav.main": "Primary",
+    "nav.openMenu": "Open menu",
+    "nav.closeMenu": "Close menu",
 
     "lang.switch": "Switch language",
     "theme.toggle": "Toggle dark mode",
@@ -43,8 +46,11 @@ export const dict: Record<Lang, Record<string, string>> = {
     "nav.news": "Oduu",
     "nav.history": "Seenaa",
     "nav.support": "Nu Deeggari",
-
     // TODO(i18n): get reviewed OM for these a11y/action labels from the content agent.
+    "nav.main": "[OM] Primary",
+    "nav.openMenu": "[OM] Open menu",
+    "nav.closeMenu": "[OM] Close menu",
+
     "lang.switch": "[OM] Switch language",
     "theme.toggle": "[OM] Toggle dark mode",
   },
