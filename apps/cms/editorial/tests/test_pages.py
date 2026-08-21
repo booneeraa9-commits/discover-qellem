@@ -2,8 +2,6 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.test import RequestFactory, TestCase
 from django.urls import resolve, reverse
-from home.models import HomePage
-from places.models import GeographyIndexPage, GeographyProfilePage
 
 from editorial.choices import (
     EditorialAction,
@@ -18,6 +16,8 @@ from editorial.wagtail_hooks import (
     enforce_page_create_scope,
     enforce_page_edit_scope,
 )
+from home.models import HomePage
+from places.models import GeographyIndexPage, GeographyProfilePage
 
 from .base import EditorialTestMixin
 

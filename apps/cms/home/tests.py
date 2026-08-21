@@ -1,10 +1,10 @@
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
-from places.models import Geography
-from qellem_cms.content_validation import PUBLIC_RICH_TEXT_FEATURES
 from wagtail.models import Locale, Page, Site
 from wagtail.test.utils import WagtailPageTestCase
 
 from home.models import HomePage
+from places.models import Geography
+from qellem_cms.content_validation import PUBLIC_RICH_TEXT_FEATURES
 
 
 class HomeSetUpTests(WagtailPageTestCase):

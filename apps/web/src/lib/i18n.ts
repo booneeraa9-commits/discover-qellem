@@ -13,6 +13,17 @@
 
 export type Lang = "en" | "om";
 
+/** A string expressed in both supported languages. OM is authoritative; EN is the review copy. */
+export interface LocalizedText {
+  en: string;
+  om: string;
+}
+
+/** Resolve a bilingual string for the active language, falling back to English. */
+export function localize(text: LocalizedText, lang: Lang): string {
+  return text[lang] ?? text.en;
+}
+
 export const LANGS: readonly Lang[] = ["en", "om"];
 
 export const DEFAULT_LANG: Lang = "en";
@@ -36,6 +47,14 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "Switch language",
     "theme.toggle": "Toggle dark mode",
+
+    "common.readMore": "Read more",
+
+    "lightbox.label": "Photo viewer",
+    "lightbox.close": "Close",
+    "lightbox.previous": "Previous",
+    "lightbox.next": "Next",
+    "lightbox.open": "Open photo",
 
     "footer.about":
       "A verified, living guide to Kellem Wollega Zone — its twelve woredas and town, history, people and places. Built from official zone sources, the Kellem Wollega Zone Communication Office, and community knowledge.",
@@ -98,6 +117,86 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.features.history.text": "From Sayyoo to today — a history drawn from named sources.",
     "home.features.visit.title": "Plan Your Visit",
     "home.features.visit.text": "Seasons, routes and respect — make your visit a welcome one.",
+
+    "home.map.kicker": "Map",
+    "home.map.title": "Zone Map",
+    "home.map.sub": "Tap a place to open its page.",
+
+    "place.breadcrumb": "Breadcrumb",
+    "place.type.woreda": "Woreda",
+    "place.type.capital": "Capital",
+    "place.intro.kicker": "About",
+    "place.intro.title": "Know {name} beyond the name.",
+    "place.notable.kicker": "People",
+    "place.notable.title": "Notable Figures",
+    "place.visit.kicker": "Location",
+    "place.visit.title": "Plan your visit",
+    "place.map.comingSoon": "Interactive map coming soon",
+    "place.back": "Back to places",
+
+    "places.title": "Woredas & Towns",
+    "places.sub":
+      "Eleven woredas and one town — each with a dedicated page, its own history, key facts, attractions, notable people and location map.",
+
+    "news.title": "News & Events",
+    "news.sub": "From across the zone — news and upcoming events.",
+    "news.filter.all": "All",
+    "news.readMore": "Read more",
+    "news.back": "Back to news",
+
+    "pagination.prev": "Previous",
+    "pagination.next": "Next",
+    "pagination.page": "Page",
+
+    "history.kicker": "History",
+    "history.title": "The History of Kellem Wollega",
+    "history.sub": "From Sayyoo to today — a history drawn from named sources.",
+    "history.timeline.title": "Key events",
+
+    "support.kicker": "Support Us",
+    "support.title": "Your support makes it real",
+    "support.sub":
+      "Accurate content, photography and stories grow with your support. Chapa payments coming soon.",
+    "support.donate": "Make a contribution",
+    "support.comingSoon": "Coming soon",
+    "support.toast.comingSoon": "Donations coming soon",
+    "support.sponsors.kicker": "Trusted by",
+    "support.sponsors.title": "Our partners & supporters",
+    "support.sponsors.sub":
+      "Public institutions, cooperatives and community bodies helping bring Discover Qellem to life.",
+    "support.supporters.title": "Wall of supporters",
+    "support.supporters.sub":
+      "Institutions, leaders and community members who have championed this project.",
+
+    "contribute.kicker": "Contribute a story",
+    "contribute.title": "Share your story",
+    "contribute.sub": "Send a story, photo or correction — no account needed.",
+    "contribute.name": "Your name",
+    "contribute.email": "Email (optional)",
+    "contribute.titleField": "Title",
+    "contribute.story": "Write your story here",
+    "contribute.photo": "Photo (optional)",
+    "contribute.submit": "Send",
+    "contribute.toast.comingSoon": "Submissions coming soon",
+
+    "staff.kicker": "Staff",
+    "staff.title": "Editorial sign-in",
+    "staff.sub": "Editors and administrators only.",
+    "staff.cta": "Open Wagtail admin",
+
+    "about.kicker": "About",
+    "about.body":
+      "This site is published in Afaan Oromoo and English. Every fact is drawn from official zone sources and verified Oromo source documents.",
+
+    "article.source": "Source: Zone profile (2015/16 E.C.) and Oromo source book.",
+    "article.share": "Share",
+    "article.copyLink": "Copy link",
+    "article.gallery.title": "Gallery",
+    "article.copied": "Link copied",
+
+    "notfound.title": "Page not found",
+    "notfound.sub": "The page you are looking for does not exist.",
+    "notfound.back": "Back to home",
   },
   om: {
     "brand.title": "Discover Qellem",
@@ -115,6 +214,15 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "[OM] Switch language",
     "theme.toggle": "[OM] Toggle dark mode",
+
+    "common.readMore": "Dabalataan ilaali",
+
+    // TODO(i18n): get reviewed OM for the lightbox label from the content agent.
+    "lightbox.label": "[OM] Photo viewer",
+    "lightbox.close": "Cufi",
+    "lightbox.previous": "Duraa",
+    "lightbox.next": "Itti aanu",
+    "lightbox.open": "[OM] Open photo",
 
     "footer.about":
       "Qajeelfama jiraataa Qeellam Wallaggaa — aanaalee fi magaalota 12, seenaa, namoota fi bakkaalee. Ragaawwan ofiisaalii, Waajjira Oduu Godina Qeellam Wallaggaa fi beekumsa hawaasaa irraa ijaarame.",
@@ -181,6 +289,91 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.features.history.text": "Sayyoo irraa hamma har'aa — seenaa madda beekamaa irraa.",
     "home.features.visit.title": "[OM] Plan Your Visit",
     "home.features.visit.text": "Yeroo, karaa fi kabajaa — daawwannaan kee fudhatamaa haa ta'u.",
+
+    "home.map.kicker": "Kaartaa",
+    "home.map.title": "Kaartaa Godina",
+    "home.map.sub": "Bakka cuqaasi fuula isaa bana.",
+
+    // TODO(i18n): get reviewed OM for these place-page labels from the content agent.
+    "place.breadcrumb": "[OM] Breadcrumb",
+    "place.type.woreda": "Aanaa",
+    "place.type.capital": "Magaalaa Guddoo",
+    "place.intro.kicker": "Waa'ee",
+    "place.intro.title": "{name} maqaa isaa ol beeki.",
+    "place.notable.kicker": "Namoota",
+    "place.notable.title": "Namoota Beekkamoo",
+    "place.visit.kicker": "Iddoo",
+    "place.visit.title": "Daawwannaa qopheessaa",
+    "place.map.comingSoon": "[OM] Interactive map coming soon",
+    "place.back": "Gara bakkaaleetti deebi'i",
+
+    "places.title": "Aanaalee fi Magaalota",
+    "places.sub":
+      "Aanaalee 11 fi magaalaa 1 — tokkoon tokkoon isaanii fuula, seenaa, ragaa fi kaartaa mataa isaa qaba.",
+
+    "news.title": "Oduu fi Taateewwan",
+    "news.sub": "Taateewwan godina keessaa — oduu fi sagantaa dhiyoo.",
+    "news.filter.all": "Hunda",
+    "news.readMore": "Dabalataan ilaali",
+    "news.back": "Gara oduutti deebi'i",
+
+    "pagination.prev": "Duraa",
+    "pagination.next": "Itti aanu",
+    // TODO(i18n): get reviewed OM for the pagination label from the content agent.
+    "pagination.page": "[OM] Page",
+
+    "history.kicker": "Seenaa",
+    "history.title": "Seenaa Godina Qeellam Wallaggaa",
+    "history.sub": "Sayyoo irraa hamma har'aa — seenaa madda beekamaa irraa.",
+    "history.timeline.title": "Taateewwan gurguddoo",
+
+    "support.kicker": "Nu Deeggari",
+    "support.title": "Gumaachi kee ni jijjiira",
+    "support.sub":
+      "Odeeffannoo sirrii, suuraa fi seenota — gumaacha keessaniin ni guddatu. Kaffaltiin Chapa dhiyootti dhufa.",
+    "support.donate": "Gumaacha kenni",
+    "support.comingSoon": "Dhiyootti",
+    "support.toast.comingSoon": "Gumaachi dhiyootti",
+    "support.sponsors.kicker": "Miseensota fi Deeggartoota",
+    "support.sponsors.title": "Deeggartoota fi michoota keenya",
+    "support.sponsors.sub":
+      "Dhaabbilee mootummaa, waldaalee fi qaamolee hawaasaa Discover Qellem jabeessan.",
+    "support.supporters.title": "Dhaabbi Deeggartootaa",
+    "support.supporters.sub":
+      "Dhaabbilee, hogganoota fi miseensota hawaasaa pirojektichaaf gahee olaanaa qaban.",
+
+    "contribute.kicker": "Seenaa ergi",
+    "contribute.title": "Seenaa kee qoodi",
+    "contribute.sub": "Seenaa, suuraa ykn sirreessa ergi — galmeen hin barbaachisu.",
+    "contribute.name": "Maqaa kee",
+    "contribute.email": "Imeelii (filatamaa)",
+    // TODO(i18n): get reviewed OM for these form labels from the content agent.
+    "contribute.titleField": "[OM] Title",
+    "contribute.story": "Seenaa kee as barreessi",
+    "contribute.photo": "[OM] Photo (optional)",
+    "contribute.submit": "Ergi",
+    "contribute.toast.comingSoon": "[OM] Submissions coming soon",
+
+    "staff.kicker": "Hojjettoota",
+    // TODO(i18n): get reviewed OM for the staff page from the content agent.
+    "staff.title": "[OM] Editorial sign-in",
+    "staff.sub": "Editori fi bulchiinsaaf qofa.",
+    "staff.cta": "[OM] Open Wagtail admin",
+
+    "about.kicker": "Waa'ee",
+    "about.body":
+      "Fuulli kun afaan lamaaniin — Afaan Oromoo fi Ingiliffaan — qophaa'eera. Qabeenyi fi ragnni hundi ragaa ofiisaalii irraa dhufe.",
+
+    "article.source": "Madda: Ragaa waajjira godinaa (2015/16 A.L.I) fi kuusaa Afaan Oromoo.",
+    // TODO(i18n): get reviewed OM for the share row from the content agent.
+    "article.share": "[OM] Share",
+    "article.copyLink": "[OM] Copy link",
+    "article.gallery.title": "Suuraalee",
+    "article.copied": "[OM] Link copied",
+
+    "notfound.title": "Fuulli argamuu hin dandeenye",
+    "notfound.sub": "Barbaaddaa jirtu fuulli jiraachuu dide.",
+    "notfound.back": "Gara fuula duraa deebi'i",
   },
 };
 

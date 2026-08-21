@@ -1,9 +1,4 @@
 from django.test import TestCase
-from home.models import HomePage
-from partners.models import Sponsor
-from places.models import Geography, GeographyAlias, GeographyProfilePage
-from provenance.choices import SourceLanguage
-from provenance.models import MediaRights, SourceRecord
 from wagtail.models import Locale
 
 from editorial.choices import EditorialLanguage, EditorialSubject
@@ -15,6 +10,11 @@ from editorial.targets import (
     page_target,
     possible_subjects_for_model,
 )
+from home.models import HomePage
+from partners.models import Sponsor
+from places.models import Geography, GeographyAlias, GeographyProfilePage
+from provenance.choices import SourceLanguage
+from provenance.models import MediaRights, SourceRecord
 
 from .base import EditorialTestMixin
 

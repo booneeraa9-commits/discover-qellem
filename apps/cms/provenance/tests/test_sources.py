@@ -6,10 +6,10 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.deletion import ProtectedError
 from django.test import TestCase
-from home.models import HomePage
-from places.models import Geography
 from wagtail.documents import get_document_model
 
+from home.models import HomePage
+from places.models import Geography
 from provenance.choices import (
     CalendarSystem,
     CitationDecision,

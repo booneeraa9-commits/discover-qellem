@@ -4,7 +4,15 @@ from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.test import TestCase
+from wagtail.models import Locale
+
 from home.models import HomePage
+from places.models import (
+    DatedStatistic,
+    Geography,
+    GeographyIndexPage,
+    GeographyProfilePage,
+)
 from provenance.choices import (
     SensitivityStatus,
     SourceDocumentType,
@@ -12,14 +20,6 @@ from provenance.choices import (
     VerificationStatus,
 )
 from provenance.models import SourceRecord
-from wagtail.models import Locale
-
-from places.models import (
-    DatedStatistic,
-    Geography,
-    GeographyIndexPage,
-    GeographyProfilePage,
-)
 
 
 class GeographyPageTests(TestCase):

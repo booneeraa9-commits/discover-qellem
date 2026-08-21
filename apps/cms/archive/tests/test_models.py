@@ -3,10 +3,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.test import TestCase
-from home.models import HomePage
-from places.models import Geography
-from provenance.choices import SourceDocumentType, SourceSubject
-from provenance.models import SourceCitation, SourceRecord
 from wagtail.documents import get_document_model
 from wagtail.models import Locale
 
@@ -20,6 +16,10 @@ from archive.models import (
     PartOfSpeech,
     PeopleIndexPage,
 )
+from home.models import HomePage
+from places.models import Geography
+from provenance.choices import SourceDocumentType, SourceSubject
+from provenance.models import SourceCitation, SourceRecord
 
 
 class ArchiveIndexTests(TestCase):

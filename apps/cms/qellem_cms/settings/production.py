@@ -10,7 +10,6 @@ from .environment import (
     required_list,
 )
 
-
 DEBUG = False
 
 # Production identity and request boundaries.

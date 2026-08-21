@@ -2,12 +2,61 @@
 
 - **Owner:** QA Engineer
 - **Status:** Living document — update as pages port and gates change
-- **Last run of gates:** 2026-08-21 against `main` @ `b95d592`
+- **Last run of gates:** 2026-08-21 against `main` @ `3777e96` (Sprint 1 merged, PR #57)
 - **Reference build:** `demo-vanilla-reference` branch (visual + content spec)
 
 Every PR is blocked from merge until QA posts the sign-off block (see
 `qa/PR_REVIEW_TEMPLATE.md`). This plan is the definition of "done" that block
 refers to.
+
+---
+
+## Sprint 2 status (updated as PRs land)
+
+**On `main` (Sprint 1, PR #57):** Compose `cms`/`web` services; web app shell
+(tokens, fonts, theme init script); sticky glass nav with EN/OM + dark toggles
+and mobile drawer; bilingual footer; home hero + stats + feature grid; i18n
+string system (`[OM]` placeholders allowed for Sprint 2). Routes shipped: `/`
+and `/404` only.
+
+**In flight (Sprint 2):**
+- Backend: #59 (pytest/ruff tooling — **PR #65, QA APPROVED**), #22 (Wagtail
+  API v2), #23 (news/event/story models), #25 (Person), #24 (place fields),
+  #27 (inauguration article), #26 (12 woreda fixtures), #28 (remaining content).
+- Frontend: #15 (cards), #42 (lightbox), #43 (dark-mode hero overlays), #20
+  (motion), #14 (SVG map), #17 (woreda page), #18 (news/history/support/…).
+
+**Sign-off log:**
+| PR | Result | Date |
+|---|---|---|
+| #65 (pytest/ruff tooling) | APPROVED | 2026-08-21 |
+
+---
+
+## 0b. Automated QA harness (headless Chromium)
+
+QA drives a headless Chromium (system `chromium` + `puppeteer-core`) to check
+console errors, horizontal scroll, broken images, missing `alt`, touch-target
+sizes (<44px), heading-order skips, WCAG contrast (text-only, image/gradient
+backgrounds flagged for manual review), Tab order, and drawer Esc behavior, and
+to capture light/dark screenshots at 375/768/1280px. The script lives in the QA
+sandbox (`/home/user/qatools/qa-harness.js`); it is not committed to the repo.
+
+```bash
+# Prereqs (QA sandbox): chromium + puppeteer-core + a running `npm run dev`
+chromium --version                      # e.g. 151.x
+cd /home/user/qatools && node -e "require('puppeteer-core')"
+
+# Run against the dev server (MUST use localhost, see bug #68)
+BASE_URL=http://localhost:3000 ROUTES=/ node qa-harness.js
+# report -> /home/user/qatools/out/report.json + screenshots
+```
+
+Known harness caveats:
+- Contrast over a `background-image` (photo/gradient) is skipped — verify hero
+  readability visually/manually.
+- Use `http://localhost:3000`, not `127.0.0.1` (dev server blocks chunks on
+  other origins — bug #68).
 
 ---
 
@@ -44,10 +93,20 @@ cd ../demo-vanilla && python3 -m http.server 8080   # http://localhost:8080
 - The backend hard-codes `django.db.backends.postgresql`; there is no SQLite
   fallback, so `migrate`, `check --database default`, and the test suite all
   require a running Postgres. New contributors without Docker hit this
-  immediately. (See bug `qa/bugs/002-pytest-ruff-not-installed.md` for the
-  related tooling gap.)
-- The QA sandbox has no Docker engine, so the three container checks below are
-  run by CI only and cannot be executed locally here. They are enforced in
+  immediately.
+- **Native CMS dev does not load `.env`**, and the README's "CMS only" section
+  instructs an `export DATABASE_URL=...` that the settings ignore (settings read
+  `POSTGRES_*`, not `DATABASE_URL`). Following the README literally fails to
+  connect. Bug **#63**. Working native setup:
+  ```bash
+  export POSTGRES_DB=discover_qellem POSTGRES_USER=discover_qellem \
+         POSTGRES_PASSWORD=<pw> POSTGRES_HOST=127.0.0.1 POSTGRES_PORT=5432
+  ```
+- `npm run dev` must be accessed via **`http://localhost:3000`**, not
+  `127.0.0.1` — Next.js 16 blocks its own dev chunks for other origins
+  (missing `allowedDevOrigins`). Bug **#68**.
+- The QA sandbox has no Docker engine, so the container checks below are run by
+  CI only and cannot be executed locally here. They are enforced in
   `.github/workflows/ci.yml`.
 
 ---
@@ -58,18 +117,17 @@ cd ../demo-vanilla && python3 -m http.server 8080   # http://localhost:8080
 
 | Gate | Command | Verdict (2026-08-21) | Notes |
 |---|---|---|---|
-| Install locked deps | `pip install -r requirements.txt` | PASS | `pip check` reports "No broken requirements found" |
+| Install locked deps | `pip install -r requirements-dev.txt` | PASS | `pip check` reports "No broken requirements found" |
 | Missing migrations | `python manage.py makemigrations --check --dry-run` | PASS | "No changes detected" |
 | Apply migrations | `python manage.py migrate --noinput` | PASS | Requires Postgres |
-| System checks (db-aware) | `python manage.py check --database default` | PASS (with warnings) | 11 × `treebeard.E001` warnings — see bug 003 |
-| Backend tests | `python manage.py test` | PASS | 146 tests OK |
-| Lint | `ruff check .` | **GAP** | `ruff` is not installed and no ruff config exists — see bug 002 |
-| Tests via pytest | `pytest` | **GAP** | `pytest` is not in `requirements.txt`; CI runs `manage.py test` — see bug 002 |
+| System checks (db-aware) | `python manage.py check --database default` | PASS (with warnings) | 11 × `treebeard.E001` warnings — bug #60 |
+| Backend tests | `pytest` | PASS | 146 passed + 57 subtests |
+| Lint | `ruff check .` | PASS | ruff 0.16.4 — added by PR #65 (fixes #59) |
 
-CI currently runs: install → `pip check` → `makemigrations --check --dry-run` →
-`migrate` → `check --database default` → `test`. There is **no backend lint step**
-and **no pytest step** in CI, despite `AGENTS.md` / `CONTRIBUTING.md` instructing
-contributors to run `pytest` and `ruff check .`.
+CI (after PR #65) runs: install dev deps → `pip check` → `ruff check .` →
+`makemigrations --check --dry-run` → `migrate` → `check --database default` →
+`pytest`. The previous gap (docs said `pytest`/`ruff`, neither was installed or
+enforced) is now closed.
 
 ### 1b. Frontend (`apps/web/`) — expected gates
 
@@ -196,6 +254,52 @@ lands**; a route does not get a QA sign-off until every applicable row passes.
 ### `/404`
 - Friendly bilingual "not found" + "back to home"; triggered by any unknown route;
   returns a real 404 status (not a soft 200).
+
+---
+
+## 2b. Sprint 2 component checks (as they land)
+
+Run these in addition to §2's common checks (C1–C12). Each row must pass before
+the issue's PR is signed off.
+
+### Cards (issue #15)
+- Place card: canonical OM name + EN pair, image, badge(s), link to
+  `/place/<canonical-slug>`; hover lift 350ms; focus ring on keyboard focus.
+- News card: title, date (ISO internally, localized display), category chip,
+  link to `/news/<slug>`.
+- Person/story/sponsor/supporter cards: content matches demo; no emoji initials
+  (use initials in text, not emoji).
+- Card links are real `<a>` (not `div onclick`); whole-card hit area works.
+
+### Lightbox / gallery (issue #42)
+- Opens on gallery click; `role="dialog"` + `aria-modal="true"`; focus moves
+  into the lightbox on open and returns to the trigger on close.
+- Keyboard: Esc closes; ←/→ navigate; prev/next buttons have labels.
+- Touch: swipe left/right navigates; buttons >= 44px.
+- Image order matches the source (inauguration gallery MUST be
+  project13, project6, project3, project1, project2 — bug #61).
+
+### Zone map (issues #14 / #33)
+- SVG map: clickable woreda shapes; each has an accessible name; keyboard
+  focusable with visible focus; clicking navigates to `/place/<slug>`.
+- OSM embed (issue #33): iframe has a `title`; does not cause horizontal scroll
+  at 375px; has a fallback link to the place page.
+
+### Woreda/town page (issue #17)
+- All 12 slugs render (canonical slugs only — bug #62); unknown slug → graceful
+  not-found.
+- Sections match demo: hero + chips, about/read-more, key-facts table, culture
+  grid, places to discover, gallery, notable people, map.
+- Hero overlay readable in dark mode (issue #43); no hardcoded gradient inline
+  in TSX (see §0b note / bug #63-comment on #43).
+- Facts/numbers match `qa/CONTENT_FACTS.md` and trace to `provenance` sources.
+
+### News / history / support / staff / 404 (issue #18)
+- News list + Events tab; article detail; history timeline; support page with
+  sponsors/supporters and inert Chapa CTA; staff login; bilingual 404.
+- `/contribute` and `/about` links exist in the footer — confirm with PM whether
+  these routes are in scope (they are in the demo but absent from the Sprint 2
+  route list).
 
 ---
 
@@ -388,19 +492,26 @@ before launch (issue **#44**).
 ## 9. Bug register
 
 Baseline bugs found on `main` are written up in `qa/bugs/` (issue-ready bodies
-+ `gh` commands). Summary:
++ `gh` commands). Summary (updated 2026-08-21 after Sprint 1):
 
-| ID | GitHub | Severity | Lane | Title |
-|---|---|---|---|---|
-| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) |
-| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured |
-| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` warnings on every check/test/runserver |
-| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong in demo vs verified facts |
-| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content | Place slug divergence (canonical OM vs demo anglicized) |
+| ID | GitHub | Severity | Lane | Title | Status |
+|---|---|---|---|---|---|
+| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) | FIXED in Sprint 1 (PR #57); closed |
+| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured | dup of #59; closed |
+| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` warnings | dup of #60; closed |
+| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong in demo | dup of #61; closed |
+| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content | Place slug divergence (canonical OM vs demo) | dup of #62; closed |
+| 006 | [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` ignored; no `.env` load for native dev | OPEN |
+| 007 | [#64](https://github.com/booneeraa9-commits/discover-qellem/issues/64) | P1 | frontend | Closed mobile drawer stays in Tab order | OPEN |
+| 008 | [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets <44px (nav 39, drawer/footer 32, Staff 19, mailto 22) | OPEN |
+| 009 | [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | `.kicker` dark-mode contrast 4.24:1 < 4.5:1 | OPEN |
+| 010 | [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 (`allowedDevOrigins`) | OPEN |
+
+Canonical PM-filed bugs (not mine): #59 (pytest/ruff — PR #65), #60 (treebeard),
+#61 (gallery order — **BE must use project13,6,3,1,2**), #62 (place slugs).
 
 Already tracked on GitHub (do not re-file): Wagtail API v2 not wired (**#22**),
-compose `cms`/`web` services missing (**#8**), scaffold metadata
-"Create Next App" + hardcoded `lang="en"` (covered by **#36/#21**).
+compose `cms`/`web` services (**#8**, closed by PR #45).
 
 ---
 

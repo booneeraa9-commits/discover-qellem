@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.test import TestCase
+from wagtail.snippets.models import get_snippet_models
+
 from editorial.choices import (
     EditorialAction,
     EditorialLanguage,
@@ -9,8 +11,6 @@ from editorial.choices import (
 )
 from editorial.models import EditorialAssignment
 from places.models import Geography
-from wagtail.snippets.models import get_snippet_models
-
 from provenance.choices import SourceDocumentType, SourceSubject
 from provenance.models import MediaRights, SourceCitation, SourceRecord
 
