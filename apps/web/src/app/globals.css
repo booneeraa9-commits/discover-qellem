@@ -600,3 +600,176 @@ body.photo-nav .nav:not(.scrolled) {
     display: none;
   }
 }
+
+/* ============================================================
+   Footer (ported from demo-vanilla-reference)
+   ============================================================ */
+
+.footer {
+  background: linear-gradient(180deg, var(--brand-800), var(--brand-900));
+  color: #cfe8dc;
+  padding: 64px 0 24px;
+  margin-top: 80px;
+}
+
+/* Brand "surfaces" must stay deep green in dark mode. The dark theme inverts
+   the brand scale for text/accents, but the footer background (with its
+   hardcoded light text) must not flip to light green or it becomes unreadable. */
+[data-theme="dark"] .footer {
+  background: linear-gradient(180deg, #0b3d2e, #07281e);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-col h4 {
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.footer-col a {
+  display: block;
+  color: #9fc3b3;
+  font-size: 14px;
+  padding: 5px 0;
+  transition: color 0.2s var(--ease);
+}
+
+.footer-col a:hover {
+  color: #fff;
+}
+
+.footer-about {
+  font-size: 14px;
+  color: #9fc3b3;
+  margin: 14px 0 0;
+  max-width: 380px;
+}
+
+.contact-line {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #9fc3b3;
+  font-size: 14px;
+  padding: 6px 0;
+}
+
+.contact-line svg {
+  color: var(--gold-400);
+  flex-shrink: 0;
+}
+
+.contact-line a {
+  display: inline;
+  padding: 0;
+  color: #9fc3b3;
+  font-size: inherit;
+}
+
+.contact-line a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  color: #87ad9b;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+.footer-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.staff-link {
+  color: #87ad9b;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color 0.2s var(--ease);
+}
+
+.staff-link:hover {
+  color: var(--gold-400);
+}
+
+.dot-sep {
+  opacity: 0.5;
+}
+
+.brand-footer .brand-title {
+  color: #fff;
+}
+
+.brand-footer .brand-sub {
+  color: var(--brand-200);
+}
+
+.brand-footer .brand-mark {
+  width: 34px;
+  height: 34px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.footer-social a {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #9fc3b3;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition:
+    color 0.2s var(--ease),
+    background 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+
+.footer-social a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

@@ -36,6 +36,21 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "Switch language",
     "theme.toggle": "Toggle dark mode",
+
+    "footer.about":
+      "A verified, living guide to Kellem Wollega Zone — its twelve woredas and town, history, people and places. Built from official zone sources, the Kellem Wollega Zone Communication Office, and community knowledge.",
+    "footer.explore": "Explore",
+    "footer.resources": "Resources",
+    "footer.contact": "Contact",
+    "footer.contribute": "Contribute a story",
+    "footer.aboutProject": "About",
+    "footer.rights": "All rights reserved.",
+    "footer.staff": "Staff",
+    "footer.sources": "Sources: Zone profile 2015/16 E.C.",
+    "footer.contact.location": "Dembi Dolo, Kellem Wollega",
+    "footer.social.mail": "Email",
+    "footer.social.site": "Website",
+    "footer.social.news": "News",
   },
   om: {
     "brand.title": "Discover Qellem",
@@ -53,6 +68,23 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "[OM] Switch language",
     "theme.toggle": "[OM] Toggle dark mode",
+
+    "footer.about":
+      "Qajeelfama jiraataa Qeellam Wallaggaa — aanaalee fi magaalota 12, seenaa, namoota fi bakkaalee. Ragaawwan ofiisaalii, Waajjira Oduu Godina Qeellam Wallaggaa fi beekumsa hawaasaa irraa ijaarame.",
+    "footer.explore": "Daawwadhuu",
+    // TODO(i18n): get reviewed OM for this column heading from the content agent.
+    "footer.resources": "[OM] Resources",
+    "footer.contact": "Quunnamtii",
+    "footer.contribute": "Seenaa ergi",
+    "footer.aboutProject": "Waa'ee",
+    "footer.rights": "Mirgi dhalaa eegamaadha.",
+    "footer.staff": "Hojjettoota",
+    "footer.sources": "Madda: Ragaalee Waajjira Godinaa 2015/16 A.L.I.",
+    "footer.contact.location": "Dambi Doolloo, Qeellam Wallaggaa",
+    "footer.social.mail": "Imeelii",
+    // TODO(i18n): get reviewed OM for these social link labels from the content agent.
+    "footer.social.site": "[OM] Website",
+    "footer.social.news": "Oduu",
   },
 };
 
