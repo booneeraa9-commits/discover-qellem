@@ -70,6 +70,18 @@ export const dict: Record<Lang, Record<string, string>> = {
     "footer.social.mail": "Email",
     "footer.social.site": "Website",
     "footer.social.news": "News",
+    "footer.install": "Install app",
+
+    "install.banner.title": "Install Discover Qellem",
+    "install.banner.sub": "Add to your home screen for fast, offline access.",
+    "install.banner.install": "Install",
+    "install.banner.dismiss": "Dismiss",
+    "install.ios.title": "Add to Home Screen",
+    "install.ios.sub": "Tap the Share icon, then tap Add to Home Screen.",
+
+    "offline.title": "You are offline",
+    "offline.sub": "Check your connection and try again.",
+    "offline.retry": "Try again",
 
     "home.hero.imageAlt": "Golden highlands sunset over Kellem Wollega",
     "home.hero.kicker": "Kellem Wollega Zone · Oromia",
@@ -240,6 +252,19 @@ export const dict: Record<Lang, Record<string, string>> = {
     // TODO(i18n): get reviewed OM for these social link labels from the content agent.
     "footer.social.site": "[OM] Website",
     "footer.social.news": "Oduu",
+    "footer.install": "[OM] Install app",
+
+    "install.banner.title": "Discover Qellem buufadhuu",
+    "install.banner.sub": "Offline akka hojjetuuf fuula jalqabaa keessatti itti dabali.",
+    "install.banner.install": "Buufadhuu",
+    "install.banner.dismiss": "Cufi",
+    // TODO(i18n): get reviewed OM for the iOS install tip from the content agent.
+    "install.ios.title": "[OM] Add to Home Screen",
+    "install.ios.sub": "[OM] Tap the Share icon, then tap Add to Home Screen.",
+
+    "offline.title": "Interneeta hin qabdu",
+    "offline.sub": "Qunnamtii kee ilaaliitii irra deebi'i yaali.",
+    "offline.retry": "Irra deebi'i yaali",
 
     // TODO(i18n): get reviewed OM for the hero image alt text from the content agent.
     "home.hero.imageAlt": "[OM] Golden highlands sunset over Kellem Wollega",

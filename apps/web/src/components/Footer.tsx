@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { Globe, Mail, MapPin, Rss } from "lucide-react";
+import { Download, Globe, Mail, MapPin, Rss } from "lucide-react";
 import { useT } from "@/lib/i18n-client";
+import { useInstall } from "./install-client";
 
 const iconSize = 15;
 
 export default function Footer() {
   const { t } = useT();
+  const { promptInstall } = useInstall();
   const year = new Date().getFullYear();
 
   return (
@@ -85,6 +87,17 @@ export default function Footer() {
             <Link href="/staff" className="staff-link">
               {t("footer.staff")}
             </Link>
+            <span className="dot-sep" aria-hidden="true">
+              ·
+            </span>
+            <button
+              type="button"
+              className="footer-install"
+              onClick={promptInstall}
+            >
+              <Download aria-hidden="true" width={14} height={14} />
+              {t("footer.install")}
+            </button>
             <span className="dot-sep" aria-hidden="true">
               ·
             </span>

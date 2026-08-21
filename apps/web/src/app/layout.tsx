@@ -4,6 +4,7 @@ import { Fraunces, Inter } from "next/font/google";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Providers from "@/components/Providers";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -32,6 +33,7 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-touch-icon.png",
   },
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
@@ -83,6 +85,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </Providers>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

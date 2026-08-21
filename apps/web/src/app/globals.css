@@ -2825,3 +2825,138 @@ body.photo-nav .nav:not(.scrolled) {
     padding: 28px 22px;
   }
 }
+
+/* ============================================================
+   PWA: install banner + footer install + offline page
+   ============================================================ */
+
+.install-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 180;
+  width: min(520px, calc(100vw - 32px));
+  background: var(--paper);
+  color: var(--ink-800);
+  border: 1px solid var(--ink-200);
+  border-left: 4px solid var(--gold-500);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-xl);
+  padding: 14px 16px;
+  opacity: 0;
+  animation: installIn 0.35s var(--ease-out) forwards;
+}
+
+[data-theme="dark"] .install-banner {
+  background: var(--ink-50);
+  border-color: var(--ink-200);
+}
+
+@keyframes installIn {
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.install-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.install-ico {
+  color: var(--gold-500);
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.install-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.install-copy strong {
+  font-family: var(--serif);
+  font-size: 15px;
+  color: var(--ink-900);
+}
+
+.install-copy p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-500);
+}
+
+.install-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Footer install link (small, subtle — matches the Staff link). */
+.footer-install {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 6px;
+  color: #87ad9b;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: color 0.2s var(--ease);
+}
+
+.footer-install:hover {
+  color: var(--gold-400);
+}
+
+/* Offline page icon */
+.offline-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--brand-100);
+  color: var(--brand-700);
+  margin-bottom: 20px;
+}
+
+[data-theme="dark"] .offline-ico {
+  background: var(--brand-100);
+  color: var(--brand-400);
+}
+
+.offline-ico svg {
+  width: 32px;
+  height: 32px;
+}
+
+@media (max-width: 480px) {
+  .install-banner {
+    bottom: 12px;
+    padding: 12px;
+  }
+
+  .install-banner-inner {
+    flex-wrap: wrap;
+  }
+
+  .install-copy {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-banner {
+    animation: none;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
