@@ -2005,3 +2005,52 @@ body.photo-nav .nav:not(.scrolled) {
     grid-template-rows: 160px 160px;
   }
 }
+
+/* ============================================================
+   Hero vignette tokens (dark-mode hero + image variants)
+   Different hero treatments share this overlay via the
+   .place-hero-bg::after rule below.
+   ============================================================ */
+
+:root {
+  --hero-vign-1: rgba(7, 40, 30, 0.88);
+  --hero-vign-2: rgba(11, 61, 46, 0.68);
+  --hero-vign-3: rgba(11, 61, 46, 0.42);
+}
+
+[data-theme="dark"] {
+  /* Slightly darker, more opaque overlay so white hero text stays readable
+     without blowing the image out. */
+  --hero-vign-1: rgba(5, 20, 15, 0.92);
+  --hero-vign-2: rgba(7, 40, 30, 0.78);
+  --hero-vign-3: rgba(7, 40, 30, 0.6);
+}
+
+/* The overlay lives in a ::after (image itself stays an inline
+   backgroundImage on the real .place-hero-bg div, per issue #13). */
+.place-hero-photo .place-hero-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    var(--hero-vign-1) 0%,
+    var(--hero-vign-2) 42%,
+    var(--hero-vign-3) 100%
+  );
+  pointer-events: none;
+}
+
+/* Glass quick-fact cards: keep white-on-photo contrast in dark mode. */
+[data-theme="dark"] .qf-hero {
+  background: rgba(7, 40, 30, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+[data-theme="dark"] .qf-hero .qf-label {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+[data-theme="dark"] .qf-hero .qf-val {
+  color: #fff !important;
+}

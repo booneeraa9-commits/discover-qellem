@@ -50,10 +50,7 @@ export default function Home() {
           className="place-hero-bg"
           role="img"
           aria-label={t("home.hero.imageAlt")}
-          style={{
-            backgroundImage:
-              "linear-gradient(120deg, rgba(7,40,30,.88) 0%, rgba(11,61,46,.68) 42%, rgba(11,61,46,.42) 100%), url('/hero.jpg')",
-          }}
+          style={{ backgroundImage: "url('/hero.jpg')" }}
         />
         <div className="container">
           <div className="place-hero-grid">
