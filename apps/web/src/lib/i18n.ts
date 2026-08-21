@@ -13,6 +13,17 @@
 
 export type Lang = "en" | "om";
 
+/** A string expressed in both supported languages. OM is authoritative; EN is the review copy. */
+export interface LocalizedText {
+  en: string;
+  om: string;
+}
+
+/** Resolve a bilingual string for the active language, falling back to English. */
+export function localize(text: LocalizedText, lang: Lang): string {
+  return text[lang] ?? text.en;
+}
+
 export const LANGS: readonly Lang[] = ["en", "om"];
 
 export const DEFAULT_LANG: Lang = "en";
@@ -36,6 +47,8 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "Switch language",
     "theme.toggle": "Toggle dark mode",
+
+    "common.readMore": "Read more",
 
     "footer.about":
       "A verified, living guide to Kellem Wollega Zone — its twelve woredas and town, history, people and places. Built from official zone sources, the Kellem Wollega Zone Communication Office, and community knowledge.",
@@ -115,6 +128,8 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "[OM] Switch language",
     "theme.toggle": "[OM] Toggle dark mode",
+
+    "common.readMore": "Dabalataan ilaali",
 
     "footer.about":
       "Qajeelfama jiraataa Qeellam Wallaggaa — aanaalee fi magaalota 12, seenaa, namoota fi bakkaalee. Ragaawwan ofiisaalii, Waajjira Oduu Godina Qeellam Wallaggaa fi beekumsa hawaasaa irraa ijaarame.",
