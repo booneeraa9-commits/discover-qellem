@@ -1,15 +1,16 @@
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.fields import RichTextField
+from wagtail.images import get_image_model_string
+from wagtail.models import Page
+
 from qellem_cms.content_validation import (
     PUBLIC_RICH_TEXT_FEATURES,
     AuthoritativeOromoPageMixin,
     validate_approved_image,
 )
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
-from wagtail.fields import RichTextField
-from wagtail.images import get_image_model_string
-from wagtail.models import Page
 
 
 class HomePage(AuthoritativeOromoPageMixin, Page):

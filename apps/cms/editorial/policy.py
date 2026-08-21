@@ -4,11 +4,11 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from places.models import Geography, GeographyLevel
 
 from editorial.choices import EditorialLanguage
 from editorial.models import EditorialAssignment
 from editorial.rules import role_allows
+from places.models import Geography, GeographyLevel
 
 
 @dataclass(frozen=True)

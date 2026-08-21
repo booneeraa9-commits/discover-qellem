@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from wagtail.snippets.models import get_snippet_models
+
 from editorial.choices import (
     EditorialAction,
     EditorialLanguage,
@@ -7,8 +9,6 @@ from editorial.choices import (
     EditorialSubject,
 )
 from editorial.models import EditorialAssignment
-from wagtail.snippets.models import get_snippet_models
-
 from places.models import Geography, GeographyAlias
 
 

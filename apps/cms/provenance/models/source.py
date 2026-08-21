@@ -5,10 +5,10 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from places.models import Geography
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.snippets.models import register_snippet
 
+from places.models import Geography
 from provenance.choices import (
     CalendarSystem,
     CitationDecision,

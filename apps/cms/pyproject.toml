@@ -1,0 +1,24 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "qellem_cms.settings.dev"
+addopts = "-ra"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+testpaths = [
+    "archive",
+    "editorial",
+    "home",
+    "partners",
+    "places",
+    "provenance",
+    "qellem_cms",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["B", "E4", "E7", "E9", "F", "I", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"qellem_cms/settings/*.py" = ["F403", "F405"]

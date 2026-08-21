@@ -1,11 +1,11 @@
 from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.urls import reverse
-from places.models import Geography
 
 from editorial.admin_permissions import ScopedSnippetPermissionPolicy
 from editorial.choices import EditorialAction
 from editorial.groups import SUBJECT_EDITORS
+from places.models import Geography
 
 from .base import EditorialTestMixin
 

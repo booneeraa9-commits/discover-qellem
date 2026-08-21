@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.test import TestCase
 from django.utils import timezone
-from places.models import Geography, GeographyLevel
 
 from editorial.choices import (
     EditorialAction,
@@ -13,6 +12,7 @@ from editorial.choices import (
     EditorialSubject,
 )
 from editorial.policy import EditorialTarget, editorial_policy
+from places.models import Geography, GeographyLevel
 
 from .base import EditorialTestMixin
 

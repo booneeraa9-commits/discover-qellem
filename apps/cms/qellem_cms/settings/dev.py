@@ -3,7 +3,6 @@ import os
 from .base import *
 from .environment import value_list
 
-
 # Local development only.
 DEBUG = True
 

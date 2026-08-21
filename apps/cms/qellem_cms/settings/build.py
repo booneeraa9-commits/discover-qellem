@@ -2,7 +2,6 @@
 
 from .base import *
 
-
 DEBUG = False
 
 # This value is only used during collectstatic. This settings module must

@@ -2,11 +2,12 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from provenance.choices import ConsentStatus
-from qellem_cms.content_validation import validate_approved_image
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.images import get_image_model_string
 from wagtail.snippets.models import register_snippet
+
+from provenance.choices import ConsentStatus
+from qellem_cms.content_validation import validate_approved_image
 
 
 class PartnerKind(models.TextChoices):

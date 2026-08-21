@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from places.models import Geography
 
 from editorial.choices import (
     EditorialAction,
@@ -9,6 +8,7 @@ from editorial.choices import (
     EditorialSubject,
 )
 from editorial.models import EditorialAssignment
+from places.models import Geography
 
 
 class EditorialTestMixin:
