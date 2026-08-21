@@ -128,12 +128,19 @@ def page_create_target(page_class, parent_page, *, data=None, locale_code=None):
 def model_target(instance, *, data=None):
     """Resolve protected locale-neutral snippets and media-rights records."""
 
+    from archive.models import Person
     from partners.models import Collaborator, Sponsor
     from places.models import DatedStatistic, Geography, GeographyAlias
     from provenance.models import MediaRights, SourceCitation, SourceRecord
 
     zone_id = zone_geography_id()
 
+    if isinstance(instance, Person):
+        return EditorialTarget(
+            EditorialSubject.PEOPLE,
+            zone_id,
+            EditorialLanguage.BOTH,
+        )
     if isinstance(instance, Geography):
         return EditorialTarget(
             EditorialSubject.GEOGRAPHY,
@@ -194,10 +201,13 @@ def model_create_target(model, *, data=None):
 def possible_subjects_for_model(model):
     """Return subjects that may be chosen without touching the database."""
 
+    from archive.models import Person
     from partners.models import Collaborator, Sponsor
     from places.models import DatedStatistic, Geography, GeographyAlias
     from provenance.models import MediaRights, SourceCitation, SourceRecord
 
+    if issubclass(model, Person):
+        return frozenset({EditorialSubject.PEOPLE})
     if issubclass(model, (Geography, GeographyAlias)):
         return frozenset({EditorialSubject.GEOGRAPHY})
     if issubclass(model, DatedStatistic):
