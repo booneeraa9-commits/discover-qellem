@@ -58,6 +58,9 @@
   --container: 1240px;
   --nav-h: 72px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Section-kicker accent. Must stay >= 4.5:1 on paper in both themes. */
+  --kicker-accent: #16704f;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -96,6 +99,9 @@
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.55);
   --shadow-xl: 0 40px 80px rgba(0, 0, 0, 0.6);
+
+  /* Bright gold — 6.9:1 on the dark paper (vs brand-400's 4.24:1). */
+  --kicker-accent: #c7963a;
 }
 
 /* Expose the runtime tokens to Tailwind utilities (bg-brand-800, text-gold-500, ...).
@@ -638,10 +644,12 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 .footer-col a {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   color: #9fc3b3;
   font-size: 14px;
-  padding: 5px 0;
+  padding: 5px 6px;
   transition: color 0.2s var(--ease);
 }
 
@@ -671,8 +679,10 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 .contact-line a {
-  display: inline;
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 6px;
   color: #9fc3b3;
   font-size: inherit;
 }
@@ -704,6 +714,10 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 .staff-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 6px;
   color: #87ad9b;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -885,12 +899,8 @@ body.photo-nav .nav:not(.scrolled) {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--brand-600);
+  color: var(--kicker-accent);
   margin-bottom: 14px;
-}
-
-[data-theme="dark"] .kicker {
-  color: var(--brand-400);
 }
 
 .kicker::before {
@@ -2994,4 +3004,35 @@ body.photo-nav .nav:not(.scrolled) {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+}
+
+/* ============================================================
+   Polish: focus-visible on card links (keyboard affordance)
+   ============================================================ */
+
+.place-card:focus-visible,
+.person-card-link:focus-visible,
+.supporter-card:focus-visible,
+.sponsor-pill:focus-visible {
+  outline: 3px solid var(--brand-500);
+  outline-offset: 2px;
+}
+
+/* Media link lives inside an overflow-hidden card — draw the ring inside. */
+.news-media:focus-visible {
+  outline: 3px solid var(--brand-500);
+  outline-offset: -3px;
+}
+
+.gallery .g-item:focus-visible {
+  outline: 3px solid var(--brand-500);
+  outline-offset: -3px;
+}
+
+/* Story read-more and other inline text buttons keep the global ring;
+   ensure these specific controls read clearly on the brand backgrounds. */
+.footer-install:focus-visible,
+.staff-link:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 2px;
 }
