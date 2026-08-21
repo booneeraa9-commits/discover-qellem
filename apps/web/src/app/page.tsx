@@ -3,21 +3,24 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { ArrowRight, Compass, Heart, Landmark, Map } from "lucide-react";
+import { CountUp } from "@/components/CountUp";
+import { Reveal } from "@/components/Reveal";
 import { useT } from "@/lib/i18n-client";
 
 interface StatItem {
-  value: string;
+  value: number;
+  suffix?: string;
   labelKey: string;
   subKey: string;
 }
 
 const STATS: StatItem[] = [
-  { value: "1,254,817", labelKey: "home.stats.population.label", subKey: "home.stats.population.sub" },
-  { value: "9,857 km²", labelKey: "home.stats.area.label", subKey: "home.stats.area.sub" },
-  { value: "12", labelKey: "home.stats.woredas.label", subKey: "home.stats.woredas.sub" },
-  { value: "134,213 t", labelKey: "home.stats.coffee.label", subKey: "home.stats.coffee.sub" },
-  { value: "6,721,429", labelKey: "home.stats.livestock.label", subKey: "home.stats.livestock.sub" },
-  { value: "473,300", labelKey: "home.stats.beehives.label", subKey: "home.stats.beehives.sub" },
+  { value: 1254817, labelKey: "home.stats.population.label", subKey: "home.stats.population.sub" },
+  { value: 9857, suffix: " km²", labelKey: "home.stats.area.label", subKey: "home.stats.area.sub" },
+  { value: 12, labelKey: "home.stats.woredas.label", subKey: "home.stats.woredas.sub" },
+  { value: 134213, suffix: " t", labelKey: "home.stats.coffee.label", subKey: "home.stats.coffee.sub" },
+  { value: 6721429, labelKey: "home.stats.livestock.label", subKey: "home.stats.livestock.sub" },
+  { value: 473300, labelKey: "home.stats.beehives.label", subKey: "home.stats.beehives.sub" },
 ];
 
 const QUICK_FACTS = [
@@ -90,44 +93,58 @@ export default function Home() {
 
       <section className="section">
         <div className="container">
-          <div className="section-head">
-            <span className="kicker">{t("home.stats.kicker")}</span>
-            <h2>{t("home.stats.title")}</h2>
-            <p>{t("home.stats.sub")}</p>
-          </div>
-          <div className="stats stats-3">
-            {STATS.map((stat) => (
-              <div className="stat" key={stat.labelKey}>
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{t(stat.labelKey)}</div>
-                <div className="stat-sub">{t(stat.subKey)}</div>
-              </div>
-            ))}
-          </div>
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.stats.kicker")}</span>
+              <h2>{t("home.stats.title")}</h2>
+              <p>{t("home.stats.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="stats stats-3">
+              {STATS.map((stat, i) => (
+                <Reveal delay={0.08 * i} key={stat.labelKey}>
+                  <div className="stat">
+                    <div className="stat-value">
+                      <CountUp to={stat.value} suffix={stat.suffix ?? ""} />
+                    </div>
+                    <div className="stat-label">{t(stat.labelKey)}</div>
+                    <div className="stat-sub">{t(stat.subKey)}</div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="section bg-paper-2">
         <div className="container">
-          <div className="section-head">
-            <span className="kicker">{t("home.features.kicker")}</span>
-            <h2>{t("home.features.title")}</h2>
-            <p>{t("home.features.sub")}</p>
-          </div>
-          <div className="features features-3">
-            {FEATURES.map((feature) => {
-              const Icon = feature.icon;
-              return (
-                <div className="feature" key={feature.titleKey}>
-                  <div className="feature-ico">
-                    <Icon aria-hidden="true" />
-                  </div>
-                  <h3>{t(feature.titleKey)}</h3>
-                  <p>{t(feature.textKey)}</p>
-                </div>
-              );
-            })}
-          </div>
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.features.kicker")}</span>
+              <h2>{t("home.features.title")}</h2>
+              <p>{t("home.features.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="features features-3">
+              {FEATURES.map((feature, i) => {
+                const Icon = feature.icon;
+                return (
+                  <Reveal delay={0.08 * i} key={feature.titleKey}>
+                    <div className="feature">
+                      <div className="feature-ico">
+                        <Icon aria-hidden="true" />
+                      </div>
+                      <h3>{t(feature.titleKey)}</h3>
+                      <p>{t(feature.textKey)}</p>
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </Reveal>
         </div>
       </section>
     </main>

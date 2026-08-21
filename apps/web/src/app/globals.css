@@ -2054,3 +2054,35 @@ body.photo-nav .nav:not(.scrolled) {
 [data-theme="dark"] .qf-hero .qf-val {
   color: #fff !important;
 }
+
+/* ============================================================
+   Scroll reveal (Reveal + CountUp)
+   ============================================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.55s var(--ease-out),
+    transform 0.55s var(--ease-out);
+  will-change: opacity, transform;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Wrapped cards should fill a stretched grid cell (home stats/features). */
+.reveal > .stat,
+.reveal > .feature {
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
