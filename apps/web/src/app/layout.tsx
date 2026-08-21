@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
 import { Fraunces, Inter } from "next/font/google";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
@@ -61,7 +62,11 @@ const themeInitScript = `(function () {
   }
 })();`;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <html
       lang="en"
