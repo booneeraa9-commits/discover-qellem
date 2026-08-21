@@ -1,44 +1,36 @@
 # Baseline bug register
 
-Found by QA on `main` @ `b95d592` (2026-08-21). Each file is an issue-ready
-body. QA cannot authenticate to GitHub from the sandbox, so the PM runs the
-`gh` commands below (or pastes the bodies into the issue UI).
+Found by QA. Each file is an issue-ready body. Newest bugs (#63+) are filed
+directly on GitHub; the `gh` bodies below are kept in the issue itself.
 
-| ID | GitHub | Severity | Lane(s) | Title | File |
-|---|---|---|---|---|---|
-| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) | `001-tsc-noemit-layoutprops.md` |
-| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured | `002-pytest-ruff-not-installed.md` |
-| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` forward-compat warnings | `003-treebeard-e001-warnings.md` |
-| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong vs verified facts | `004-inauguration-gallery-order.md` |
-| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content/frontend | Place slug divergence (canonical OM vs demo) | `005-place-slug-divergence.md` |
+## Current open bugs (filed on GitHub)
 
-Status: all five filed 2026-08-21 as the GitHub issues above.
+| GitHub | Severity | Lane(s) | Title |
+|---|---|---|---|
+| [#59](https://github.com/booneeraa9-commits/discover-qellem/issues/59) | P1 | backend | pytest + ruff documented but not installed/configured (PR #65, QA APPROVED) |
+| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` forward-compat warnings |
+| [#61](https://github.com/booneeraa9-commits/discover-qellem/issues/61) | P1 | content | Inauguration gallery order — verified is project13,6,3,1,2 |
+| [#62](https://github.com/booneeraa9-commits/discover-qellem/issues/62) | P1 | content/frontend | Place slug divergence (canonical OM vs demo) |
+| [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` ignored; no `.env` loading for native dev |
+| [#64](https://github.com/booneeraa9-commits/discover-qellem/issues/64) | P1 | frontend | Closed mobile drawer stays in Tab order (focus on off-screen links) |
+| [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets <44px: nav 39, drawer/footer 32, Staff 19, mailto 22 |
+| [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | `.kicker` dark-mode contrast 4.24:1 < 4.5:1 |
+| [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 (`allowedDevOrigins`) |
 
-## One-shot filing commands
+## Closed (Sprint 1)
 
-Already executed 2026-08-21 (issues **#47–#51**). Kept here for the record if a
-duplicate ever needs re-filing:
+- #47 (tsc `LayoutProps`) — fixed in PR #57; verified on fresh install.
+- #48 → dup of #59; #49 → dup of #60; #50 → dup of #61; #51 → dup of #62
+  (PM re-filed with updated titles; the PM set is canonical).
 
-```bash
-cd discover-qellem
-gh issue create --title "[bug] npx tsc --noEmit fails on fresh install: TS2304 Cannot find name 'LayoutProps'" --body-file qa/bugs/001-tsc-noemit-layoutprops.md --label bug --label frontend --label P1
-gh issue create --title "[bug] pytest and ruff documented but not installed/configured" --body-file qa/bugs/002-pytest-ruff-not-installed.md --label bug --label backend --label docs --label P1
-gh issue create --title "[bug] 11x treebeard.E001 warnings will break on django-treebeard 6" --body-file qa/bugs/003-treebeard-e001-warnings.md --label bug --label backend --label P2
-gh issue create --title "[bug] Inauguration gallery order is 3,6,13,1,2 — verified order is 13,6,3,1,2" --body-file qa/bugs/004-inauguration-gallery-order.md --label bug --label content --label P1
-gh issue create --title "[bug] Place slugs diverge: production canonical OM vs demo anglicized" --body-file qa/bugs/005-place-slug-divergence.md --label bug --label content --label frontend --label P1
-```
+## Note for PR reviewers
+
+- The inauguration gallery order gate is #61 — **project13, project6, project3,
+  project1, project2**. Block any PR that ships another order.
+- Woreda names/slugs must match the canonical 12 in `qa/CONTENT_FACTS.md`.
 
 ## Already tracked on GitHub (do NOT re-file)
 
-- Wagtail API v2 not wired — `/api/v2/` returns 404, `wagtail.api.v2` absent
-  from `INSTALLED_APPS` and `urls.py` → issue **#22** (P0 backend).
-- `compose.yaml` defines only the `database` service (no `cms`/`web`) → issue **#8**.
-- Scaffold metadata "Create Next App" + hardcoded `lang="en"` in
-  `apps/web/src/app/layout.tsx` → covered by **#36** (metadata) and **#21** (i18n).
-
-## Docs drift noted (folded into bug 002 or fix silently)
-
-- README/AGENTS say **Wagtail 6 / Django 5**; `requirements.txt` pins
-  **wagtail==7.4.2 / Django==5.2.17**.
-- README says Node 20+; CI pins Node **24.19.0** (both fine, just stale text).
-- README says Python 3.12+; verified working on 3.13.
+- Wagtail API v2 not wired — `/api/v2/` 404 → issue #22 (P0 backend).
+- Compose `cms`/`web` services → issue #8 (closed by PR #45).
+- Dark-mode hero overlays → #43; lightbox → #42; SVG map → #14/#33.
