@@ -1,0 +1,56 @@
+name: Feature request
+description: Propose a new feature, integration, or improvement
+title: "[feat] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the feature clearly. New dependencies, build steps, or architectural changes need strong justification — the approved stack is Next.js + Django/Wagtail + Postgres.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem this solves
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe UI, behavior, data model, API changes, tests needed.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Frontend / UI / CSS / animation
+        - CMS / Wagtail models / admin
+        - API / backend logic
+        - PWA / offline / service worker
+        - Payments / forms (Chapa, contribute, etc.)
+        - Editorial workflow / permissions
+        - SEO / analytics / metadata
+        - Accessibility
+        - Performance
+        - Deployment / infra / Docker
+        - CI / testing / tooling
+        - Content tooling / migrations / fixtures
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Suggested priority
+      options:
+        - P0 — blocks launch
+        - P1 — needed soon after launch
+        - P2 — nice to have
+  - type: textarea
+    id: refs
+    attributes:
+      label: References / examples
+      description: Links to similar features, screenshots from the demo, docs, etc.
