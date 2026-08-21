@@ -1,0 +1,53 @@
+name: Content / fact
+description: Add, correct, or translate content (woredas, people, news, bios, photos, translations, sources)
+title: "[content] "
+labels: ["content", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for content additions/corrections. Every new fact **must** have a source. Afaan Oromoo is the authoritative language; English is a reviewed translation.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of content?
+      options:
+        - Woreda/town page (history, facts, attractions, culture)
+        - Notable person / biography
+        - News article or event
+        - Community story
+        - Translation (Afaan Oromoo / English)
+        - Correction to an existing fact/figure
+        - Photo (with confirmed rights)
+        - Partner / supporter / sponsor
+        - Source / provenance record
+        - Glossary term
+    validations:
+      required: true
+  - type: input
+    id: place
+    attributes:
+      label: Place / woreda (if applicable)
+      placeholder: "e.g. Dembi Dolo, Anfillo — leave blank if zone-wide"
+  - type: textarea
+    id: content
+    attributes:
+      label: Proposed content / correction
+      description: |
+        Provide both EN and OM if you can. For a fact correction, include old and new value. For a photo, describe what it shows and confirm rights.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Zone profile page/year, ESS 2007, EMA 1988, news outlet, official Communication Office release, community interview (named), etc.
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights / permissions
+      options:
+        - label: I confirm I have rights to contribute any photos/text submitted and that they may be published under the project's license.
+          required: true
