@@ -2183,3 +2183,90 @@ body.photo-nav .nav:not(.scrolled) {
     padding: 20px;
   }
 }
+
+/* ============================================================
+   Place page (woreda/town template)
+   ============================================================ */
+
+.breadcrumb {
+  font-size: 13px;
+  color: var(--ink-500);
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.breadcrumb a {
+  color: var(--ink-600);
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb a:hover {
+  color: var(--brand-600);
+}
+
+.breadcrumb svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Light breadcrumb over photo heroes. */
+.place-hero-photo .breadcrumb,
+.place-hero-photo .breadcrumb a {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+}
+
+.place-hero-photo .breadcrumb a:hover {
+  color: #fff;
+}
+
+.section-head.left {
+  text-align: left;
+  margin-left: 0;
+}
+
+.place-intro p {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--ink-700);
+}
+
+.place-intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* OSM placeholder — iframe wired in a later issue. */
+.osm-placeholder {
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--ink-300);
+  background: var(--paper-2);
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-500);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.osm-placeholder svg {
+  width: 18px;
+  height: 18px;
+  color: var(--brand-600);
+}
+
+[data-theme="dark"] .osm-placeholder {
+  background: var(--ink-50);
+}
+
+@media (max-width: 1024px) {
+  .place-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}

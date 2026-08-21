@@ -121,6 +121,19 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.map.kicker": "Map",
     "home.map.title": "Zone Map",
     "home.map.sub": "Tap a place to open its page.",
+
+    "place.breadcrumb": "Breadcrumb",
+    "place.type.woreda": "Woreda",
+    "place.type.capital": "Capital",
+    "place.intro.kicker": "About",
+    "place.intro.title": "Know {name} beyond the name.",
+    "place.notable.kicker": "People",
+    "place.notable.title": "Notable Figures",
+    "place.visit.kicker": "Location",
+    "place.visit.title": "Plan your visit",
+    "place.map.comingSoon": "Interactive map coming soon",
+    "place.back": "Back to places",
+
   },
   om: {
     "brand.title": "Discover Qellem",
@@ -217,6 +230,20 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.map.kicker": "Kaartaa",
     "home.map.title": "Kaartaa Godina",
     "home.map.sub": "Bakka cuqaasi fuula isaa bana.",
+
+    // TODO(i18n): get reviewed OM for these place-page labels from the content agent.
+    "place.breadcrumb": "[OM] Breadcrumb",
+    "place.type.woreda": "Aanaa",
+    "place.type.capital": "Magaalaa Guddoo",
+    "place.intro.kicker": "Waa'ee",
+    "place.intro.title": "{name} maqaa isaa ol beeki.",
+    "place.notable.kicker": "Namoota",
+    "place.notable.title": "Namoota Beekkamoo",
+    "place.visit.kicker": "Iddoo",
+    "place.visit.title": "Daawwannaa qopheessaa",
+    "place.map.comingSoon": "[OM] Interactive map coming soon",
+    "place.back": "Gara bakkaaleetti deebi'i",
+
   },
 };
 
