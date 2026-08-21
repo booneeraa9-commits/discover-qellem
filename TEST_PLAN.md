@@ -390,13 +390,13 @@ before launch (issue **#44**).
 Baseline bugs found on `main` are written up in `qa/bugs/` (issue-ready bodies
 + `gh` commands). Summary:
 
-| ID | Severity | Lane | Title |
-|---|---|---|---|
-| 001 | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) |
-| 002 | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured |
-| 003 | P2 | backend | 11 × `treebeard.E001` warnings on every check/test/runserver |
-| 004 | P1 | content | Inauguration gallery order wrong in demo vs verified facts |
-| 005 | P1 | content | Place slug divergence (canonical OM vs demo anglicized) |
+| ID | GitHub | Severity | Lane | Title |
+|---|---|---|---|---|
+| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) |
+| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured |
+| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` warnings on every check/test/runserver |
+| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong in demo vs verified facts |
+| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content | Place slug divergence (canonical OM vs demo anglicized) |
 
 Already tracked on GitHub (do not re-file): Wagtail API v2 not wired (**#22**),
 compose `cms`/`web` services missing (**#8**), scaffold metadata

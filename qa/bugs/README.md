@@ -4,15 +4,20 @@ Found by QA on `main` @ `b95d592` (2026-08-21). Each file is an issue-ready
 body. QA cannot authenticate to GitHub from the sandbox, so the PM runs the
 `gh` commands below (or pastes the bodies into the issue UI).
 
-| ID | Severity | Lane(s) | Title | File |
-|---|---|---|---|---|
-| 001 | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) | `001-tsc-noemit-layoutprops.md` |
-| 002 | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured | `002-pytest-ruff-not-installed.md` |
-| 003 | P2 | backend | 11 × `treebeard.E001` forward-compat warnings | `003-treebeard-e001-warnings.md` |
-| 004 | P1 | content | Inauguration gallery order wrong vs verified facts | `004-inauguration-gallery-order.md` |
-| 005 | P1 | content/frontend | Place slug divergence (canonical OM vs demo) | `005-place-slug-divergence.md` |
+| ID | GitHub | Severity | Lane(s) | Title | File |
+|---|---|---|---|---|---|
+| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) | `001-tsc-noemit-layoutprops.md` |
+| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured | `002-pytest-ruff-not-installed.md` |
+| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` forward-compat warnings | `003-treebeard-e001-warnings.md` |
+| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong vs verified facts | `004-inauguration-gallery-order.md` |
+| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content/frontend | Place slug divergence (canonical OM vs demo) | `005-place-slug-divergence.md` |
+
+Status: all five filed 2026-08-21 as the GitHub issues above.
 
 ## One-shot filing commands
+
+Already executed 2026-08-21 (issues **#47–#51**). Kept here for the record if a
+duplicate ever needs re-filing:
 
 ```bash
 cd discover-qellem
