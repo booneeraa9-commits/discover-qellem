@@ -75,7 +75,8 @@ class SourceRecordTests(TestCase):
             source.save()
 
         self.assertIn("permission_confirmation_notes", error.exception.message_dict)
-        self.assertFalse(SourceRecord.objects.exists())
+        # Exclude the SRC-027 record seeded by archive migration 0006.
+        self.assertFalse(SourceRecord.objects.exclude(source_id="SRC-027").exists())
 
     def test_source_date_and_calendar_must_be_recorded_together(self):
         invalid_values = (
@@ -181,7 +182,10 @@ class SourceCitationTests(TestCase):
 
         self.assertIn("fact_reviewer", error.exception.message_dict)
         self.assertIn("verified_on", error.exception.message_dict)
-        self.assertFalse(SourceCitation.objects.exists())
+        # Exclude the citation seeded by archive migration 0006.
+        self.assertFalse(
+            SourceCitation.objects.exclude(source__source_id="SRC-027").exists()
+        )
 
     def test_verified_citation_links_source_to_content(self):
         citation = SourceCitation.objects.create(
