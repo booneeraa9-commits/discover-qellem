@@ -773,3 +773,477 @@ body.photo-nav .nav:not(.scrolled) {
     gap: 28px;
   }
 }
+
+/* ============================================================
+   Home — photo hero, quick facts, stats, features, buttons
+   (ported from demo-vanilla-reference)
+   ============================================================ */
+
+/* Page transition */
+.page {
+  min-height: 60vh;
+  animation: pageIn 0.55s var(--ease-out) both;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14.5px;
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    background 0.2s var(--ease),
+    color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: inherit;
+}
+
+.btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-primary {
+  background: var(--brand-700);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(15, 85, 64, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--brand-600);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(15, 85, 64, 0.32);
+}
+
+/* Brand surfaces stay deep green in dark mode (the inverted dark palette is
+   for text/accents, not for filled buttons). */
+[data-theme="dark"] .btn-primary {
+  background: #0f5540;
+  color: #fff;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #16704f;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-800);
+  border: 1px solid var(--ink-200);
+}
+
+.btn-ghost:hover {
+  border-color: var(--brand-500);
+  color: var(--brand-700);
+  background: var(--brand-50);
+}
+
+[data-theme="dark"] .btn-ghost:hover {
+  background: var(--ink-200);
+  color: var(--brand-300);
+}
+
+/* Light ghost button for use on dark photo heroes. */
+.btn-ghost-light {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-ghost-light:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Kicker */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-600);
+  margin-bottom: 14px;
+}
+
+[data-theme="dark"] .kicker {
+  color: var(--brand-400);
+}
+
+.kicker::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.7;
+  border-radius: 2px;
+}
+
+/* Gold kicker for dark photo heroes (readable in both themes). */
+.kicker-light {
+  color: var(--gold-400);
+}
+
+/* Photo hero (home) */
+.place-hero {
+  position: relative;
+  padding: 72px 0 56px;
+  overflow: hidden;
+}
+
+.place-hero-photo {
+  padding: 96px 0 80px;
+  min-height: 540px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+}
+
+/* Real background div carrying the image + dark-green gradient overlay inline. */
+.place-hero-photo .place-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: #0b3d2e;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.place-hero-photo > .container {
+  position: relative;
+  z-index: 2;
+}
+
+.place-hero-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 0.9fr;
+  gap: 40px;
+  align-items: end;
+}
+
+.place-hero-photo .place-hero-title {
+  font-size: clamp(40px, 6vw, 70px);
+  color: #fff;
+  margin-bottom: 14px;
+  text-shadow: 0 3px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Italic emphasis line uses a gold gradient that stays readable in both themes. */
+.place-hero-photo .place-hero-title em {
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(100deg, var(--gold-300), var(--gold-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+[data-theme="dark"] .place-hero-photo .place-hero-title em {
+  background: linear-gradient(100deg, var(--gold-500), var(--gold-400));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.place-hero-photo .place-hero-tagline {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(16px, 1.5vw, 19px);
+  max-width: 640px;
+  margin-bottom: 26px;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+}
+
+.hero-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Quick-fact cards */
+.place-quickfacts {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.qf {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--paper);
+  border: 1px solid var(--ink-200);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .qf {
+  background: var(--ink-50);
+}
+
+.qf-label {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--ink-500);
+}
+
+.qf-val {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink-900);
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.qf-sub {
+  font-size: 12px;
+  color: var(--ink-500);
+}
+
+/* Glass quick-fact cards over the photo hero: white text with !important
+   contrast so it can never be overridden by theme styles. */
+.qf-hero {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  color: #fff !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.qf-hero .qf-label {
+  color: rgba(255, 255, 255, 0.78) !important;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.qf-hero .qf-val {
+  color: #fff !important;
+  font-family: var(--serif);
+  font-weight: 600;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--ink-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.stats-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stat {
+  background: var(--paper);
+  padding: 26px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.3s var(--ease);
+}
+
+.stat:hover {
+  background: var(--brand-50);
+}
+
+[data-theme="dark"] .stat {
+  background: var(--ink-50);
+}
+
+[data-theme="dark"] .stat:hover {
+  background: var(--brand-50);
+  color: var(--ink-900);
+}
+
+.stat-value {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 600;
+  color: var(--ink-900);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: var(--ink-500);
+}
+
+/* Section heads */
+.section-head {
+  max-width: 760px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.section-head h2 {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.section-head p {
+  color: var(--ink-500);
+  font-size: 17px;
+  margin: 0;
+}
+
+/* Features */
+.features {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.features-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.feature {
+  padding: 28px;
+  border-radius: var(--radius);
+  border: 1px solid var(--ink-200);
+  background: var(--paper);
+  transition:
+    transform 0.3s var(--ease),
+    box-shadow 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .feature {
+  background: var(--ink-50);
+}
+
+.feature:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--brand-200);
+}
+
+.feature-ico {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--brand-100), var(--brand-50));
+  color: var(--brand-700);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  transition: transform 0.4s var(--ease);
+}
+
+[data-theme="dark"] .feature-ico {
+  background: var(--brand-100);
+  color: var(--brand-400);
+}
+
+.feature:hover .feature-ico {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+.feature-ico svg {
+  width: 22px;
+  height: 22px;
+}
+
+.feature h3 {
+  font-size: 19px;
+  margin-bottom: 8px;
+}
+
+.feature p {
+  font-size: 14.5px;
+  color: var(--ink-500);
+  margin: 0;
+}
+
+/* Responsive (home) */
+@media (max-width: 1024px) {
+  .place-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .place-hero-photo {
+    min-height: 560px;
+    padding: 72px 0 64px;
+  }
+
+  .place-hero-photo .place-hero-title {
+    font-size: clamp(36px, 10vw, 54px);
+  }
+
+  .place-quickfacts-hero {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .place-quickfacts {
+    grid-template-columns: 1fr;
+  }
+
+  .place-quickfacts-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    padding: 20px;
+  }
+}

@@ -51,6 +51,53 @@ export const dict: Record<Lang, Record<string, string>> = {
     "footer.social.mail": "Email",
     "footer.social.site": "Website",
     "footer.social.news": "News",
+
+    "home.hero.imageAlt": "Golden highlands sunset over Kellem Wollega",
+    "home.hero.kicker": "Kellem Wollega Zone · Oromia",
+    "home.hero.title.1": "A land of green horizons,",
+    "home.hero.title.2": "deep roots,",
+    "home.hero.title.3": "and open skies.",
+    "home.hero.tagline":
+      "Kellem Wollega is the western frontier of Oromia — coffee, the Dati Walal forests, rivers and living Oromo culture. Twelve woredas and towns, each with a story of its own. Explore verified facts, people, history and the latest projects shaping the zone today.",
+    "home.cta.explore": "Explore woredas",
+    "home.cta.support": "Support us",
+
+    "home.quickfacts.population.label": "Population",
+    "home.quickfacts.population.value": "1,254,817",
+    "home.quickfacts.area.label": "Zone area",
+    "home.quickfacts.area.value": "≈ 9,857 km²",
+    "home.quickfacts.woredas.label": "Woredas & town",
+    "home.quickfacts.woredas.value": "12",
+    "home.quickfacts.coffee.label": "Coffee produced",
+    "home.quickfacts.coffee.value": "134,213 t",
+
+    "home.stats.kicker": "At a glance",
+    "home.stats.title": "Zone at a Glance",
+    "home.stats.sub": "Key figures from official sources (2015 & 2016 E.C.).",
+    "home.stats.population.label": "Population (2023/24)",
+    "home.stats.population.sub": "Zone profile projection",
+    "home.stats.area.label": "Zone area",
+    "home.stats.area.sub": "2.9% of Oromia",
+    "home.stats.woredas.label": "Woredas & town",
+    "home.stats.woredas.sub": "289 kebeles",
+    "home.stats.coffee.label": "Coffee produced",
+    "home.stats.coffee.sub": "tonnes / year",
+    "home.stats.livestock.label": "Livestock",
+    "home.stats.livestock.sub": "incl. 1,634,514 cattle",
+    "home.stats.beehives.label": "Beehives",
+    "home.stats.beehives.sub": "339,193 in 2016",
+
+    "home.features.kicker": "What defines Kellem",
+    "home.features.title": "A zone of remarkable diversity",
+    "home.features.sub":
+      "From coffee to the Dati Walal forests, from minerals to living markets — Kellem holds extraordinary natural and cultural wealth.",
+    "home.features.explore.title": "Explore the Zone",
+    "home.features.explore.text":
+      "Eleven woredas and one town — each with a dedicated page, its own history, key facts, attractions, notable people and location map.",
+    "home.features.history.title": "History & Culture",
+    "home.features.history.text": "From Sayyoo to today — a history drawn from named sources.",
+    "home.features.visit.title": "Plan Your Visit",
+    "home.features.visit.text": "Seasons, routes and respect — make your visit a welcome one.",
   },
   om: {
     "brand.title": "Discover Qellem",
@@ -85,6 +132,55 @@ export const dict: Record<Lang, Record<string, string>> = {
     // TODO(i18n): get reviewed OM for these social link labels from the content agent.
     "footer.social.site": "[OM] Website",
     "footer.social.news": "Oduu",
+
+    // TODO(i18n): get reviewed OM for the hero image alt text from the content agent.
+    "home.hero.imageAlt": "[OM] Golden highlands sunset over Kellem Wollega",
+    "home.hero.kicker": "Godina Qeellam Wallaggaa · Oromiyaa",
+    "home.hero.title.1": "Lafa Margaa,",
+    "home.hero.title.2": "Hundee Gadi Fageessoo,",
+    "home.hero.title.3": "Sammii Banaa.",
+    "home.hero.tagline":
+      "Qeellam Wallaggaa godina Oromiyaa keessaa isa dhihaati — buna, bosona Dhaatii Walaal, lagee fi aadaa Oromoo kan hawwatu. Aanaalee fi magaalota 12 — tokkoon tokkoon isaanii seenaa mataa isaa qaba. Ragaa mirkanaa'e, namoota, seenaa fi pirojektoota haarawa argadhu.",
+    "home.cta.explore": "Aanaalee daawwadhuu",
+    "home.cta.support": "Nu deeggari",
+
+    "home.quickfacts.population.label": "Uummata",
+    "home.quickfacts.population.value": "1,254,817",
+    "home.quickfacts.area.label": "Bal'ina Godinaa",
+    "home.quickfacts.area.value": "≈ 9,857 km²",
+    "home.quickfacts.woredas.label": "Aanaalee & Magaalaa",
+    "home.quickfacts.woredas.value": "12",
+    "home.quickfacts.coffee.label": "Oomisha Bunaa",
+    "home.quickfacts.coffee.value": "134,213 t",
+
+    "home.stats.kicker": "Gabaabinaan",
+    "home.stats.title": "Godina Gabaabinaan",
+    "home.stats.sub": "Ragaa waliigalaa ragaa ofiisaalii irraa (2015 fi 2016 A.L.I).",
+    "home.stats.population.label": "Baay'ina Uummataa (2016 A.L.I)",
+    "home.stats.population.sub": "Tilmaama ragaa godinaa",
+    "home.stats.area.label": "Bal'ina Godinaa",
+    "home.stats.area.sub": "2.9% Oromiyaa",
+    "home.stats.woredas.label": "Aanaalee & Magaalaa",
+    "home.stats.woredas.sub": "Gandoota 289",
+    "home.stats.coffee.label": "Oomisha Bunaa",
+    "home.stats.coffee.sub": "toonnii / waggaa",
+    "home.stats.livestock.label": "Horii",
+    "home.stats.livestock.sub": "Loon 1,634,514 dabalatee",
+    "home.stats.beehives.label": "Gaagura dammaa",
+    "home.stats.beehives.sub": "339,193 (2016)",
+
+    "home.features.kicker": "Maaltu Qeellam adda taasisu",
+    "home.features.title": "Qabeenyaa fi aadaa adda addaa",
+    "home.features.sub":
+      "Buna irraa hamma bosona Dhaatii Walaal, mineraala irraa hamma gabaa jireessoo — Qeellam ogummaa fi qabeenyaa uumamaa of keessaa qaba.",
+    // TODO(i18n): get reviewed OM for these feature titles from the content agent.
+    "home.features.explore.title": "[OM] Explore the Zone",
+    "home.features.explore.text":
+      "Aanaalee 11 fi magaalaa 1 — tokkoon tokkoon isaanii fuula, seenaa, ragaa fi kaartaa mataa isaa qaba.",
+    "home.features.history.title": "Seenaa fi Aadaa",
+    "home.features.history.text": "Sayyoo irraa hamma har'aa — seenaa madda beekamaa irraa.",
+    "home.features.visit.title": "[OM] Plan Your Visit",
+    "home.features.visit.text": "Yeroo, karaa fi kabajaa — daawwannaan kee fudhatamaa haa ta'u.",
   },
 };
 
