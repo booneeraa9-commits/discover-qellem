@@ -56,7 +56,7 @@ export default function ArticleView({ article }: { article: NewsArticle }) {
   };
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="section tight">
         <div className="container">
           <div style={{ maxWidth: 860, margin: "0 auto" }}>

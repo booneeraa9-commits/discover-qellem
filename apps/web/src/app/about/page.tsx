@@ -7,7 +7,7 @@ export default function AboutPage() {
   const { t } = useT();
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="section tight">
         <div className="container" style={{ maxWidth: 780 }}>
           <Reveal>

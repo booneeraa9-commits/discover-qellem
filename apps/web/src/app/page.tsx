@@ -65,7 +65,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="place-hero place-hero-photo home-hero">
         <div
           className="place-hero-bg"
@@ -292,9 +292,9 @@ export default function Home() {
               <span className="kicker" style={{ color: "var(--gold-300)" }}>
                 {t("home.support.kicker")}
               </span>
-              <h1 style={{ fontSize: "clamp(28px, 3.4vw, 40px)" }}>
+              <h2 style={{ fontSize: "clamp(28px, 3.4vw, 40px)" }}>
                 {t("home.support.title")}
-              </h1>
+              </h2>
               <p>{t("home.support.sub")}</p>
               <Link href="/support" className="btn btn-gold" style={{ marginTop: 18 }}>
                 <Heart aria-hidden="true" />

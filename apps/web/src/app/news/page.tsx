@@ -47,7 +47,7 @@ export default function NewsPage() {
   };
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="place-hero">
         <div className="place-hero-bg" aria-hidden="true" />
         <div className="container">

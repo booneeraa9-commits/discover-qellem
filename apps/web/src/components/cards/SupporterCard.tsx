@@ -38,7 +38,7 @@ export function SupporterCard({ data, className = "" }: SupporterCardProps) {
         {initials}
       </div>
       <div>
-        <h4 className="supporter-name">{name}</h4>
+        <h3 className="supporter-name">{name}</h3>
         <p className="supporter-role">{role}</p>
       </div>
     </>

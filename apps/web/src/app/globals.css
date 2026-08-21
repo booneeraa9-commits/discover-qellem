@@ -633,7 +633,7 @@ body.photo-nav .nav:not(.scrolled) {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.footer-col h4 {
+.footer-col h2 {
   color: #fff;
   font-family: var(--sans);
   font-size: 13px;
@@ -3200,5 +3200,35 @@ body.photo-nav .nav:not(.scrolled) {
   .pretty-table td,
   .pretty-table thead th {
     padding: 12px 14px;
+  }
+}
+
+/* ============================================================
+   a11y: skip-to-content link
+   ============================================================ */
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 300;
+  transform: translateY(-200%);
+  background: var(--brand-800);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.2s var(--ease);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
   }
 }

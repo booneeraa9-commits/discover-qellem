@@ -8,7 +8,7 @@ export default function StaffPage() {
   const { t } = useT();
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="auth-wrap">
         <Reveal className="auth-card">
           <span className="kicker">{t("staff.kicker")}</span>

@@ -7,7 +7,7 @@ export default function OfflinePage() {
   const { t } = useT();
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <div className="nf-wrap">
         <span className="offline-ico" aria-hidden="true">
           <WifiOff />

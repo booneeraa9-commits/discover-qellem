@@ -50,6 +50,8 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "common.readMore": "Read more",
 
+    "skip.content": "Skip to content",
+
     "lightbox.label": "Photo viewer",
     "lightbox.close": "Close",
     "lightbox.previous": "Previous",
@@ -255,6 +257,9 @@ export const dict: Record<Lang, Record<string, string>> = {
     "theme.toggle": "[OM] Toggle dark mode",
 
     "common.readMore": "Dabalataan ilaali",
+
+    // TODO(i18n): get reviewed OM for the skip link from the content agent.
+    "skip.content": "[OM] Skip to content",
 
     // TODO(i18n): get reviewed OM for the lightbox label from the content agent.
     "lightbox.label": "[OM] Photo viewer",

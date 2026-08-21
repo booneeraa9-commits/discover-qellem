@@ -25,7 +25,7 @@ export default function PlaceView({ place }: { place: Place }) {
   const typeLabel = t(place.type === "town" ? "place.type.capital" : "place.type.woreda");
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       {/* Photo hero */}
       <section className="place-hero place-hero-photo">
         <div

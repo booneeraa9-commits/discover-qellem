@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Providers from "@/components/Providers";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import SkipLink from "@/components/SkipLink";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -81,6 +82,7 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>
+          <SkipLink />
           <Nav />
           {children}
           <Footer />

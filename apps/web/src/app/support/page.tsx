@@ -14,7 +14,7 @@ export default function SupportPage() {
   const { showToast } = useToast();
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="section tight">
         <div className="container">
           <Reveal>

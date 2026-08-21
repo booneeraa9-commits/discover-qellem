@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
 
           <div className="footer-col">
-            <h4>{t("footer.explore")}</h4>
+            <h2>{t("footer.explore")}</h2>
             <Link href="/">{t("nav.home")}</Link>
             <Link href="/places">{t("nav.places")}</Link>
             <Link href="/news">{t("nav.news")}</Link>
@@ -58,14 +58,14 @@ export default function Footer() {
           </div>
 
           <div className="footer-col">
-            <h4>{t("footer.resources")}</h4>
+            <h2>{t("footer.resources")}</h2>
             <Link href="/support">{t("nav.support")}</Link>
             <Link href="/contribute">{t("footer.contribute")}</Link>
             <Link href="/about">{t("footer.aboutProject")}</Link>
           </div>
 
           <div className="footer-col">
-            <h4>{t("footer.contact")}</h4>
+            <h2>{t("footer.contact")}</h2>
             <div className="contact-line">
               <MapPin aria-hidden="true" width={iconSize} height={iconSize} />
               <span>{t("footer.contact.location")}</span>
