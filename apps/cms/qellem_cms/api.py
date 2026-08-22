@@ -5,6 +5,8 @@ from wagtail.api.v2.views import PagesAPIViewSet
 from wagtail.documents.api.v2.views import DocumentsAPIViewSet
 from wagtail.images.api.v2.views import ImagesAPIViewSet
 
+from archive.api import PersonAPIViewSet
+
 
 class PublicPagesAPIViewSet(PagesAPIViewSet):
     """Pages endpoint that hides unapproved community stories from anonymous users."""
@@ -28,3 +30,4 @@ api_router = WagtailAPIRouter("wagtailapi")
 api_router.register_endpoint("pages", PublicPagesAPIViewSet)
 api_router.register_endpoint("images", ImagesAPIViewSet)
 api_router.register_endpoint("documents", DocumentsAPIViewSet)
+api_router.register_endpoint("people", PersonAPIViewSet)

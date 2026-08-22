@@ -3,11 +3,13 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.api import APIField
 from wagtail.fields import RichTextField
 from wagtail.images import get_image_model_string
 from wagtail.models import Orderable, Page
+from wagtail.search import index
 
 from places.models import Geography
 from qellem_cms.content_validation import (
@@ -814,3 +816,181 @@ class CommunityStory(AuthoritativeOromoPageMixin, Page):
 
         if errors:
             raise ValidationError(errors)
+
+
+class Person(index.Indexed, ClusterableModel):
+    """A notable person shown on woreda pages and zone-wide listings."""
+
+    name_om = models.CharField(
+        max_length=255,
+        verbose_name=_("Afaan Oromoo name"),
+    )
+    name_en = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("English name"),
+    )
+    slug = models.SlugField(
+        max_length=255,
+        unique=True,
+        help_text=_("Stable identifier used by the public API; do not recycle."),
+    )
+    birth_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Leave empty until the year is verified against a source."),
+    )
+    death_year = models.IntegerField(
+        null=True,
+        blank=True,
+        help_text=_("Leave empty when the person is alive or the year is unverified."),
+    )
+    bio_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo biography"),
+    )
+    bio_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English biography"),
+    )
+    photo = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="+",
+        help_text=_("Only an image with approved rights may be selected."),
+    )
+    woredas = models.ManyToManyField(
+        Geography,
+        through="archive.PersonPlacement",
+        related_name="notable_people",
+        blank=True,
+    )
+    is_zone_notable = models.BooleanField(
+        default=False,
+        help_text=_("Show this person on zone-wide notable people listings."),
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    api_fields = [
+        APIField("name_om"),
+        APIField("name_en"),
+        APIField("slug"),
+        APIField("birth_year"),
+        APIField("death_year"),
+        APIField("bio_om"),
+        APIField("bio_en"),
+        APIField("photo"),
+        APIField("woreda_slugs"),
+        APIField("is_zone_notable"),
+    ]
+
+    search_fields = [
+        index.SearchField("name_om"),
+        index.SearchField("name_en"),
+        index.FilterField("slug"),
+        index.FilterField("is_zone_notable"),
+    ]
+
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel("name_om"),
+                FieldPanel("name_en"),
+                FieldPanel("slug"),
+                FieldPanel("birth_year"),
+                FieldPanel("death_year"),
+                FieldPanel("photo"),
+                FieldPanel("is_zone_notable"),
+            ],
+            heading=_("Identity"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("bio_om"),
+                FieldPanel("bio_en"),
+            ],
+            heading=_("Biography"),
+        ),
+        InlinePanel("placements", label=_("Woreda placements")),
+    ]
+
+    class Meta:
+        ordering = ["name_om"]
+        verbose_name = _("notable person")
+        verbose_name_plural = _("notable people")
+
+    def __str__(self):
+        return self.name_om or self.slug
+
+    @property
+    def woreda_slugs(self):
+        return [
+            placement.geography.slug
+            for placement in self.placements.all().select_related("geography")
+        ]
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
+    def clean(self):
+        errors = {}
+        try:
+            super().clean()
+        except ValidationError as error:
+            error.update_error_dict(errors)
+
+        if not text_has_meaning(self.name_om):
+            errors["name_om"] = _("The authoritative Afaan Oromoo name is required.")
+
+        if self.bio_en and not text_has_meaning(self.bio_om):
+            errors["bio_om"] = _(
+                "Provide the authoritative Afaan Oromoo biography before "
+                "adding the English version."
+            )
+
+        if (
+            self.birth_year is not None
+            and self.death_year is not None
+            and self.death_year < self.birth_year
+        ):
+            errors["death_year"] = _("The death year cannot precede the birth year.")
+
+        validate_approved_image(self, "photo", errors)
+
+        if errors:
+            raise ValidationError(errors)
+
+
+class PersonPlacement(Orderable):
+    """Ordered link between a person and one woreda or town geography."""
+
+    person = ParentalKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="placements",
+    )
+    geography = models.ForeignKey(
+        Geography,
+        on_delete=models.PROTECT,
+        related_name="person_placements",
+        limit_choices_to={"level__in": ["woreda", "town"]},
+    )
+
+    panels = [FieldPanel("geography")]
+
+    class Meta(Orderable.Meta):
+        constraints = [
+            models.UniqueConstraint(
+                fields=["person", "geography"],
+                name="archive_person_placement_unique",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.person} - {self.geography}"
