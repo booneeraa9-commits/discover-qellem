@@ -21,6 +21,9 @@ from provenance.choices import (
 )
 from provenance.models import SourceCitation, SourceRecord
 
+# Source records created by data migrations; tests asserting empty
+# tables must exclude them.
+SEEDED_SOURCE_IDS = ["SRC-026", "SRC-027", "SRC-028", "SRC-029", "SRC-031"]
 
 class SourceRecordTests(TestCase):
     @classmethod
@@ -75,10 +78,10 @@ class SourceRecordTests(TestCase):
             source.save()
 
         self.assertIn("permission_confirmation_notes", error.exception.message_dict)
-        # Exclude the records seeded by data migrations (SRC-026/027/028).
+        # Exclude the records seeded by data migrations (see SEEDED_SOURCE_IDS).
         self.assertFalse(
             SourceRecord.objects.exclude(
-                source_id__in=["SRC-026", "SRC-027", "SRC-028"]
+                source_id__in=SEEDED_SOURCE_IDS
             ).exists()
         )
 
@@ -186,10 +189,10 @@ class SourceCitationTests(TestCase):
 
         self.assertIn("fact_reviewer", error.exception.message_dict)
         self.assertIn("verified_on", error.exception.message_dict)
-        # Exclude the citations seeded by data migrations (SRC-026/027/028).
+        # Exclude the citations seeded by data migrations (see SEEDED_SOURCE_IDS).
         self.assertFalse(
             SourceCitation.objects.exclude(
-                source__source_id__in=["SRC-026", "SRC-027", "SRC-028"]
+                source__source_id__in=SEEDED_SOURCE_IDS
             ).exists()
         )
 
