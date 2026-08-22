@@ -199,6 +199,9 @@ export interface CmsHomePage {
   culture_summary: string;
   contribute_summary: string;
   hero_image: CmsImage | null;
+  /** Not exposed by the API yet (backend Sprint 4) — kept so the GlanceTable
+   *  can start consuming zone stats the moment the home page serializes them. */
+  quick_facts?: CmsQuickFact[];
 }
 
 export interface CmsListing<T> {

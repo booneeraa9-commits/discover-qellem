@@ -113,13 +113,14 @@ async function withFallback<T>(key: string, loader: () => Promise<T>, mock: () =
  *  An empty Amharic field yields the "[AM draft]" placeholder (the convention
  *  established in the i18n scaffold). */
 export function getTranslatedField(
-  obj: Record<string, unknown> | null | undefined,
+  obj: unknown,
   field: string,
   lang: Lang,
   fallbackLang: Lang = "om",
 ): string {
+  const record = (obj ?? {}) as Record<string, unknown>;
   const pick = (l: Lang): string => {
-    const value = obj?.[`${field}_${l}`];
+    const value = record[`${field}_${l}`];
     return typeof value === "string" ? value : "";
   };
 
@@ -137,10 +138,7 @@ export function getTranslatedField(
 }
 
 /** Build a tri-lingual LocalizedText from a *_om / *_en / *_am field group. */
-export function localizedField(
-  obj: Record<string, unknown> | null | undefined,
-  field: string,
-): LocalizedText {
+export function localizedField(obj: unknown, field: string): LocalizedText {
   return {
     om: getTranslatedField(obj, field, "om", "en"),
     en: getTranslatedField(obj, field, "en", "om"),
@@ -421,9 +419,9 @@ function mockPeople(): CmsPerson[] {
 function mockTimeline(): CmsTimelineEvent[] {
   return TIMELINE.map((event, i) => ({
     id: i + 1,
-    year_om: event.year,
-    year_en: event.year,
-    year_am: "[AM draft]",
+    year_om: event.year.om,
+    year_en: event.year.en,
+    year_am: event.year.am,
     year_int: i,
     title_om: event.title.om,
     title_en: event.title.en,

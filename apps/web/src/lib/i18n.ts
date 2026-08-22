@@ -189,6 +189,12 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.map.open": "Open in OpenStreetMap",
     "place.back": "Back to places",
 
+    "place.section.history": "History",
+    "place.section.economy": "Economy",
+    "place.section.culture": "Culture",
+    "place.section.geography": "Geography",
+    "place.section.attractions": "Attractions",
+
     "places.title": "Woredas & Towns",
     "places.sub":
       "Eleven woredas and one town — each with a dedicated page, its own history, key facts, attractions, notable people and location map.",
@@ -413,6 +419,12 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.map.open": "[OM] Open in OpenStreetMap",
     "place.back": "Gara bakkaaleetti deebi'i",
 
+    "place.section.history": "Seenaa",
+    "place.section.economy": "Dinagdee",
+    "place.section.culture": "Aadaa",
+    "place.section.geography": "Naannoo",
+    "place.section.attractions": "Bakkaalee",
+
     "places.title": "Aanaalee fi Magaalota",
     "places.sub":
       "Aanaalee 11 fi magaalaa 1 — tokkoon tokkoon isaanii fuula, seenaa, ragaa fi kaartaa mataa isaa qaba.",
@@ -605,6 +617,12 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.map.title": "[AM draft]",
     "place.map.open": "[AM draft]",
     "place.back": "[AM draft]",
+
+    "place.section.history": "[AM draft]",
+    "place.section.economy": "[AM draft]",
+    "place.section.culture": "[AM draft]",
+    "place.section.geography": "[AM draft]",
+    "place.section.attractions": "[AM draft]",
     "places.title": "[AM draft]",
     "places.sub": "[AM draft]",
     "news.title": "[AM draft]",
