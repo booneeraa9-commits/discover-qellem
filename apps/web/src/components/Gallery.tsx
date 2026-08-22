@@ -3,6 +3,8 @@
 import { Lightbox, type LightboxImage } from "./Lightbox";
 import { useLightbox } from "./use-lightbox";
 import { useT } from "@/lib/i18n-client";
+import { resolveImageUrl } from "@/lib/cms";
+import ResponsiveImage from "./ResponsiveImage";
 
 export interface GalleryProps {
   images: LightboxImage[];
@@ -25,17 +27,16 @@ export function Gallery({ images, getAlt, className = "" }: GalleryProps) {
       <div className={`gallery ${className}`.trim()}>
         {images.map((image, i) => (
           <button
-            key={`${image.src}-${i}`}
+            key={`${resolveImageUrl(image.src)}-${i}`}
             type="button"
             className="g-item"
             onClick={() => openAt(i)}
             aria-label={`${t("lightbox.open")} ${i + 1}`}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided photo; next/image wiring lands in Sprint 3 */}
-            <img
+            <ResponsiveImage
               src={image.src}
               alt={getAlt ? getAlt(image, i) : (image.caption ?? "")}
-              loading="lazy"
+              mainRendition="fill-800x600"
             />
             {image.caption ? <span className="g-cap">{image.caption}</span> : null}
           </button>

@@ -1,6 +1,8 @@
 "use client";
 
 import { localize, type LocalizedText } from "@/lib/i18n";
+import ResponsiveImage from "@/components/ResponsiveImage";
+import type { ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export interface PersonCardData {
@@ -10,8 +12,8 @@ export interface PersonCardData {
   years: string;
   /** One-line role/bio. */
   role: LocalizedText;
-  /** Portrait URL. Falls back to initials when omitted. */
-  image?: string;
+  /** Portrait image (CMS object or URL). Falls back to initials when omitted. */
+  image?: ImageSource;
   imageAlt?: string;
 }
 
@@ -38,12 +40,15 @@ export function PersonCard({ data, className = "" }: PersonCardProps) {
   return (
     <a href={`/person/${data.slug}`} className={`person-card person-card-link ${className}`.trim()}>
       {data.image ? (
-        <div
-          className="person-avatar person-photo"
-          role="img"
-          aria-label={data.imageAlt ?? name}
-          style={{ backgroundImage: `url(${data.image})` }}
-        />
+        <div className="person-avatar person-photo">
+          <ResponsiveImage
+            src={data.image}
+            alt={data.imageAlt ?? name}
+            fill
+            mainRendition="fill-400x300"
+            className="person-avatar-img"
+          />
+        </div>
       ) : (
         <div className="person-avatar" aria-hidden="true">
           {initialsOf(name)}

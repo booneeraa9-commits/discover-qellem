@@ -1,6 +1,8 @@
 "use client";
 
 import { localize, type LocalizedText } from "@/lib/i18n";
+import ResponsiveImage from "@/components/ResponsiveImage";
+import type { ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export type SponsorTint = "brand" | "gold";
@@ -11,8 +13,8 @@ export interface SponsorCardData {
   /** Two-letter mark shown in the pill when no logo is provided. */
   initials: string;
   tint?: SponsorTint;
-  /** Optional logo image URL; falls back to the initials mark. */
-  logo?: string;
+  /** Optional logo image (CMS object or URL); falls back to initials. */
+  logo?: ImageSource;
   logoAlt?: string;
 }
 
@@ -34,8 +36,12 @@ export function SponsorCard({ data, className = "" }: SponsorCardProps) {
       rel={data.href.startsWith("http") ? "noreferrer" : undefined}
     >
       {data.logo ? (
-        // eslint-disable-next-line @next/next/no-img-element -- CMS-provided logo; next/image wiring lands in Sprint 3
-        <img className="sponsor-logo" src={data.logo} alt={data.logoAlt ?? name} loading="lazy" />
+        <ResponsiveImage
+          className="sponsor-logo"
+          src={data.logo}
+          alt={data.logoAlt ?? name}
+          mainRendition="fill-400x300"
+        />
       ) : (
         <span className="sponsor-mark" aria-hidden="true">
           {data.initials}

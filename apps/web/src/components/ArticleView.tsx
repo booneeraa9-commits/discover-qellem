@@ -11,6 +11,7 @@ import {
   Share2,
 } from "lucide-react";
 import { Gallery } from "@/components/Gallery";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { useToast } from "@/components/use-toast";
 import { localize } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-client";
@@ -90,8 +91,13 @@ export default function ArticleView({ article }: { article: NewsArticle }) {
             </div>
 
             <div className="article-hero">
-              {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided image; next/image wiring lands in Sprint 3 */}
-              <img src={article.image} alt={title} />
+              <ResponsiveImage
+                src={article.image}
+                alt={title}
+                priority
+                fill
+                mainRendition="max-1600x1200"
+              />
             </div>
 
             <div className="article">

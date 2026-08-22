@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { localize, type LocalizedText } from "@/lib/i18n";
+import type { ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export interface NewsCardData {
@@ -11,7 +13,7 @@ export interface NewsCardData {
   date: string;
   title: LocalizedText;
   excerpt: LocalizedText;
-  image: string;
+  image: ImageSource;
   imageAlt?: string;
 }
 
@@ -39,8 +41,7 @@ export function NewsCard({ data, className = "" }: NewsCardProps) {
   return (
     <article className={`news-card ${className}`.trim()}>
       <Link href={data.href} className="news-media" aria-label={title}>
-        {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided image; next/image wiring lands in Sprint 3 */}
-        <img src={data.image} alt={data.imageAlt ?? title} loading="lazy" />
+        <ResponsiveImage src={data.image} alt={data.imageAlt ?? title} mainRendition="fill-400x300" />
         <span className="news-cat">{category}</span>
       </Link>
       <div className="news-body">

@@ -7,6 +7,7 @@ import {
   homeGlanceRows,
 } from "@/lib/adapters";
 import {
+  getAllImageRenditions,
   getAllNews,
   getAllPeople,
   getAllPlaces,
@@ -19,12 +20,13 @@ import { ZONE_GLANCE } from "@/lib/zone-data";
 // content yet); the CMS-backed sections render from the Wagtail API with a
 // local mock fallback when the CMS is unreachable (see lib/cms.ts).
 export default async function Home() {
-  const [news, places, people, sponsors, home] = await Promise.all([
+  const [news, places, people, sponsors, home, imagesById] = await Promise.all([
     getAllNews(),
     getAllPlaces(),
     getAllPeople(),
     getSponsors(),
     getHomePage(),
+    getAllImageRenditions(),
   ]);
 
   // The home page API does not expose zone stats yet — fall back to the
@@ -33,9 +35,11 @@ export default async function Home() {
 
   return (
     <HomeView
-      news={news.slice(0, 3).map(cmsToNewsCard)}
-      places={places.slice(0, 4).map(cmsToPlaceCard)}
-      people={people.filter((person) => person.is_zone_notable).map(cmsToPersonCard)}
+      news={news.slice(0, 3).map((article) => cmsToNewsCard(article, imagesById))}
+      places={places.slice(0, 4).map((place) => cmsToPlaceCard(place, imagesById))}
+      people={people
+        .filter((person) => person.is_zone_notable)
+        .map((person) => cmsToPersonCard(person, imagesById))}
       glance={glance}
       sponsors={sponsors.map(cmsToSponsorCard)}
     />

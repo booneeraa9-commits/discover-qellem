@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ArticleView from "@/components/ArticleView";
 import { cmsToNewsArticle } from "@/lib/adapters";
 import {
+  getAllImageRenditions,
   getAllNews,
   getNewsBySlug,
   getTranslatedField,
@@ -47,8 +48,11 @@ export default async function NewsArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await getNewsBySlug(slug);
+  const [article, imagesById] = await Promise.all([
+    getNewsBySlug(slug),
+    getAllImageRenditions(),
+  ]);
   if (!article) notFound();
 
-  return <ArticleView article={cmsToNewsArticle(article)} />;
+  return <ArticleView article={cmsToNewsArticle(article, imagesById)} />;
 }

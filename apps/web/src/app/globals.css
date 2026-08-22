@@ -3526,3 +3526,12 @@ body.photo-nav .nav:not(.scrolled) {
   border-color: rgba(255, 255, 255, 0.3);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
+
+/* ============================================================
+   ResponsiveImage helpers (Sprint 6, #40)
+   ============================================================ */
+
+.person-avatar-img {
+  border-radius: 50%;
+  object-position: center top;
+}

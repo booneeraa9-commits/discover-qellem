@@ -2,7 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PlaceView from "@/components/PlaceView";
 import { cmsToPlace } from "@/lib/adapters";
-import { getAllPeople, getAllPlaces, getPlaceBySlug, imageUrl, stripRichText, truncateText } from "@/lib/cms";
+import {
+  getAllImageRenditions,
+  getAllPeople,
+  getAllPlaces,
+  getPlaceBySlug,
+  imageUrl,
+  stripRichText,
+  truncateText,
+} from "@/lib/cms";
 import { resolveRequestLang } from "@/lib/lang-server";
 import { buildMetadata } from "@/lib/seo";
 
@@ -41,9 +49,13 @@ export default async function PlacePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const [profile, people] = await Promise.all([getPlaceBySlug(slug), getAllPeople()]);
+  const [profile, people, imagesById] = await Promise.all([
+    getPlaceBySlug(slug),
+    getAllPeople(),
+    getAllImageRenditions(),
+  ]);
   if (!profile) notFound();
 
   const peopleBySlug = new Map(people.map((person) => [person.slug, person]));
-  return <PlaceView place={cmsToPlace(profile, peopleBySlug)} />;
+  return <PlaceView place={cmsToPlace(profile, peopleBySlug, imagesById)} />;
 }

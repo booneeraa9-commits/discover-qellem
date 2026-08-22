@@ -1,4 +1,5 @@
 import type { LocalizedText } from "@/lib/i18n";
+import type { ImageSource } from "@/lib/cms";
 import type { LightboxImage } from "@/components/Lightbox";
 
 // Local typed placeholder news data. The shape mirrors what the Wagtail CMS
@@ -14,7 +15,7 @@ export interface NewsArticle {
   title: LocalizedText;
   excerpt: LocalizedText;
   body: LocalizedText[];
-  image: string;
+  image: ImageSource;
   gallery: LightboxImage[];
   /** True when AM is active but the CMS *_am content is still pending. */
   amNeedsTranslation?: boolean;
