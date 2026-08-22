@@ -82,11 +82,25 @@ npm run dev
 cd apps/cms
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-export DATABASE_URL=postgres://...  # or use docker compose db
+
+# Django reads discrete POSTGRES_* variables (see apps/cms/qellem_cms/settings/base.py),
+# not DATABASE_URL. Native runs do not load .env automatically, so export them:
+export POSTGRES_DB=discover_qellem
+export POSTGRES_USER=discover_qellem
+export POSTGRES_PASSWORD=your-local-password
+export POSTGRES_HOST=127.0.0.1   # host/port defaults; matches a local Postgres
+export POSTGRES_PORT=5432        # or the docker compose db: host 127.0.0.1, port ${POSTGRES_HOST_PORT:-5432}
+
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver 8000
 ```
+
+> Tip: to reuse the docker compose database for native CMS work, start it with
+> `docker compose up -d database`, keep `POSTGRES_HOST=127.0.0.1`, and use the
+> same `POSTGRES_PASSWORD` you set in `.env`. (`POSTGRES_HOST=database` from
+> `.env.example` only resolves inside the compose network.)
+
 
 ---
 
