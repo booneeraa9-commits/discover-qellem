@@ -5,9 +5,12 @@ from wagtail.api.v2.views import BaseAPIViewSet
 
 from archive.models import Person, TimelineEvent
 from qellem_cms.i18n_api import LanguageAwareAPIViewSetMixin
+from qellem_cms.media_urls import MediaURLAwareAPIViewSetMixin
 
 
-class PersonAPIViewSet(LanguageAwareAPIViewSetMixin, BaseAPIViewSet):
+class PersonAPIViewSet(
+    MediaURLAwareAPIViewSetMixin, LanguageAwareAPIViewSetMixin, BaseAPIViewSet
+):
     """Read-only /api/v2/people/ endpoint backed by the Person snippet."""
 
     model = Person
@@ -34,7 +37,9 @@ class PersonAPIViewSet(LanguageAwareAPIViewSetMixin, BaseAPIViewSet):
         )
 
 
-class TimelineEventAPIViewSet(LanguageAwareAPIViewSetMixin, BaseAPIViewSet):
+class TimelineEventAPIViewSet(
+    MediaURLAwareAPIViewSetMixin, LanguageAwareAPIViewSetMixin, BaseAPIViewSet
+):
     """Read-only /api/v2/timeline/ endpoint, newest events first."""
 
     model = TimelineEvent

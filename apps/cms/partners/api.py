@@ -11,6 +11,7 @@ from django.utils import timezone
 from wagtail.api.v2.views import BaseAPIViewSet
 
 from partners.models import Collaborator, PublicDisplayStatus, Sponsor
+from qellem_cms.media_urls import MediaURLAwareAPIViewSetMixin
 
 
 def _publicly_displayable(queryset):
@@ -24,7 +25,7 @@ def _publicly_displayable(queryset):
     )
 
 
-class SponsorAPIViewSet(BaseAPIViewSet):
+class SponsorAPIViewSet(MediaURLAwareAPIViewSetMixin, BaseAPIViewSet):
     """Read-only /api/v2/sponsors/ endpoint for approved sponsors."""
 
     model = Sponsor
@@ -49,7 +50,7 @@ class SponsorAPIViewSet(BaseAPIViewSet):
         )
 
 
-class SupporterAPIViewSet(BaseAPIViewSet):
+class SupporterAPIViewSet(MediaURLAwareAPIViewSetMixin, BaseAPIViewSet):
     """Read-only /api/v2/supporters/ endpoint for approved supporters."""
 
     model = Collaborator

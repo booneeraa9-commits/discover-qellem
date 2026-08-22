@@ -8,9 +8,12 @@ from archive.api import PersonAPIViewSet, TimelineEventAPIViewSet
 from partners.api import SponsorAPIViewSet, SupporterAPIViewSet
 from qellem_cms.i18n_api import LanguageAwareAPIViewSetMixin
 from qellem_cms.images_api import RenditionedImagesAPIViewSet
+from qellem_cms.media_urls import MediaURLAwareAPIViewSetMixin
 
 
-class PublicPagesAPIViewSet(LanguageAwareAPIViewSetMixin, PagesAPIViewSet):
+class PublicPagesAPIViewSet(
+    MediaURLAwareAPIViewSetMixin, LanguageAwareAPIViewSetMixin, PagesAPIViewSet
+):
     """Pages endpoint that hides unapproved community stories from anonymous users."""
 
     known_query_parameters = PagesAPIViewSet.known_query_parameters.union(
