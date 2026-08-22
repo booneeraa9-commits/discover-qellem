@@ -9,12 +9,12 @@ from wagtail.models import Page
 
 from qellem_cms.content_validation import (
     PUBLIC_RICH_TEXT_FEATURES,
-    AuthoritativeOromoPageMixin,
+    MultilingualPageMixin,
     validate_approved_image,
 )
 
 
-class HomePage(AuthoritativeOromoPageMixin, Page):
+class HomePage(MultilingualPageMixin, Page):
     """The single translated page identity for the Qellem Wallaggaa zone profile."""
 
     geography = models.ForeignKey(

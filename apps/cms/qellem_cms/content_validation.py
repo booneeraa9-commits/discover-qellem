@@ -48,8 +48,17 @@ def validate_approved_image(instance, field_name, errors):
         )
 
 
-class AuthoritativeOromoPageMixin(models.Model):
-    """Validate authoritative Oromo content and linkage of English page copies."""
+class MultilingualPageMixin(models.Model):
+    """Validate authoritative Oromo content and linkage of English page copies.
+
+    Afaan Oromoo is the only required language; English and Amharic are
+    optional reviewed translations (issue #84). Amharic is carried on
+    ``*_am`` companion fields of the Afaan Oromoo page rather than a
+    separate Wagtail locale.
+    """
+
+    required_languages = ("om",)
+    optional_languages = ("en", "am")
 
     required_om_fields = ()
     public_rich_text_fields = ()
@@ -150,3 +159,7 @@ class AuthoritativeOromoPageMixin(models.Model):
 
         if errors:
             raise ValidationError(errors)
+
+
+# Backwards-compatible alias for the pre-Amharic mixin name.
+AuthoritativeOromoPageMixin = MultilingualPageMixin

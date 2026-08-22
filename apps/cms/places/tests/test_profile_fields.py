@@ -31,6 +31,20 @@ VALID_QUICK_FACTS = [
 ]
 
 
+def _without_translations(data):
+    """Drop the additive ``translations`` groups injected by #84."""
+
+    if isinstance(data, list):
+        return [_without_translations(item) for item in data]
+    if isinstance(data, dict):
+        return {
+            key: _without_translations(value)
+            for key, value in data.items()
+            if key != "translations"
+        }
+    return data
+
+
 class ProfileFieldTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -162,11 +176,13 @@ class ProfileApiSerializationTests(ProfileFieldTestCase):
         ):
             self.assertIn(field, payload, msg=f"missing {field}")
 
-        self.assertEqual(payload["quick_facts"], VALID_QUICK_FACTS)
+        self.assertEqual(
+            _without_translations(payload["quick_facts"]), VALID_QUICK_FACTS
+        )
         self.assertEqual(payload["latitude"], 8.543)
         self.assertEqual(payload["longitude"], 34.795)
         self.assertEqual(
-            payload["notable_people_list"],
+            _without_translations(payload["notable_people_list"]),
             [
                 {
                     "slug": "dr-negasso-gidada",
@@ -195,7 +211,9 @@ class ProfileApiSerializationTests(ProfileFieldTestCase):
             if item["geography_slug"] == self.test_woreda.slug
         ]
         self.assertEqual(len(matches), 1)
-        self.assertEqual(matches[0]["quick_facts"], VALID_QUICK_FACTS)
+        self.assertEqual(
+            _without_translations(matches[0]["quick_facts"]), VALID_QUICK_FACTS
+        )
 
 
 class ProfileAdminPanelTests(TestCase):
