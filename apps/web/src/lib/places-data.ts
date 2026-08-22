@@ -419,7 +419,7 @@ export const PLACES: Place[] = [
     ],
     people: [
       {
-        slug: "jaal-laggasaa-wagii-meettaa",
+        slug: "jaal-laggasaa-wagii",
         name: { en: "Jaal Laggasa Wagi Metta", om: "Jaal Laggasaa Wagii Meettaa", am: "[AM draft]" },
         years: "1960–",
         role: {

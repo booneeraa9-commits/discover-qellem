@@ -150,7 +150,7 @@ export const ZONE_PEOPLE: PersonCardData[] = [
     },
   },
   {
-    slug: "jaal-laggasa-wagi-metta",
+    slug: "jaal-laggasaa-wagii",
     name: { en: "Jaal Laggasa Wagi Metta", om: "Jaal Laggasaa Wagii Meettaa", am: "[AM draft]" },
     years: "1960–",
     role: {
