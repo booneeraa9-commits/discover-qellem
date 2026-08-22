@@ -3535,3 +3535,18 @@ body.photo-nav .nav:not(.scrolled) {
   border-radius: 50%;
   object-position: center top;
 }
+
+/* ============================================================
+   Staff dashboard (Sprint 6, #38)
+   ============================================================ */
+
+.staff-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.staff-links .btn {
+  justify-content: center;
+}
