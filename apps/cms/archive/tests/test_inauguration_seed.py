@@ -71,8 +71,27 @@ class InaugurationSeedTests(TestCase):
         ):
             self.assertIn(fragment, body, msg=f"missing fragment: {fragment}")
 
-    def test_body_om_is_the_labeled_placeholder(self):
-        self.assertIn("[OM body pending PM content]", self.article.body_om)
+    def test_body_om_contains_pm_verified_fragments(self):
+        # body_om is populated from apps/cms/archive/fixtures/inauguration-2026-om.txt
+        # by migration 0009; the original migration 0006 placeholder is replaced.
+        body = self.article.body_om
+        for fragment in (
+            "Magaalaa Dambi Doollootti",
+            "Miliyoona 650",
+            "Galmi Oliiqaa Dingil",
+            "Miliyoona 425",
+            "Girmaa Dangalaa",
+            "pirojektoota 32",
+            "Gammachuu Gurmeessaa",
+            "pirojektoota 2,284",
+            "Biliyoona 17",
+            "Utukaanaa Odaa",
+            "Waajjira Pirezidaantii",
+        ):
+            self.assertIn(fragment, body, msg=f"missing OM fragment: {fragment}")
+
+    def test_body_om_is_not_the_placeholder(self):
+        self.assertNotIn("[OM body pending PM content]", self.article.body_om)
 
     def test_gallery_order_is_authoritative(self):
         stems = [
