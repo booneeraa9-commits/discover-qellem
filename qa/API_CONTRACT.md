@@ -221,6 +221,7 @@ Behaviour (verified live + by contract tests):
 - `?lang=<code>` resolves every companion group (`title`, `body`, …) to a
   single value under the **generic base key**, preferring the requested
   language, then falling back **OM → EN** (`FALLBACK_ORDER = ("om", "en")`).
+  (Sprint 5 #117 tightens this to OM-only — see §7b-i.)
 - With `?lang`, the suffixed keys (`title_om`/`title_en`/`title_am`, …) are
   **removed** from the response.
 - Without `?lang`, every suffixed key is kept and a `translations` object is
@@ -240,24 +241,35 @@ Behaviour (verified live + by contract tests):
 
 These are documented targets; the matching contract tests are
 `@unittest.skip("pending Sprint 5 BE …")` today and must be un-skipped by the
-BE PR that lands them.
+BE PR that lands them. **All three shapes below were verified against the open
+BE branches (PR #117, #118) on 2026-08-22.**
 
-### 7b-i. Partners bilingual fields (issue #122)
-- `Sponsor` + `Collaborator` expose `display_name_om/en/am` (OM authoritative;
-  EN/AM optional).
-- Companions `recognition_text_am`, `role_am`, `description_am` present
-  wherever the EN pair exists.
-- `/api/v2/sponsors/` + `/api/v2/supporters/` accept `?lang=om|en|am` with the
-  same OM-then-EN fallback.
+### 7b-i. Partners bilingual fields (PR #117 → issues #122/#116)
+- `Sponsor` + `Collaborator` add `display_name_en` and `display_name_am`
+  (both optional); the existing `display_name` stays the required canonical OM
+  name. EN names are **backfilled** by data migration `partners/0004`;
+  `display_name_am` is intentionally blank everywhere.
+- Both fields serialize top-level in `/api/v2/sponsors/` and
+  `/api/v2/supporters/` listing + detail.
+- **Strict fallback:** `FALLBACK_ORDER` becomes `("om",)` — the EN leg is
+  removed. `?lang=am` returns `*_am` when present, else `*_om`, and **never
+  `*_en`** even when `*_om` is also empty. (Contract test
+  `test_lang_am_with_empty_om_never_falls_back_to_en` gates this.)
+- `category_label_am` is serialized on `NewsArticle` detail (resolved from the
+  companion mapping, not from the enum label).
 
-### 7b-ii. NewsCategory Amharic labels (issue #123)
-- Each of the 9 category labels carries an Amharic (Ethiopic script U+1200–U+137F)
-  component so the FE can render Amharic chips without a hardcoded dictionary.
+### 7b-ii. NewsCategory Amharic labels (PR #117 → issue #123)
+- A companion mapping `NEWS_CATEGORY_LABELS_AM` covers all 9 keys with
+  Ethiopic-script values (`ልማት, ኢኮኖሚ, አካባቢ, ማዕድናት, ግብርና, ጤና, ትምህርት,
+  ባህል, ንግድ`). Note: Amharic lives in this mapping, **not** in the enum
+  `label` (Python enum labels stay `(value, label)` two-tuples).
 
-### 7b-iii. Image renditions (issue #112)
-- `/api/v2/images/<id>/` exposes `meta.renditions` with at least
-  `fill-400x300`, `fill-800x600`, `max-1600x1200`, and `original`, each with a
-  resolvable URL. (Currently only the original `download_url` exists.)
+### 7b-iii. Image renditions (PR #118 → issue #112)
+- `/api/v2/images/` listing items and `/api/v2/images/<id>/` detail expose a
+  **top-level** `renditions` object (NOT under `meta`) with four absolute URLs:
+  `fill-400x300`, `fill-800x600`, `max-1600x1200`, `original`.
+- Existing contract fields (`id`, `title`, `width`, `height`,
+  `meta.download_url`) are unchanged.
 
 ---
 

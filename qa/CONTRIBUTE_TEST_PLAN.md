@@ -25,16 +25,22 @@
 
 ---
 
-## 1. Gaps to close BEFORE the FE wiring PR (flag these to the PM/BE)
+## 1. Gaps — resolved by PR #126 (pre-flip)
 
-| # | Gap | Detail |
+The FE wiring landed in PR **#126** (`ContributeForm.tsx`, 267 lines). Gap
+status against that PR:
+
+| # | Gap | Resolved by #126? |
 |---|---|---|
-| G1 | Consent checkbox | PM's validation list includes "unchecked consent", but the backend serializer has **no consent field**. Decide: FE-only checkbox (client-side gate) or add `consent_confirmed` to the endpoint. |
-| G2 | "Too-short" story | Backend rejects only empty/whitespace. If a minimum length is required (e.g. 50 chars), it must be added to the serializer with a matching client message. |
-| G3 | Photo upload | The FE stub has a `type=file accept="image/*"` input; the backend has no attachment field. Either drop it or add an approved-rights media path (heavy — recommend dropping for now). |
-| G4 | Language mapping | Backend takes `story_om/en/am`; the FE form has a single "story" textarea. Decide: submit under the active language's key, or show a per-language field. |
-| G5 | Place field | Backend expects a canonical slug; the FE needs a 12-woreda select populated from the canonical list (or the places API). |
-| G6 | Honeypot | The FE must render a visually-hidden `website` field (never autofilled) and submit it empty for real users. |
+| G1 | Consent checkbox | **YES** — "I confirm I have the right to share this story" checkbox, required, client-side only (backend still has no consent field — a server-side `consent_confirmed` remains a follow-up if the PM wants server enforcement). |
+| G2 | "Too-short" story | **PARTIAL** — client enforces ≥20 chars; the backend still rejects only empty/whitespace (`text_has_meaning`). The 20-char floor is FE-only. |
+| G3 | Photo upload | **DROPPED** — the new form has no file input (backend has no attachment path). |
+| G4 | Language mapping | **YES** — single story textarea mapped to `story_om/en/am` by the active language. |
+| G5 | Place field | **YES** — optional `<select>` populated from `places.GeographyProfilePage` (the places API). |
+| G6 | Honeypot | **YES** — hidden off-screen `website` field, submitted empty for real users. |
+
+Re-test note: run §2/§3 against #126 once it merges (the form is live on
+`/contribute`); the "stub" framing above no longer applies.
 
 ---
 

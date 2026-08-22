@@ -18,15 +18,28 @@ Wagtail v2 API (7 endpoints), 9-category taxonomy, Amharic `*_am` fields +
 `?lang=om|en|am` projection (#107), story-submission endpoint (#108), QA
 contract doc + tests (#109), i18n test plan + harness (#110), README env fix
 (#111), typed CMS client (#113), route wiring with mock fallback (#114),
-person-slug fix (#115). Frontend now renders from CMS data (verified:
-`/news` shows the CMS title).
+person-slug fix (#115). Frontend renders from CMS data with mock fallback.
 
-**In flight (Sprint 5):**
-- FE contrast fixes for #80/#67/#82 (not merged yet — re-measurement logged).
-- i18n flip #85 (OM default + AM enable) — **not landed**; harness 12/20.
-- Sprint 5 BE additions: partners `display_name_en/am` (#122), NewsCategory
-  Amharic labels (#123), image renditions (#112).
-- `/contribute` FE form wiring (backend #108 landed; FE still stub).
+**Sprint 5 review status (QA, 2026-08-22):**
+- **#126 (pre-flip FE: contrast fixes + share-a-story form + hide /components)**
+  — verified: build/lint/tsc pass; #67 fully fixed, #82 sponsor-initials fixed,
+  #80 dark items fixed, /components excluded from prod build. **CHANGES
+  REQUESTED** — 3 contrast residuals: `.lang-label` pill 2.54:1 dark, light
+  photo-hero `.active` 1.21:1, `.chip.gold` "Coming soon/Chapa" 4.37:1 (+ new
+  #128 duplicate-key `OG`).
+- **#127 (i18n flip, stacked on #126)** — harness **24/24** (first-paint OM,
+  toggles, cookie persistence, 404 + /offline in AM, Ethiopic gating,
+  `[AM draft]` AM-only, hreflang om-ET/en/am/x-default). **HELD** until the 3
+  contrast residuals above are zero.
+- **#117 (BE: partner display_name_en/am + Amharic category labels + strict
+  am→om fallback)** — verified live: 347 tests, backfilled EN names,
+  `NEWS_CATEGORY_LABELS_AM` (9 Ethiopic labels), `FALLBACK_ORDER=("om",)`.
+  **APPROVED.**
+- **#118 (BE: image renditions)** — verified live: top-level `renditions` with
+  fill-400x300 / fill-800x600 / max-1600x1200 / original (absolute URLs), 339
+  tests. **APPROVED.**
+- **#125 (QA contract tests + docs)** — 20 active + 7 gated tests green on
+  main; all 27 green against combined #117+#118. Ready for merge.
 
 **Sign-off log:**
 | PR | Result | Date |
@@ -36,10 +49,14 @@ person-slug fix (#115). Frontend now renders from CMS data (verified:
 | #78–#102 (backend chain) | merged by PM | 2026-08-22 |
 | #109 (API contract + tests) | merged by PM | 2026-08-22 |
 | #110 (i18n test plan + harness) | merged by PM | 2026-08-22 |
+| #117 (partner i18n + am labels) | APPROVED (QA) | 2026-08-22 |
+| #118 (image renditions) | APPROVED (QA) | 2026-08-22 |
+| #126 (pre-flip FE) | CHANGES REQUESTED (QA) | 2026-08-22 |
+| #127 (i18n flip) | HELD (QA) | 2026-08-22 |
 
-**Hold:** flip PR (#85) — no QA sign-off until the i18n harness reports 20/20
-and the contrast regressions (#80/#82/#121) are at zero. Backend PRs — sign-off
-posted per PR as the PM marks them Ready.
+**Hold:** flip PR (#127) — no QA sign-off until the contrast residuals
+(`.lang-label` 2.54:1, light-hero `.active` 1.21:1, `.chip.gold` 4.37:1) are at
+zero. Backend PRs — sign-off posted per PR as the PM marks them Ready.
 
 ---
 

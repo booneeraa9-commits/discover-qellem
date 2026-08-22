@@ -285,7 +285,7 @@ class PeopleContractTests(TestCase):
 # =============================================================================
 
 class LanguageProjectionContractTests(TestCase):
-    """?lang=om|en|am projection with OM-then-EN fallback (landed in #107)."""
+    """?lang=om|en|am projection (landed in #107, strict OM-only fallback in #117)."""
 
     @classmethod
     def setUpTestData(cls):
@@ -313,6 +313,8 @@ class LanguageProjectionContractTests(TestCase):
         )
 
     def test_lang_am_falls_back_to_om_not_en(self):
+        # The PM's exact assertion: am="" om="OM BODY" en="EN BODY" → ?lang=am
+        # returns "OM BODY" and never "EN BODY".
         response = self._detail({"lang": "am"})
         self.assertEqual(response.status_code, 200)
         payload = response.json()
@@ -334,32 +336,109 @@ class LanguageProjectionContractTests(TestCase):
         response = self._detail({"lang": "fr"})
         self.assertEqual(response.status_code, 400)
 
+    @unittest.skip("pending Sprint 5 BE #117: strict OM-only fallback (FALLBACK_ORDER=('om',))")
+    def test_lang_am_with_empty_om_never_falls_back_to_en(self):
+        # Edge case #117 tightens: when the requested language AND OM are both
+        # empty, the projection must still never surface the EN value (main
+        # currently falls back OM→EN). Because the model forbids blank OM, this
+        # is exercised at the projection layer, not via a saved page.
+        from qellem_cms.i18n_api import _transform
+
+        data = {
+            "title_om": "",
+            "title_en": "EN BODY",
+            "title_am": "",
+            "body_om": "",
+            "body_en": "EN BODY",
+            "body_am": "",
+        }
+        _transform(data, "am")
+        self.assertNotIn("EN BODY", data.get("title", ""))
+        self.assertNotIn("EN BODY", data.get("body", ""))
+
 
 class PartnerBilingualFieldContractTests(TestCase):
-    """Sprint 5 BE: partner display_name_* and *_am companions (PENDING)."""
+    """Sprint 5 BE #117: partner display_name_en/_am companions (PENDING until #117 merges)."""
 
-    @unittest.skip("pending Sprint 5 BE: partners display_name_en/am + *_am fields")
+    @classmethod
+    def setUpTestData(cls):
+        cls.reviewer = get_user_model().objects.create_superuser(
+            username="partner-i18n-reviewer",
+            email="partner-i18n@example.invalid",
+            password="test-only-password",
+        )
+
+    def _approve(self, record, is_person=False):
+        record.is_active = True
+        record.public_display_status = PublicDisplayStatus.APPROVED
+        record.reviewed_by = self.reviewer
+        record.reviewed_at = timezone.now()
+        record.approval_notes = "Approved in a contract test."
+        if is_person:
+            record.consent_status = ConsentStatus.CONFIRMED
+        record.save()
+
+    def _listing(self, url):
+        return self.client.get(url, {"format": "json"}).json()["items"]
+
+    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_sponsors_expose_display_name_en_and_am(self):
-        raise NotImplementedError
+        sponsor = Sponsor.objects.first()
+        self._approve(sponsor)
+        items = self._listing("/api/v2/sponsors/")
+        self.assertTrue(items, "expected at least one approved sponsor")
+        for item in items:
+            self.assertIn("display_name_en", item)
+            self.assertIn("display_name_am", item)
+            # EN is backfilled for every seeded sponsor; AM is intentionally blank.
+            self.assertTrue(item["display_name_en"])
+            self.assertEqual(item["display_name_am"], "")
 
-    @unittest.skip("pending Sprint 5 BE: partners display_name_en/am + *_am fields")
+    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_supporters_expose_display_name_en_and_am(self):
-        raise NotImplementedError
+        supporter = Collaborator.objects.filter(partner_kind=PartnerKind.PERSON).first()
+        self._approve(supporter, is_person=True)
+        items = self._listing("/api/v2/supporters/")
+        self.assertTrue(items, "expected at least one approved supporter")
+        for item in items:
+            self.assertIn("display_name_en", item)
+            self.assertIn("display_name_am", item)
 
 
 class NewsCategoryAmharicLabelContractTests(TestCase):
-    @unittest.skip("pending Sprint 5 BE: NewsCategory labels include Amharic")
+    @unittest.skip("pending Sprint 5 BE #117: NEWS_CATEGORY_LABELS_AM mapping")
     def test_news_category_labels_include_amharic(self):
-        # Amharic is written in the Ethiopic script (U+1200–U+137F).
-        for choice in NewsCategory:
-            ethiopic = any("\u1200" <= ch <= "\u137f" for ch in choice.label)
-            self.assertTrue(ethiopic, f"{choice.name} label has no Amharic: {choice.label!r}")
+        from archive.models import NEWS_CATEGORY_LABELS_AM
+
+        # Covers exactly the 9 canonical keys with Ethiopic-script values.
+        self.assertEqual(
+            {choice for choice in NewsCategory},
+            set(NEWS_CATEGORY_LABELS_AM.keys()),
+        )
+        for choice, am_label in NEWS_CATEGORY_LABELS_AM.items():
+            ethiopic = any("\u1200" <= ch <= "\u137f" for ch in str(am_label))
+            self.assertTrue(
+                ethiopic,
+                f"{choice.name} Amharic label has no Ethiopic: {am_label!r}",
+            )
+
+    @unittest.skip("pending Sprint 5 BE #117: NewsArticle serializes category_label_am")
+    def test_news_detail_serializes_category_label_am(self):
+        from archive.models import NewsArticle
+
+        article = NewsArticle.objects.filter(slug="dembi-dollo-inauguration-2026").first()
+        self.assertIsNotNone(article)
+        response = self.client.get(f"/api/v2/pages/{article.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        label_am = response.json().get("category_label_am")
+        ethiopic = any("\u1200" <= ch <= "\u137f" for ch in str(label_am))
+        self.assertTrue(ethiopic, f"category_label_am not Amharic: {label_am!r}")
 
 
 class ImageRenditionContractTests(TestCase):
-    """Sprint 5 BE: image endpoint exposes rendition URLs (issue #112)."""
+    """Sprint 5 BE #118: top-level rendition URLs on /api/v2/images/ (issue #112)."""
 
-    @unittest.skip("pending Sprint 5 BE: /api/v2/images renditions (#112)")
+    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
     def test_image_detail_exposes_rendition_urls(self):
         from wagtail.images import get_image_model
 
@@ -369,6 +448,23 @@ class ImageRenditionContractTests(TestCase):
             self.skipTest("no seeded images")
         response = self.client.get(f"/api/v2/images/{image.pk}/", {"format": "json"})
         self.assertEqual(response.status_code, 200)
-        renditions = response.json().get("meta", {}).get("renditions", {})
+        renditions = response.json().get("renditions", {})
         for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
-            self.assertIn(name, renditions, f"missing rendition {name}")
+            url = renditions.get(name)
+            self.assertTrue(url, f"missing or empty rendition {name}")
+            self.assertTrue(url.startswith("http"), f"rendition URL not absolute: {url}")
+        # The stock contract fields remain intact.
+        self.assertIn("meta", response.json())
+        self.assertIn("download_url", response.json()["meta"])
+
+    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
+    def test_image_listing_items_carry_renditions(self):
+        response = self.client.get("/api/v2/images/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        items = response.json()["items"]
+        if not items:
+            self.skipTest("no seeded images")
+        for item in items:
+            renditions = item.get("renditions", {})
+            for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
+                self.assertIn(name, renditions, f"missing rendition {name} in listing")
