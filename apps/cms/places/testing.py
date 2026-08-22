@@ -20,3 +20,28 @@ def geography_profile_kwargs(geography, **overrides):
     }
     fields.update(overrides)
     return fields
+
+
+def get_places_index():
+    """Return the Afaan Oromoo places index seeded by places/0005."""
+
+    from places.models import GeographyIndexPage
+
+    return GeographyIndexPage.objects.get(
+        slug="places",
+        locale__language_code="om",
+    )
+
+
+def create_test_woreda(slug="aanaa-yaalii", name="Aanaa Yaalii"):
+    """Create a fresh woreda geography that has no seeded profile page."""
+
+    from places.models import Geography
+
+    zone = Geography.objects.get(slug="qellem-wallaggaa")
+    return Geography.objects.create(
+        canonical_name=name,
+        slug=slug,
+        level="woreda",
+        parent=zone,
+    )

@@ -5,7 +5,7 @@ from pathlib import Path
 from django.test import TestCase, override_settings
 
 from home.models import HomePage
-from places.models import Geography, GeographyIndexPage, GeographyProfilePage
+from places.models import Geography, GeographyProfilePage
 
 PAGES_URL = "/api/v2/pages/"
 IMAGES_URL = "/api/v2/images/"
@@ -15,7 +15,7 @@ FRONTEND_ORIGIN = "http://localhost:3000"
 
 
 class ApiPageTreeMixin:
-    """Create a small published page tree beneath the seeded homepage."""
+    """Reuse the seeded page tree plus one extra draft profile page."""
 
     @classmethod
     def setUpTestData(cls):
@@ -24,20 +24,19 @@ class ApiPageTreeMixin:
         cls.dambi = Geography.objects.get(slug="dambi-doolloo")
         cls.sayyo = Geography.objects.get(slug="sayyoo")
 
-        cls.index = GeographyIndexPage(
-            title="Aanaalee fi Bulchiinsa Magaalaa",
-            slug="places",
-            introduction="<p>Iddoowwan Qellem Wallaggaa.</p>",
+        from places.testing import (
+            create_test_woreda,
+            geography_profile_kwargs,
+            get_places_index,
         )
-        cls.homepage.add_child(instance=cls.index)
 
-        from places.testing import geography_profile_kwargs
-
-        cls.dambi_page = GeographyProfilePage(**geography_profile_kwargs(cls.dambi))
-        cls.index.add_child(instance=cls.dambi_page)
+        cls.index = get_places_index()
+        cls.dambi_page = GeographyProfilePage.objects.get(
+            slug="dambi-doolloo", locale__language_code="om"
+        )
 
         cls.draft_page = GeographyProfilePage(
-            **geography_profile_kwargs(cls.sayyo, live=False)
+            **geography_profile_kwargs(create_test_woreda(), live=False)
         )
         cls.index.add_child(instance=cls.draft_page)
 
@@ -76,7 +75,7 @@ class AnonymousPagesApiTests(ApiPageTreeMixin, TestCase):
         self.assertEqual(payload["geography_slug"], "dambi-doolloo")
         self.assertEqual(payload["geography_name"], "Dambi Doolloo")
         self.assertEqual(payload["geography_level"], "town")
-        self.assertEqual(payload["introduction"], "Seensa Dambi Doolloo.")
+        self.assertIn("Dambi Doolloo", payload["introduction"])
         for field in (
             "overview",
             "naming_origin",
@@ -96,9 +95,11 @@ class AnonymousPagesApiTests(ApiPageTreeMixin, TestCase):
         )
         self.assertEqual(response.status_code, 200)
         items = response.json()["items"]
-        self.assertEqual(len(items), 1)
-        self.assertEqual(items[0]["geography_slug"], "dambi-doolloo")
-        self.assertEqual(items[0]["introduction"], "Seensa Dambi Doolloo.")
+        # All 12 seeded woreda profiles are listed; check the town's entry.
+        self.assertEqual(len(items), 12)
+        by_slug = {item["geography_slug"]: item for item in items}
+        self.assertIn("dambi-doolloo", by_slug)
+        self.assertIn("Dambi Doolloo", by_slug["dambi-doolloo"]["introduction"])
 
     def test_unpublished_page_is_hidden_from_listing_and_detail(self):
         listing = self.client.get(
