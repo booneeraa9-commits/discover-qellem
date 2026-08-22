@@ -1,10 +1,9 @@
 # QA test plan — /contribute community-story form (issues #32 / #18)
 
-> Owner: QA. The backend submission endpoint landed (#108,
-> `POST /api/v2/community-stories/`); the FE form is still a **stub** on
-> `main @ 8a9e7f3` (submit shows a "coming soon" toast). This plan is the
-> acceptance criteria for the FE wiring PR. It is written to the #108 backend
-> contract and flags the gaps that must be closed first.
+> Owner: QA. Backend endpoint landed (#108, `POST /api/v2/community-stories/`);
+> the FE form landed in **#126** and is **live on main @ 490c859**
+> (`ContributeForm.tsx`). This plan is the acceptance criteria, updated for the
+> Sprint 6 manual pass.
 
 ---
 
@@ -109,6 +108,27 @@ Extend the QA harness (`/home/user/qatools`) with `contribute-check.js`:
    submit, with visible focus rings.
 7. AM toggle (once #85 lands): assert the form labels re-render in Amharic and
    the Ethiopic font is applied.
+
+---
+
+## 3b. Sprint 6 manual pass (the PM's acceptance list)
+
+Run each row against a **running CMS in Docker** (real POSTs, not mock) and
+record PASS/FAIL with screenshots in the PR comment.
+
+| # | Test | Steps | Expected |
+|---|---|---|---|
+| M1 | Empty form | Submit with story blank and consent unchecked | Field errors on **story** and **consent**; focus moves to the first invalid field (story textarea) |
+| M2 | Valid OM story | Fill a ≥20-char story, check consent, submit in OM | Success message ("Galatoomaa! …"); record appears in Wagtail admin with `live=False`, `approved=False`, under the OM archive index |
+| M3 | Throttle | Submit 6 valid stories in the hour (or use a test override) | 6th returns **429**; the form shows a user-friendly "too many submissions" message (no raw JSON/stack trace) |
+| M4 | Honeypot | Fill the off-screen `website` field and submit a valid story | Server returns the fake success; **no** `CommunityStory` row is created (verify count in admin/DB) |
+| M5 | a11y | Inspect the form | Every input has an associated `<label>`; on error, `aria-invalid="true"` and `aria-describedby` point at the error text; focus moves to the first error; honeypot is `tabindex="-1" aria-hidden="true" autocomplete="off"` |
+| M6 | Dark + mobile | Toggle dark mode; resize to 375px | Readable in dark mode; no horizontal scroll |
+
+Note on M1/M2: the backend serializer has no `consent` field, so consent is a
+client-side gate only (G1). The "empty form → field errors on story + consent"
+behaviour is therefore FE-enforced; the server only rejects the empty story.
+Confirm with PM whether server-side consent is wanted.
 
 ---
 
