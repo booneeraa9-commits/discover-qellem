@@ -3,6 +3,7 @@ from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
+from modelcluster.fields import ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.api import APIField
 from wagtail.fields import RichTextField
@@ -380,6 +381,97 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
     )
+    intro_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo introduction"),
+    )
+    intro_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English introduction"),
+    )
+    history_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo history"),
+    )
+    history_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English history"),
+    )
+    economy_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo economy"),
+    )
+    economy_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English economy"),
+    )
+    culture_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo culture"),
+    )
+    culture_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English culture"),
+    )
+    geography_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo geography description"),
+    )
+    geography_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English geography description"),
+    )
+    attractions_om = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Afaan Oromoo attractions"),
+    )
+    attractions_en = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("English attractions"),
+    )
+    quick_facts = models.JSONField(
+        default=list,
+        blank=True,
+        help_text=_(
+            "List of objects shaped as {label_en, label_om, value, unit?, "
+            "note_en?, note_om?}."
+        ),
+    )
+    hero_image = models.ForeignKey(
+        get_image_model_string(),
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="+",
+        help_text=_("Only an image with approved rights may be selected."),
+    )
+    latitude = models.FloatField(
+        null=True,
+        blank=True,
+        help_text=_("Latitude of the woreda seat town."),
+    )
+    longitude = models.FloatField(
+        null=True,
+        blank=True,
+        help_text=_("Longitude of the woreda seat town."),
+    )
+    notable_people = ParentalManyToManyField(
+        "archive.Person",
+        blank=True,
+        related_name="profile_pages",
+    )
     featured_image = models.ForeignKey(
         get_image_model_string(),
         null=True,
@@ -392,15 +484,42 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
     parent_page_types = ["places.GeographyIndexPage"]
     subpage_types = []
 
-    required_om_fields = ("introduction", "overview")
+    required_om_fields = (
+        "introduction",
+        "overview",
+        "intro_om",
+        "history_om",
+        "economy_om",
+        "culture_om",
+        "geography_om",
+        "attractions_om",
+    )
     public_rich_text_fields = (
         "introduction",
         "overview",
         "naming_origin",
         "history",
         "area_location",
+        "intro_om",
+        "intro_en",
+        "history_om",
+        "history_en",
+        "economy_om",
+        "economy_en",
+        "culture_om",
+        "culture_en",
+        "geography_om",
+        "geography_en",
+        "attractions_om",
+        "attractions_en",
     )
-    translation_invariant_fields = ("geography", "slug")
+    translation_invariant_fields = (
+        "geography",
+        "slug",
+        "quick_facts",
+        "latitude",
+        "longitude",
+    )
 
     api_fields = [
         APIField("geography_slug"),
@@ -412,6 +531,23 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         APIField("history"),
         APIField("area_location"),
         APIField("featured_image"),
+        APIField("intro_om"),
+        APIField("intro_en"),
+        APIField("history_om"),
+        APIField("history_en"),
+        APIField("economy_om"),
+        APIField("economy_en"),
+        APIField("culture_om"),
+        APIField("culture_en"),
+        APIField("geography_om"),
+        APIField("geography_en"),
+        APIField("attractions_om"),
+        APIField("attractions_en"),
+        APIField("quick_facts"),
+        APIField("hero_image"),
+        APIField("latitude"),
+        APIField("longitude"),
+        APIField("notable_people_list"),
     ]
 
     @property
@@ -425,6 +561,18 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
     @property
     def geography_level(self):
         return self.geography.level if self.geography_id else None
+
+    @property
+    def notable_people_list(self):
+        return [
+            {
+                "slug": person.slug,
+                "name_om": person.name_om,
+                "name_en": person.name_en,
+                "is_zone_notable": person.is_zone_notable,
+            }
+            for person in self.notable_people.all().order_by("name_om")
+        ]
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
@@ -443,6 +591,33 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
                 FieldPanel("area_location"),
             ],
             heading=_("Profile detail"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("intro_om"),
+                FieldPanel("intro_en"),
+                FieldPanel("history_om"),
+                FieldPanel("history_en"),
+                FieldPanel("economy_om"),
+                FieldPanel("economy_en"),
+                FieldPanel("culture_om"),
+                FieldPanel("culture_en"),
+                FieldPanel("geography_om"),
+                FieldPanel("geography_en"),
+                FieldPanel("attractions_om"),
+                FieldPanel("attractions_en"),
+            ],
+            heading=_("Woreda profile sections"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("quick_facts"),
+                FieldPanel("hero_image"),
+                FieldPanel("latitude"),
+                FieldPanel("longitude"),
+                FieldPanel("notable_people"),
+            ],
+            heading=_("Facts, hero, and notable people"),
         ),
     ]
 
@@ -482,9 +657,65 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
             )
 
         validate_approved_image(self, "featured_image", errors)
+        validate_approved_image(self, "hero_image", errors)
+
+        self._validate_quick_facts(errors)
+
+        if (self.latitude is None) != (self.longitude is None):
+            errors["longitude"] = _(
+                "Provide both latitude and longitude, or neither."
+            )
+        if self.latitude is not None and not -90 <= self.latitude <= 90:
+            errors["latitude"] = _("Latitude must be between -90 and 90.")
+        if self.longitude is not None and not -180 <= self.longitude <= 180:
+            errors["longitude"] = _("Longitude must be between -180 and 180.")
 
         if errors:
             raise ValidationError(errors)
+
+    QUICK_FACT_REQUIRED_KEYS = frozenset({"label_en", "label_om", "value"})
+    QUICK_FACT_ALLOWED_KEYS = QUICK_FACT_REQUIRED_KEYS | {
+        "unit",
+        "note_en",
+        "note_om",
+    }
+
+    def _validate_quick_facts(self, errors):
+        facts = self.quick_facts
+        if facts in (None, ""):
+            self.quick_facts = []
+            return
+        if not isinstance(facts, list):
+            errors["quick_facts"] = _(
+                "Quick facts must be a list of fact objects."
+            )
+            return
+        for position, fact in enumerate(facts, start=1):
+            if not isinstance(fact, dict):
+                errors["quick_facts"] = _(
+                    "Quick fact %(position)s must be an object."
+                ) % {"position": position}
+                return
+            missing = self.QUICK_FACT_REQUIRED_KEYS - fact.keys()
+            unknown = fact.keys() - self.QUICK_FACT_ALLOWED_KEYS
+            if missing:
+                errors["quick_facts"] = _(
+                    "Quick fact %(position)s is missing required keys: "
+                    "%(missing)s."
+                ) % {"position": position, "missing": ", ".join(sorted(missing))}
+                return
+            if unknown:
+                errors["quick_facts"] = _(
+                    "Quick fact %(position)s has unsupported keys: %(unknown)s."
+                ) % {"position": position, "unknown": ", ".join(sorted(unknown))}
+                return
+            for label_key in ("label_en", "label_om"):
+                if not str(fact[label_key]).strip():
+                    errors["quick_facts"] = _(
+                        "Quick fact %(position)s needs a non-empty "
+                        "%(label_key)s."
+                    ) % {"position": position, "label_key": label_key}
+                    return
 
 
 @register_snippet

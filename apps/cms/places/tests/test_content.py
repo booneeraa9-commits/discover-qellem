@@ -37,14 +37,10 @@ class GeographyPageTests(TestCase):
         return page
 
     def make_profile(self, parent=None, geography=None):
+        from places.testing import geography_profile_kwargs
+
         geography = geography or self.sayyoo
-        page = GeographyProfilePage(
-            title=geography.canonical_name,
-            slug=geography.slug,
-            geography=geography,
-            introduction=f"Seensa {geography.canonical_name}.",
-            overview=f"Ibsa {geography.canonical_name}.",
-        )
+        page = GeographyProfilePage(**geography_profile_kwargs(geography))
         (parent or self.make_index()).add_child(instance=page)
         return page
 
@@ -74,13 +70,9 @@ class GeographyPageTests(TestCase):
         self.assertIn("geography", error.exception.message_dict)
 
     def test_profile_placement_is_enforced_outside_the_editor_ui(self):
-        profile = GeographyProfilePage(
-            title=self.sayyoo.canonical_name,
-            slug=self.sayyoo.slug,
-            geography=self.sayyoo,
-            introduction="Seensa Sayyoo.",
-            overview="Ibsa Sayyoo.",
-        )
+        from places.testing import geography_profile_kwargs
+
+        profile = GeographyProfilePage(**geography_profile_kwargs(self.sayyoo))
         self.homepage.add_child(instance=profile)
 
         with self.assertRaises(ValidationError) as error:

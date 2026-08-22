@@ -31,22 +31,13 @@ class ApiPageTreeMixin:
         )
         cls.homepage.add_child(instance=cls.index)
 
-        cls.dambi_page = GeographyProfilePage(
-            title=cls.dambi.canonical_name,
-            slug=cls.dambi.slug,
-            geography=cls.dambi,
-            introduction="<p>Seensa Dambi Doolloo.</p>",
-            overview="<p>Ibsa Dambi Doolloo.</p>",
-        )
+        from places.testing import geography_profile_kwargs
+
+        cls.dambi_page = GeographyProfilePage(**geography_profile_kwargs(cls.dambi))
         cls.index.add_child(instance=cls.dambi_page)
 
         cls.draft_page = GeographyProfilePage(
-            title=cls.sayyo.canonical_name,
-            slug=cls.sayyo.slug,
-            geography=cls.sayyo,
-            introduction="<p>Seensa Sayyoo.</p>",
-            overview="<p>Ibsa Sayyoo.</p>",
-            live=False,
+            **geography_profile_kwargs(cls.sayyo, live=False)
         )
         cls.index.add_child(instance=cls.draft_page)
 
@@ -85,7 +76,7 @@ class AnonymousPagesApiTests(ApiPageTreeMixin, TestCase):
         self.assertEqual(payload["geography_slug"], "dambi-doolloo")
         self.assertEqual(payload["geography_name"], "Dambi Doolloo")
         self.assertEqual(payload["geography_level"], "town")
-        self.assertEqual(payload["introduction"], "<p>Seensa Dambi Doolloo.</p>")
+        self.assertEqual(payload["introduction"], "Seensa Dambi Doolloo.")
         for field in (
             "overview",
             "naming_origin",
@@ -107,7 +98,7 @@ class AnonymousPagesApiTests(ApiPageTreeMixin, TestCase):
         items = response.json()["items"]
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["geography_slug"], "dambi-doolloo")
-        self.assertEqual(items[0]["introduction"], "<p>Seensa Dambi Doolloo.</p>")
+        self.assertEqual(items[0]["introduction"], "Seensa Dambi Doolloo.")
 
     def test_unpublished_page_is_hidden_from_listing_and_detail(self):
         listing = self.client.get(
