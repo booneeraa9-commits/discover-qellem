@@ -35,12 +35,24 @@ export function isLang(value: unknown): value is Lang {
  *   - EN and AM fall back to OM (the authoritative language);
  *   - OM never falls back to EN.
  */
+/** Sentinel value used in mock/seed data to mark Amharic fields that still
+ *  need translation. Treated as empty by localize() so readers fall through
+ *  to the authoritative Afaan Oromoo text instead of seeing the marker. */
+export const AM_DRAFT_MARKER = "[AM draft]";
+
 export function localize(text: LocalizedText, lang: Lang): string {
-  const primary = text[lang];
-  if (primary && primary.trim() !== "") return primary;
+  const pick = (l: Lang): string => {
+    const v = text[l];
+    if (typeof v !== "string") return "";
+    const trimmed = v.trim();
+    if (trimmed === "" || trimmed === AM_DRAFT_MARKER) return "";
+    return v;
+  };
+  const primary = pick(lang);
+  if (primary !== "") return primary;
   if (lang === "en" || lang === "am") {
-    const om = text.om;
-    if (om && om.trim() !== "") return om;
+    const om = pick("om");
+    if (om !== "") return om;
   }
   return text.om ?? "";
 }
