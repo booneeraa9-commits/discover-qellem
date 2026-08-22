@@ -336,7 +336,6 @@ class LanguageProjectionContractTests(TestCase):
         response = self._detail({"lang": "fr"})
         self.assertEqual(response.status_code, 400)
 
-    @unittest.skip("pending Sprint 5 BE #117: strict OM-only fallback (FALLBACK_ORDER=('om',))")
     def test_lang_am_with_empty_om_never_falls_back_to_en(self):
         # Edge case #117 tightens: when the requested language AND OM are both
         # empty, the projection must still never surface the EN value (main
@@ -358,7 +357,7 @@ class LanguageProjectionContractTests(TestCase):
 
 
 class PartnerBilingualFieldContractTests(TestCase):
-    """Sprint 5 BE #117: partner display_name_en/_am companions (PENDING until #117 merges)."""
+    """Sprint 5 BE #117 (LANDED): partner display_name_en/_am companions."""
 
     @classmethod
     def setUpTestData(cls):
@@ -381,7 +380,6 @@ class PartnerBilingualFieldContractTests(TestCase):
     def _listing(self, url):
         return self.client.get(url, {"format": "json"}).json()["items"]
 
-    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_sponsors_expose_display_name_en_and_am(self):
         sponsor = Sponsor.objects.first()
         self._approve(sponsor)
@@ -394,7 +392,6 @@ class PartnerBilingualFieldContractTests(TestCase):
             self.assertTrue(item["display_name_en"])
             self.assertEqual(item["display_name_am"], "")
 
-    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_supporters_expose_display_name_en_and_am(self):
         supporter = Collaborator.objects.filter(partner_kind=PartnerKind.PERSON).first()
         self._approve(supporter, is_person=True)
@@ -406,7 +403,6 @@ class PartnerBilingualFieldContractTests(TestCase):
 
 
 class NewsCategoryAmharicLabelContractTests(TestCase):
-    @unittest.skip("pending Sprint 5 BE #117: NEWS_CATEGORY_LABELS_AM mapping")
     def test_news_category_labels_include_amharic(self):
         from archive.models import NEWS_CATEGORY_LABELS_AM
 
@@ -422,7 +418,6 @@ class NewsCategoryAmharicLabelContractTests(TestCase):
                 f"{choice.name} Amharic label has no Ethiopic: {am_label!r}",
             )
 
-    @unittest.skip("pending Sprint 5 BE #117: NewsArticle serializes category_label_am")
     def test_news_detail_serializes_category_label_am(self):
         from archive.models import NewsArticle
 
@@ -436,9 +431,8 @@ class NewsCategoryAmharicLabelContractTests(TestCase):
 
 
 class ImageRenditionContractTests(TestCase):
-    """Sprint 5 BE #118: top-level rendition URLs on /api/v2/images/ (issue #112)."""
+    """Sprint 5 BE #118 (LANDED): top-level rendition URLs on /api/v2/images/ (issue #112)."""
 
-    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
     def test_image_detail_exposes_rendition_urls(self):
         from wagtail.images import get_image_model
 
@@ -457,7 +451,6 @@ class ImageRenditionContractTests(TestCase):
         self.assertIn("meta", response.json())
         self.assertIn("download_url", response.json()["meta"])
 
-    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
     def test_image_listing_items_carry_renditions(self):
         response = self.client.get("/api/v2/images/", {"format": "json"})
         self.assertEqual(response.status_code, 200)
@@ -468,3 +461,139 @@ class ImageRenditionContractTests(TestCase):
             renditions = item.get("renditions", {})
             for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
                 self.assertIn(name, renditions, f"missing rendition {name} in listing")
+
+
+# =============================================================================
+# Sprint 6 additions.
+# =============================================================================
+
+class ImageUrlContractTests(TestCase):
+    """Image/rendition URLs must be absolute so the FE can render them (#119)."""
+
+    def test_rendition_urls_are_absolute(self):
+        from wagtail.images import get_image_model
+
+        Image = get_image_model()
+        image = Image.objects.first()
+        if image is None:
+            self.skipTest("no seeded images")
+        response = self.client.get(f"/api/v2/images/{image.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        renditions = response.json().get("renditions", {})
+        for name, url in renditions.items():
+            self.assertTrue(
+                url.startswith(("http://", "https://")),
+                f"rendition {name} URL not absolute: {url!r}",
+            )
+
+    @unittest.skip("pending #119: download_url must become absolute (CMS origin rewrite)")
+    def test_download_url_is_absolute(self):
+        from wagtail.images import get_image_model
+
+        Image = get_image_model()
+        image = Image.objects.first()
+        if image is None:
+            self.skipTest("no seeded images")
+        response = self.client.get(f"/api/v2/images/{image.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        download_url = response.json()["meta"]["download_url"]
+        self.assertTrue(
+            download_url.startswith(("http://", "https://")),
+            f"download_url not absolute: {download_url!r}",
+        )
+
+
+class CommunityStorySubmissionContractTests(TestCase):
+    """POST /api/v2/community-stories/ must keep working unauthenticated (#108/#32)."""
+
+    def setUp(self):
+        from django.core.cache import cache
+
+        cache.clear()  # Reset the scoped throttle between tests.
+
+    def test_anonymous_post_returns_201(self):
+        response = self.client.post(
+            "/api/v2/community-stories/",
+            {"story_om": "Seenaa qabatamaa asitti.", "story_en": "", "story_am": ""},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201, response.content[:200])
+        self.assertTrue(response.json()["received"])
+
+    def test_anonymous_post_creates_unapproved_story(self):
+        from archive.models import CommunityStory
+
+        before = CommunityStory.objects.count()
+        self.client.post(
+            "/api/v2/community-stories/",
+            {"story_om": "Seenaa qabatamaa lamaffaa.", "story_en": "", "story_am": ""},
+            format="json",
+        )
+        self.assertEqual(CommunityStory.objects.count(), before + 1)
+        story = CommunityStory.objects.order_by("-pk").first()
+        self.assertFalse(story.approved)
+
+    def test_honeypot_fakes_success_and_stores_nothing(self):
+        from archive.models import CommunityStory
+
+        before = CommunityStory.objects.count()
+        response = self.client.post(
+            "/api/v2/community-stories/",
+            {
+                "story_om": "Seenaa bot.",
+                "story_en": "",
+                "story_am": "",
+                "website": "spam.example",
+            },
+            format="json",
+        )
+        # Fake success to the bot, but no record stored.
+        self.assertEqual(response.status_code, 201, response.content[:200])
+        self.assertTrue(response.json()["received"])
+        self.assertEqual(CommunityStory.objects.count(), before)
+
+    def test_empty_story_returns_400(self):
+        response = self.client.post(
+            "/api/v2/community-stories/",
+            {"story_om": "", "story_en": "", "story_am": ""},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+
+class AuthEndpointContractTests(TestCase):
+    """Sprint 6 #38: session/auth endpoints for /staff (PENDING until #38 lands)."""
+
+    @unittest.skip("pending #38: /api/v2/whoami/ endpoint")
+    def test_whoami_returns_authenticated_false_for_anon(self):
+        response = self.client.get("/api/v2/whoami/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["authenticated"], False)
+
+    @unittest.skip("pending #38: /api/v2/auth/login/ endpoint")
+    def test_login_with_good_credentials_returns_200_and_cookie(self):
+        get_user_model().objects.create_user(
+            username="staff-user", password="good-password"
+        )
+        response = self.client.post(
+            "/api/v2/auth/login/",
+            {"username": "staff-user", "password": "good-password"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("sessionid", response.cookies)
+
+    @unittest.skip("pending #38: /api/v2/auth/login/ endpoint")
+    def test_login_with_bad_credentials_returns_401(self):
+        response = self.client.post(
+            "/api/v2/auth/login/",
+            {"username": "staff-user", "password": "wrong-password"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    @unittest.skip("pending #38: /api/v2/auth/csrf/ endpoint")
+    def test_csrf_returns_csrftoken_cookie(self):
+        response = self.client.get("/api/v2/auth/csrf/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("csrftoken", response.cookies)

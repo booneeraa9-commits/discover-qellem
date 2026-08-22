@@ -270,15 +270,51 @@ BE branches (PR #117, #118) on 2026-08-22.**
   `fill-400x300`, `fill-800x600`, `max-1600x1200`, `original`.
 - Existing contract fields (`id`, `title`, `width`, `height`,
   `meta.download_url`) are unchanged.
+---
+
+## 7c. Sprint 6 additions
+
+### 7c-i. Absolute image URLs (issue #119) — PENDING
+- `meta.download_url` on images (and every rendition URL) must be an absolute
+  `http(s)://` URL so the public frontend (a different origin from the CMS) can
+  render media without a 404. Rendition URLs from #118 are already absolute;
+  `download_url` is still relative → gated contract test
+  `test_download_url_is_absolute` stays `@unittest.skip` until #119 lands.
+
+### 7c-ii. Session/auth endpoints (issue #38) — PENDING
+For the /staff login work, the backend will add:
+
+| Endpoint | Method | Anon contract |
+|---|---|---|
+| `/api/v2/whoami/` | GET | 200 `{"authenticated": false}` |
+| `/api/v2/auth/login/` | POST | 200 + `Set-Cookie: sessionid` on good credentials; 401 on bad |
+| `/api/v2/auth/csrf/` | GET | 200 + `Set-Cookie: csrftoken` |
+
+Contract tests `WhoamiContractTests` / `AuthEndpointContractTests` are
+`@unittest.skip("pending #38 …")` and un-skip when the endpoints land.
+
+### 7c-iii. Community-story submission (landed #108, re-gated #32)
+- `POST /api/v2/community-stories/` remains anonymous (`AllowAny`), returns
+  201 `{"received": true, …}` on a valid story, 400 on an empty story, 429 past
+  the 5/hour scoped throttle, and a **fake 201 with nothing stored** when the
+  `website` honeypot is filled. Active contract tests:
+  `CommunityStorySubmissionContractTests`.
 
 ---
 
 ## 8. Known risks
 
+- The #79 taxonomy landed before #27/#28 seeds — verified consistent.
+- `slug` placement differs between `pages` (`meta.slug`) and custom endpoints
+  (top-level) — the #29 typed client handles both.
+- `meta.download_url` is still a relative `/media/…` path (issue #119) — the FE
+  must consume the absolute `renditions` from #118 or wait for #119.
+- Person slug resolved (canonical `jaal-laggasaa-wagii`, #115).
+- Lighthouse perf scores on the production build are 0.68–0.84 vs the 0.90
+  budget until #40 responsive images land (see `qa` Lighthouse gate).
+
 - The #79 taxonomy landed before #27/#28 seeds — verified consistent (seeds use
   `environment`/`minerals`/`agriculture` correctly).
 - `slug` placement differs between `pages` (`meta.slug`) and custom endpoints
   (top-level) — the #29 typed client must handle both.
-- Image renditions are not exposed (§3e) — block `next/image`-scale assumptions
-  until the backend adds them or the FE accepts originals.
 - People slug needs reconciliation before #30 links person cards (bug #106).

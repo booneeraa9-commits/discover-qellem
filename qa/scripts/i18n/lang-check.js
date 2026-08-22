@@ -190,6 +190,67 @@ async function setLangFallback(page, code) {
     check("3d hreflang x-default present (om)", codes.has("x-default"), JSON.stringify(alt));
   }
 
+  // ===========================================================================
+  // Sprint 6 additions.
+  // ===========================================================================
+
+  // 7d. hreflang renders on every key page (not just /).
+  {
+    const keyPages = ["/", "/places", "/place/dambi-doolloo", "/news", "/history"];
+    const missing = [];
+    for (const route of keyPages) {
+      await page.goto(BASE + route, { waitUntil: "load", timeout: 60000 });
+      const codes = await page.evaluate(() =>
+        Array.from(document.querySelectorAll("link[rel='alternate'][hreflang]")).map((l) =>
+          l.getAttribute("hreflang")
+        )
+      );
+      for (const need of ["om-ET", "en", "am", "x-default"]) {
+        if (!codes.includes(need)) missing.push(`${route}(${need})`);
+      }
+    }
+    check("7d hreflang om-ET/en/am/x-default on 5 key pages", missing.length === 0, missing.join(", ") || "all present");
+  }
+
+  // 7a. dq_lang=en: the inauguration article body renders EN, not OM.
+  {
+    await openMenuAndClick(page, "en");
+    await page.goto(BASE + "/news/dembi-dollo-inauguration-2026", { waitUntil: "load", timeout: 60000 });
+    await new Promise((r) => setTimeout(r, 800));
+    const txt = await page.evaluate(() => document.body.innerText);
+    const enBody = txt.includes("Multiple development projects built at a cost of more than 650 million Birr");
+    const omBody = txt.includes("Pirojektiiwwan gosa garaagaraa qarshii Miliyoona 650 oliin ijaaraman");
+    check("7a EN article body renders EN (not OM)", enBody && !omBody, `enBody=${enBody} omBody=${omBody}`);
+  }
+
+  // 7b. dq_lang=am: AM-draft fields show the [AM draft] badge AND the OM
+  //     fallback text in the same block; no EN leakage.
+  {
+    await openMenuAndClick(page, "am");
+    await page.goto(BASE + "/news/dembi-dollo-inauguration-2026", { waitUntil: "load", timeout: 60000 });
+    await new Promise((r) => setTimeout(r, 800));
+    const txt = await page.evaluate(() => document.body.innerText);
+    const badge = txt.includes("[AM draft]");
+    const omBody = txt.includes("Pirojektiiwwan gosa garaagaraa qarshii Miliyoona 650 oliin ijaaraman");
+    const enBody = txt.includes("Multiple development projects built at a cost of more than 650 million Birr");
+    check("7b1 AM shows [AM draft] badge", badge, "");
+    check("7b2 AM shows OM fallback text alongside the badge", omBody, "OM body fallback visible");
+    check("7b3 AM does not leak EN body text", !enBody, "");
+  }
+
+  // 7c. Noto Sans Ethiopic must not be fetched on OM/EN page loads.
+  {
+    await openMenuAndClick(page, "en");
+    // Cold-load the page and record every font/resource the browser fetched.
+    await page.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
+    await page.evaluate(() => document.fonts.ready).catch(() => {});
+    const ethiopicFetched = await page.evaluate(() => {
+      const resources = performance.getEntriesByType("resource").map((r) => r.name);
+      return resources.filter((u) => /ethiopic|noto/i.test(u));
+    });
+    check("7c no Ethiopic font fetched on EN load", ethiopicFetched.length === 0, JSON.stringify(ethiopicFetched.slice(0, 3)));
+  }
+
   await browser.close();
 
   const failed = results.filter((r) => !r.ok);

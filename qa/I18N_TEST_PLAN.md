@@ -127,21 +127,26 @@ The harness asserts the TARGET behaviour and prints PASS/FAIL per check. Until
   hreflang correct; touch targets unchanged.
 - The Sprint-3 contrast bugs (#80/#82/#121) must not regress in AM.
 
-## 9. Sign-off bar
+## 9. Sprint 6 status + sign-off bar
 
-The flip PR is APPROVED by QA only when the harness (`qa/scripts/i18n/lang-check.js`,
-now 20 checks) reports **20/20**:
+The flip landed (#127). Harness is now **30 checks** (`qa/scripts/i18n/lang-check.js`).
+Result on main @ 490c859: **29/30**.
 
-- 1a/1b — OM first paint (no EN flash).
-- 2a/2b — `<html lang>` tracks the switcher and the pref **persists across reload**.
-- 2c — `/404` and `/offline` render in the toggled language.
-- 3a–3d — hreflang `om-ET` / `en` / `am` / `x-default` present.
-- 4a–4c — Ethiopic font only when lang=am.
-- 5a–5c — `[AM draft]` shown in AM only; OM fallback visible where AM is blank;
-  no EN leak; never in EN/OM.
-- 6a–6f — AM option enabled end-to-end (aria-disabled removed, click → cookie →
-  Amharic re-render + Ethiopic).
+The flip itself (checks 1–6) passes 24/24 — OM first paint, toggles, cookie
+persistence, 404/offline in the toggled language, Ethiopic gating, `[AM draft]`
+AM-only, hreflang om-ET/en/am/x-default.
 
-File bugs (frontend lane) for anything that fails, with the harness line that
-caught it. Also confirm the §1 pre-paint script and the §3 `x-default` addition
-are part of the flip PR scope.
+New Sprint 6 checks:
+- **7a** — `dq_lang=en`: inauguration article body renders EN not OM. PASS.
+- **7b1/7b3** — AM shows the `[AM draft]` badge and does NOT leak EN. PASS.
+- **7b2** — AM shows the **OM fallback text alongside the badge**. **FAIL** —
+  `localize()` returns the literal `"[AM draft]"` value instead of falling back
+  to `text.om` for content fields. Filed as **#136**.
+- **7c** — no Ethiopic font fetched on OM/EN loads (PerformanceObserver +
+  `performance.getEntriesByType("resource")`). PASS.
+- **7d** — hreflang om-ET/en/am/x-default on 5 key pages (`/`, `/places`,
+  `/place/dambi-doolloo`, `/news`, `/history`). PASS.
+
+Sign-off bar: the Sprint 6 i18n regression pack is APPROVED when the harness
+reports **30/30** (i.e. #136 is fixed). File bugs (frontend lane) for anything
+that fails, with the harness line that caught it.

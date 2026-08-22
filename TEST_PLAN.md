@@ -11,52 +11,46 @@ refers to.
 
 ---
 
-## Sprint 5 status (updated as PRs land)
+## Sprint 5 status (signed off — flip live on main)
 
-**On `main` @ `8a9e7f3` (Sprint 4):** CMS is wired end-to-end —
-Wagtail v2 API (7 endpoints), 9-category taxonomy, Amharic `*_am` fields +
-`?lang=om|en|am` projection (#107), story-submission endpoint (#108), QA
-contract doc + tests (#109), i18n test plan + harness (#110), README env fix
-(#111), typed CMS client (#113), route wiring with mock fallback (#114),
-person-slug fix (#115). Frontend renders from CMS data with mock fallback.
+**On `main` @ `490c859`:** Sprint 5 fully merged (#117/#118/#124/#125/#126/#127).
+The i18n flip is live: `DEFAULT_LANG="om"`, pre-paint `lang=om` script, 3-way
+OM/EN/AM menu, Amharic enabled, Ethiopic font gated to AM. Contract residuals
+from #126 were fixed in e38aec3 (photo-hero active nav, `.chip.gold`, support
+keys).
 
-**Sprint 5 review status (QA, 2026-08-22):**
-- **#126 (pre-flip FE: contrast fixes + share-a-story form + hide /components)**
-  — verified: build/lint/tsc pass; #67 fully fixed, #82 sponsor-initials fixed,
-  #80 dark items fixed, /components excluded from prod build. **CHANGES
-  REQUESTED** — 3 contrast residuals: `.lang-label` pill 2.54:1 dark, light
-  photo-hero `.active` 1.21:1, `.chip.gold` "Coming soon/Chapa" 4.37:1 (+ new
-  #128 duplicate-key `OG`).
-- **#127 (i18n flip, stacked on #126)** — harness **24/24** (first-paint OM,
-  toggles, cookie persistence, 404 + /offline in AM, Ethiopic gating,
-  `[AM draft]` AM-only, hreflang om-ET/en/am/x-default). **HELD** until the 3
-  contrast residuals above are zero.
-- **#117 (BE: partner display_name_en/am + Amharic category labels + strict
-  am→om fallback)** — verified live: 347 tests, backfilled EN names,
-  `NEWS_CATEGORY_LABELS_AM` (9 Ethiopic labels), `FALLBACK_ORDER=("om",)`.
-  **APPROVED.**
-- **#118 (BE: image renditions)** — verified live: top-level `renditions` with
-  fill-400x300 / fill-800x600 / max-1600x1200 / original (absolute URLs), 339
-  tests. **APPROVED.**
-- **#125 (QA contract tests + docs)** — 20 active + 7 gated tests green on
-  main; all 27 green against combined #117+#118. Ready for merge.
+**Sign-off log (Sprint 5):** #117 APPROVED · #118 APPROVED · #124 APPROVED ·
+#125 APPROVED · #126 CHANGES REQUESTED (then fixed in e38aec3) · #127 HELD
+(harness 24/24) → merged by PM after residuals landed.
 
-**Sign-off log:**
-| PR | Result | Date |
-|---|---|---|
-| #65 (pytest/ruff tooling) | APPROVED | 2026-08-21 |
-| #77 (Sprint 2 UI) | merged by PM | 2026-08-21 |
-| #78–#102 (backend chain) | merged by PM | 2026-08-22 |
-| #109 (API contract + tests) | merged by PM | 2026-08-22 |
-| #110 (i18n test plan + harness) | merged by PM | 2026-08-22 |
-| #117 (partner i18n + am labels) | APPROVED (QA) | 2026-08-22 |
-| #118 (image renditions) | APPROVED (QA) | 2026-08-22 |
-| #126 (pre-flip FE) | CHANGES REQUESTED (QA) | 2026-08-22 |
-| #127 (i18n flip) | HELD (QA) | 2026-08-22 |
+---
 
-**Hold:** flip PR (#127) — no QA sign-off until the contrast residuals
-(`.lang-label` 2.54:1, light-hero `.active` 1.21:1, `.chip.gold` 4.37:1) are at
-zero. Backend PRs — sign-off posted per PR as the PM marks them Ready.
+## Sprint 6 status
+
+**Rebaseline trigger:** the PM's full re-sweep runs **after #119 + #40 + #38
+merge** (all still open as of 2026-08-22). Interim sweep on main @ 490c859 is
+logged in §9/`qa/bugs/README.md`.
+
+**QA findings this sprint (filed):**
+- **#129 (P1)** — dark `.lang-label` pill regressed to 1.25:1 (e38aec3 used
+  `brand-200` = the *light*-theme value; in dark it is #0f5540 on #0d4534).
+- **#136 (P1)** — AM-draft content renders only `[AM draft]`; OM fallback text
+  not shown alongside (i18n harness 7b2 fails → 29/30).
+
+**Contract tests:** Sprint 5 gated tests un-skipped (their features merged) +
+new Sprint 6 tests (absolute image URLs #119, whoami/auth/login/auth/csrf #38,
+community-stories POST). 378 passed / 5 skip-gated on main.
+
+**i18n harness:** now 30 checks (added 7a EN body, 7b AM badge+fallback+no-EN,
+7c Ethiopic-not-fetched-on-EN, 7d hreflang on 5 pages). 29/30 on main.
+
+**Lighthouse gate (#35):** `apps/web/lighthouserc.json` budgets + `npm run
+qa:lighthouse` added. Production-build scores: a11y 0.98–1.0 ✓, best-practices
+1.0 ✓, seo 1.0 ✓, **performance 0.68–0.84 ✗ (>=0.90)** — blocked on #40
+responsive images. PWA not measurable in Lighthouse 12 (manual #19 checklist).
+
+**Hold:** do NOT sign off #39 (deploy) or #31 (Chapa) — Sprint 7. No
+cross-browser (#44) until #40 lands.
 
 ---
 

@@ -3,50 +3,60 @@
 Found by QA. Canonical issue numbers live on GitHub; this file is the quick
 index for PR reviewers.
 
-## Open bugs (main @ 8a9e7f3 — Sprint 5, 2026-08-22)
+## Open bugs (main @ 490c859, Sprint 6, 2026-08-22)
 
 | GitHub | Sev | Lane | Title | Status |
 |---|---|---|---|---|
-| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` warnings | **DEFERRED** (PM) |
-| [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets: nav 39px, brand 42px, filter tabs 40px remain | open (partial) |
+| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` warnings | DEFERRED (PM) |
 | [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 (`allowedDevOrigins`) | open |
-| [#80](https://github.com/booneeraa9-commits/discover-qellem/issues/80) | P1 | frontend | **PARTIAL after #126** — dark active-nav/chips/card-chips fixed; residuals: `.lang-label` pill 2.54:1 dark, light photo-hero `.active` 1.21:1 | BLOCKS #126/#127 |
-| [#82](https://github.com/booneeraa9-commits/discover-qellem/issues/82) | P2 | frontend | **PARTIAL after #126** — sponsor initials fixed (`--gold-ink`); `.chip.gold` "Coming soon / Chapa" still 4.37:1 light | BLOCKS #126/#127 |
-| [#112](https://github.com/booneeraa9-commits/discover-qellem/issues/112) | P2 | backend | `/api/v2/images/` renditions | PR **#118** (verified live) |
-| [#119](https://github.com/booneeraa9-commits/discover-qellem/issues/119) | P1 | frontend/backend | CMS gallery images 404 (`/media/` download_url not rewritten to CMS origin) | open |
-| [#122](https://github.com/booneeraa9-commits/discover-qellem/issues/122) | P1 | backend/content | Partners `display_name_en/am` + `?lang=` | PR **#117** (verified live) |
-| [#123](https://github.com/booneeraa9-commits/discover-qellem/issues/123) | P1 | backend/content | `NewsCategory` Amharic labels | PR **#117** (`NEWS_CATEGORY_LABELS_AM`) |
-| [#128](https://github.com/booneeraa9-commits/discover-qellem/issues/128) | P2 | frontend | `/support` duplicate React key `OG` (cards keyed by initials) | **NEW Sprint 5** |
+| [#119](https://github.com/booneeraa9-commits/discover-qellem/issues/119) | P1 | frontend/backend | CMS gallery images 404 — `download_url` relative, not rewritten to CMS origin | open (rebaseline trigger) |
+| [#129](https://github.com/booneeraa9-commits/discover-qellem/issues/129) | P1 | frontend | Dark `.lang-label` pill regressed to **1.25:1** (brand-200 on brand-100 — e38aec3 used the light-theme value) | NEW Sprint 6 |
+| [#136](https://github.com/booneeraa9-commits/discover-qellem/issues/136) | P1 | frontend/content | AM-draft content shows only `[AM draft]` — OM fallback not rendered alongside | NEW Sprint 6 |
 
-## Resolved / verified
+## Closed / resolved
 
-- #63 (README `DATABASE_URL` docs) — **closed by #111**.
-- #106 (person slug) — **closed by #115**; canonical slug `jaal-laggasaa-wagii`.
-- #67 (`.tl-year`/`.person-role`/`.story-author` 4.2:1) — **FIXED by #126** (verified: gone from the scan).
-- #81 (`/components` in prod) — **FIXED by #126** (route absent from prod build; dev still renders).
-- #121 (`.lang-soon` pill 3.09/3.49:1) — **MOOTED by #127**: the flip enables AM and removes the "Coming soon" pill from the DOM (verified).
-- #59, #61, #62, #64 — Sprint 1–2 resolutions. Skip-link contrast — PR #101, final PASS.
+- #63 (README `DATABASE_URL`) — closed by #111.
+- #106 (person slug) — closed by #115; canonical `jaal-laggasaa-wagii`.
+- #80 (dark-mode contrast family) — CLOSED (fixed in #126 + e38aec3); the only
+  residual became the new #129 regression.
+- #82 (gold initials) — CLOSED (`--gold-ink` token).
+- #121 (`.lang-soon` pill) — CLOSED obsolete (AM enabled; pill removed from the
+  DOM; dead CSS remains for cleanup).
+- #67 (`.tl-year`/`.person-role`/`.story-author`) — fixed in #126, verified.
+- #81 (`/components` in prod) — fixed in #126 (prod 404, dev renders).
+- #128 (`/support` duplicate key `OG`) — fixed in e38aec3 (keys by OM name).
+- #112 (image renditions) — fixed in #118.
+- #122/#123 (partner i18n / Amharic category labels) — fixed in #117.
+- #59, #61, #62, #64 — Sprint 1–2. Skip-link contrast — PR #101.
 
-## Sprint 5 sweep results
+## Sprint 6 sweep (main @ 490c859, production build)
 
-- **main @ 8a9e7f3 baseline:** no hscroll, no missing alt, 0 console/page
-  errors across 25 routes; drawer Esc + lightbox focus trap pass. Contrast
-  #80/#67/#82 unchanged (no fix merged yet) + #121 new.
-- **PR #126 (pre-flip) re-measure:** #67 fully fixed; #82 sponsor-initials
-  fixed; #80 dark items fixed; residuals = `.lang-label` 2.54:1 dark,
-  light-hero `.active` 1.21:1, `.chip.gold` 4.37:1 (blocking).
-- **i18n flip (#127, stacked on #126):** `qa/scripts/i18n/lang-check.js`
-  passes **24/24** on the branch (first-paint OM, toggles, cookie persistence,
-  404 + /offline in AM, Ethiopic gating, `[AM draft]` AM-only, hreflang
-  om-ET/en/am/x-default). **Held** until the 3 contrast residuals are zero.
-- **Contract tests:** 20 active + 7 gated pass on main; all 27 pass against a
-  combined #117+#118 branch (verified). Gated tests un-skip when the BE merges.
+- Full harness (`qa-harness.js`) across 11 routes at 375/768/1280 in both
+  themes: no horizontal scroll, **0 broken images** (incl. inauguration gallery
+  — the FE mock fallback serves local images), 0 real console/page errors (the
+  `?_rsc=` prefetch entries are a close-race harness artifact — verified 0
+  after letting the page settle), drawer Esc + lightbox focus trap pass.
+- Contrast (`contrast-scan.js`): #80/#67/#82 items all clear **except** the new
+  `.lang-label` 1.25:1 dark regression (#129). Light-mode photo-hero readings
+  are harness false-positives (text over photo/gradient).
+- i18n harness: **29/30** — only 7b2 (AM OM-fallback, #136) fails.
+- Lighthouse (production build, budgets in `apps/web/lighthouserc.json`):
+  - a11y 0.98–1.0 (>=0.95 ok), best-practices 1.0 ok, seo 1.0 ok.
+  - **performance 0.68–0.84 (>=0.90 FAIL)** — blocked on #40 responsive images.
+  - PWA not measurable (Lighthouse 12 removed the PWA category) — covered by
+    the #19 manual checklist.
+  - Run: `cd apps/web && npm run build && npm run start` then
+    `npm run qa:lighthouse`.
+
+## Rebaseline trigger (pending)
+
+The PM's full Sprint 6 rebaseline (sweep + re-verify of #80/#82/#119 + staff
+page) runs **after #119 + #40 + #38 merge**. Not yet merged as of 2026-08-22.
 
 ## Hard gates for PR review (see qa/PR_REVIEW_TEMPLATE.md)
 
 - 9-category taxonomy; `economy` OM = "Dinagdee", `minerals` OM = "Mineraala".
 - 12 canonical OM slugs/names; inauguration gallery order project13→6→3→1→2.
-- `?lang=am` falls back to OM, never EN (strict `FALLBACK_ORDER=("om",)` once
-  #117 lands).
-- No new `--brand-400`-on-dark or white-chip-in-dark instances.
+- `?lang=am` falls back to OM, never EN (strict `FALLBACK_ORDER=("om",)`).
+- Absolute image/rendition URLs (`http(s)`), enforced by contract tests.
 - No emojis / no `any` / no console.log / no English-only strings.
