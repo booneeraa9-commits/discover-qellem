@@ -8,7 +8,7 @@ export default function NotFoundView() {
   const { t } = useT();
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <div className="nf-wrap">
         <h1>404</h1>
         <p>{t("notfound.sub")}</p>

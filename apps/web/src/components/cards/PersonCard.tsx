@@ -51,7 +51,7 @@ export function PersonCard({ data, className = "" }: PersonCardProps) {
       )}
       <div className="person-body">
         <div className="person-role">{data.years}</div>
-        <h4 className="person-name">{name}</h4>
+        <h3 className="person-name">{name}</h3>
         <p className="person-bio">{role}</p>
       </div>
     </a>

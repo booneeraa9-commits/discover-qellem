@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { ArrowLeft, ChevronRight, MapPin } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import { PersonCard } from "@/components/cards";
+import OsmMap from "@/components/OsmMap";
 import { Reveal } from "@/components/Reveal";
 import { localize } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-client";
@@ -24,7 +25,7 @@ export default function PlaceView({ place }: { place: Place }) {
   const typeLabel = t(place.type === "town" ? "place.type.capital" : "place.type.woreda");
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       {/* Photo hero */}
       <section className="place-hero place-hero-photo">
         <div
@@ -128,10 +129,7 @@ export default function PlaceView({ place }: { place: Place }) {
             <span className="kicker">{t("place.visit.kicker")}</span>
             <h2>{t("place.visit.title")}</h2>
           </div>
-          <div className="osm-placeholder" role="img" aria-label={t("place.map.comingSoon")}>
-            <MapPin aria-hidden="true" />
-            <span>{t("place.map.comingSoon")}</span>
-          </div>
+          <OsmMap lat={place.coords[0]} lng={place.coords[1]} name={name} />
           <p style={{ marginTop: 24, marginBottom: 0 }}>
             <Link href="/places" className="btn btn-ghost">
               <ArrowLeft aria-hidden="true" />

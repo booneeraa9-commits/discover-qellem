@@ -238,7 +238,7 @@ const SUPPORTERS: SupporterCardData[] = [
 
 export default function ComponentsPreview() {
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="section">
         <div className="container">
           <span className="kicker">Internal preview</span>

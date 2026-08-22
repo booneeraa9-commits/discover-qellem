@@ -2,11 +2,25 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
-import { ArrowRight, Compass, Heart, Landmark, Map } from "lucide-react";
+import {
+  ArrowRight,
+  Compass,
+  Heart,
+  Landmark,
+  LayoutGrid,
+  Map,
+  Newspaper,
+} from "lucide-react";
 import { CountUp } from "@/components/CountUp";
+import GlanceTable from "@/components/GlanceTable";
 import { Reveal } from "@/components/Reveal";
+import SponsorsMarquee from "@/components/SponsorsMarquee";
 import ZoneMap from "@/components/ZoneMap";
+import { NewsCard, PersonCard, PlaceCard } from "@/components/cards";
 import { useT } from "@/lib/i18n-client";
+import { toNewsCardData, NEWS } from "@/lib/news-data";
+import { toPlaceCardData, PLACES } from "@/lib/places-data";
+import { ZONE_GLANCE, ZONE_PEOPLE, ZONE_SPONSORS } from "@/lib/zone-data";
 
 interface StatItem {
   value: number;
@@ -37,6 +51,9 @@ const FEATURES = [
   { icon: Compass, titleKey: "home.features.visit.title", textKey: "home.features.visit.text" },
 ];
 
+const PLACES_PREVIEW = PLACES.slice(0, 4).map(toPlaceCardData);
+const NEWS_PREVIEW = NEWS.slice(0, 3).map(toNewsCardData);
+
 export default function Home() {
   const { t } = useT();
 
@@ -48,7 +65,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="page">
+    <main className="page" id="main-content">
       <section className="place-hero place-hero-photo home-hero">
         <div
           className="place-hero-bg"
@@ -119,6 +136,48 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="section bg-paper-2">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.glance.kicker")}</span>
+              <h2>{t("home.glance.title")}</h2>
+              <p>{t("home.glance.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <GlanceTable rows={ZONE_GLANCE} />
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.woredas.kicker")}</span>
+              <h2>{t("home.woredas.title")}</h2>
+              <p>{t("home.woredas.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="places-grid">
+              {PLACES_PREVIEW.map((place) => (
+                <PlaceCard key={place.slug} data={place} />
+              ))}
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="text-center" style={{ marginTop: 32 }}>
+              <Link href="/places" className="btn btn-ghost">
+                <LayoutGrid aria-hidden="true" />
+                {t("home.woredas.viewAll")}
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       <section className="section">
         <div className="container">
           <Reveal>
@@ -131,6 +190,51 @@ export default function Home() {
           <Reveal delay={0.1}>
             <div className="map-wrap">
               <ZoneMap />
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section bg-paper-2">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.news.kicker")}</span>
+              <h2>{t("home.news.title")}</h2>
+              <p>{t("home.news.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="news-grid">
+              {NEWS_PREVIEW.map((article) => (
+                <NewsCard key={article.href} data={article} />
+              ))}
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="text-center" style={{ marginTop: 32 }}>
+              <Link href="/news" className="btn btn-ghost">
+                <Newspaper aria-hidden="true" />
+                {t("home.news.viewAll")}
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("home.notable.kicker")}</span>
+              <h2>{t("home.notable.title")}</h2>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="people-strip">
+              {ZONE_PEOPLE.map((person) => (
+                <PersonCard key={person.slug} data={person} />
+              ))}
             </div>
           </Reveal>
         </div>
@@ -161,6 +265,41 @@ export default function Home() {
                   </Reveal>
                 );
               })}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="sponsors-section">
+        <div className="container">
+          <Reveal>
+            <div className="section-head">
+              <span className="kicker">{t("support.sponsors.kicker")}</span>
+              <h2>{t("support.sponsors.title")}</h2>
+              <p>{t("support.sponsors.sub")}</p>
+            </div>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <SponsorsMarquee sponsors={ZONE_SPONSORS} />
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section tight">
+        <div className="container">
+          <Reveal>
+            <div className="support-hero" style={{ padding: 48 }}>
+              <span className="kicker" style={{ color: "var(--gold-300)" }}>
+                {t("home.support.kicker")}
+              </span>
+              <h2 style={{ fontSize: "clamp(28px, 3.4vw, 40px)" }}>
+                {t("home.support.title")}
+              </h2>
+              <p>{t("home.support.sub")}</p>
+              <Link href="/support" className="btn btn-gold" style={{ marginTop: 18 }}>
+                <Heart aria-hidden="true" />
+                {t("home.support.cta")}
+              </Link>
             </div>
           </Reveal>
         </div>

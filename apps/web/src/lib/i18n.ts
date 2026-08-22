@@ -50,6 +50,8 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "common.readMore": "Read more",
 
+    "skip.content": "Skip to content",
+
     "lightbox.label": "Photo viewer",
     "lightbox.close": "Close",
     "lightbox.previous": "Previous",
@@ -70,6 +72,18 @@ export const dict: Record<Lang, Record<string, string>> = {
     "footer.social.mail": "Email",
     "footer.social.site": "Website",
     "footer.social.news": "News",
+    "footer.install": "Install app",
+
+    "install.banner.title": "Install Discover Qellem",
+    "install.banner.sub": "Add to your home screen for fast, offline access.",
+    "install.banner.install": "Install",
+    "install.banner.dismiss": "Dismiss",
+    "install.ios.title": "Add to Home Screen",
+    "install.ios.sub": "Tap the Share icon, then tap Add to Home Screen.",
+
+    "offline.title": "You are offline",
+    "offline.sub": "Check your connection and try again.",
+    "offline.retry": "Try again",
 
     "home.hero.imageAlt": "Golden highlands sunset over Kellem Wollega",
     "home.hero.kicker": "Kellem Wollega Zone · Oromia",
@@ -122,6 +136,31 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.map.title": "Zone Map",
     "home.map.sub": "Tap a place to open its page.",
 
+    "home.glance.kicker": "Verified facts",
+    "home.glance.title": "The zone in numbers",
+    "home.glance.sub": "Key figures from official sources (2015 & 2016 E.C.).",
+    "home.glance.col.indicator": "Indicator",
+    "home.glance.col.value": "Value",
+    "home.glance.col.note": "Note",
+
+    "home.woredas.kicker": "Explore by place",
+    "home.woredas.title": "Explore the woredas",
+    "home.woredas.sub": "Eleven woredas and one town — each with a dedicated page, its own history and key facts.",
+    "home.woredas.viewAll": "View all woredas & towns",
+
+    "home.news.kicker": "Fresh",
+    "home.news.title": "Latest news",
+    "home.news.sub": "Recent news and events from across the zone.",
+    "home.news.viewAll": "All news & events",
+
+    "home.notable.kicker": "People",
+    "home.notable.title": "Notable Figures",
+
+    "home.support.kicker": "Support Us",
+    "home.support.title": "Your support makes it real",
+    "home.support.sub": "Accurate content, photography and stories grow with your support.",
+    "home.support.cta": "Make a contribution",
+
     "place.breadcrumb": "Breadcrumb",
     "place.type.woreda": "Woreda",
     "place.type.capital": "Capital",
@@ -132,6 +171,8 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.visit.kicker": "Location",
     "place.visit.title": "Plan your visit",
     "place.map.comingSoon": "Interactive map coming soon",
+    "place.map.title": "Map of {name}",
+    "place.map.open": "Open in OpenStreetMap",
     "place.back": "Back to places",
 
     "places.title": "Woredas & Towns",
@@ -217,6 +258,9 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "common.readMore": "Dabalataan ilaali",
 
+    // TODO(i18n): get reviewed OM for the skip link from the content agent.
+    "skip.content": "[OM] Skip to content",
+
     // TODO(i18n): get reviewed OM for the lightbox label from the content agent.
     "lightbox.label": "[OM] Photo viewer",
     "lightbox.close": "Cufi",
@@ -240,6 +284,19 @@ export const dict: Record<Lang, Record<string, string>> = {
     // TODO(i18n): get reviewed OM for these social link labels from the content agent.
     "footer.social.site": "[OM] Website",
     "footer.social.news": "Oduu",
+    "footer.install": "[OM] Install app",
+
+    "install.banner.title": "Discover Qellem buufadhuu",
+    "install.banner.sub": "Offline akka hojjetuuf fuula jalqabaa keessatti itti dabali.",
+    "install.banner.install": "Buufadhuu",
+    "install.banner.dismiss": "Cufi",
+    // TODO(i18n): get reviewed OM for the iOS install tip from the content agent.
+    "install.ios.title": "[OM] Add to Home Screen",
+    "install.ios.sub": "[OM] Tap the Share icon, then tap Add to Home Screen.",
+
+    "offline.title": "Interneeta hin qabdu",
+    "offline.sub": "Qunnamtii kee ilaaliitii irra deebi'i yaali.",
+    "offline.retry": "Irra deebi'i yaali",
 
     // TODO(i18n): get reviewed OM for the hero image alt text from the content agent.
     "home.hero.imageAlt": "[OM] Golden highlands sunset over Kellem Wollega",
@@ -294,6 +351,32 @@ export const dict: Record<Lang, Record<string, string>> = {
     "home.map.title": "Kaartaa Godina",
     "home.map.sub": "Bakka cuqaasi fuula isaa bana.",
 
+    "home.glance.kicker": "Ragaalee mirkanaa'an",
+    // TODO(i18n): get reviewed OM for these home section headings from the content agent.
+    "home.glance.title": "[OM] The zone in numbers",
+    "home.glance.sub": "Ragaa waliigalaa ragaa ofiisaalii irraa (2015 fi 2016 A.L.I).",
+    "home.glance.col.indicator": "Qabxii",
+    "home.glance.col.value": "Galmaa",
+    "home.glance.col.note": "Yaadni",
+
+    "home.woredas.kicker": "Bakkaa bakkatti",
+    "home.woredas.title": "Aanaalee daawwadhuu",
+    "home.woredas.sub": "Aanaalee 11 fi magaalaa 1 — tokkoon tokkoon isaanii fuula, seenaa fi ragaa mataa isaa qaba.",
+    "home.woredas.viewAll": "Aanaalee hunda ilaali",
+
+    "home.news.kicker": "Haaraa",
+    "home.news.title": "Oduu dhiyoo",
+    "home.news.sub": "Oduu fi taateewwan dhiyoo godina keessaa.",
+    "home.news.viewAll": "Oduu hunda ilaali",
+
+    "home.notable.kicker": "Namoota",
+    "home.notable.title": "Namoota Beekkamoo",
+
+    "home.support.kicker": "Nu Deeggari",
+    "home.support.title": "Gumaachi kee ni jijjiira",
+    "home.support.sub": "Odeeffannoo sirrii, suuraa fi seenota — gumaacha keessaniin ni guddatu.",
+    "home.support.cta": "Gumaacha kenni",
+
     // TODO(i18n): get reviewed OM for these place-page labels from the content agent.
     "place.breadcrumb": "[OM] Breadcrumb",
     "place.type.woreda": "Aanaa",
@@ -305,6 +388,8 @@ export const dict: Record<Lang, Record<string, string>> = {
     "place.visit.kicker": "Iddoo",
     "place.visit.title": "Daawwannaa qopheessaa",
     "place.map.comingSoon": "[OM] Interactive map coming soon",
+    "place.map.title": "[OM] Map of {name}",
+    "place.map.open": "[OM] Open in OpenStreetMap",
     "place.back": "Gara bakkaaleetti deebi'i",
 
     "places.title": "Aanaalee fi Magaalota",

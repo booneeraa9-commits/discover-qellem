@@ -804,3 +804,23 @@ export const placeSlugs = PLACES.map((place) => place.slug);
 export function getPlace(slug: string): Place | undefined {
   return PLACES.find((place) => place.slug === slug);
 }
+
+/** Adapt a Place into PlaceCard props (single source for list pages + previews). */
+export function toPlaceCardData(place: Place): import("@/components/cards").PlaceCardData {
+  const population = place.quickFacts.find((fact) => fact.label.en === "Population");
+  const statValue =
+    population && typeof population.value === "string"
+      ? population.value
+      : population && typeof population.value === "object"
+        ? population.value.en
+        : "";
+
+  return {
+    slug: place.slug,
+    name: place.name,
+    teaser: place.tagline,
+    image: place.heroImage,
+    statLabel: population?.label ?? { en: "Population", om: "Uummata" },
+    statValue,
+  };
+}
