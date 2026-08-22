@@ -14,7 +14,7 @@ from wagtail.snippets.models import register_snippet
 from provenance.choices import SensitivityStatus, VerificationStatus
 from qellem_cms.content_validation import (
     PUBLIC_RICH_TEXT_FEATURES,
-    AuthoritativeOromoPageMixin,
+    MultilingualPageMixin,
     validate_approved_image,
 )
 
@@ -316,7 +316,7 @@ class GeographyAlias(models.Model):
             raise ValidationError(errors)
 
 
-class GeographyIndexPage(AuthoritativeOromoPageMixin, Page):
+class GeographyIndexPage(MultilingualPageMixin, Page):
     """Translated Woredas and Towns landing page."""
 
     introduction = RichTextField(
@@ -350,7 +350,7 @@ class GeographyIndexPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
+class GeographyProfilePage(MultilingualPageMixin, Page):
     """Translated public profile for one woreda or town administration."""
 
     geography = models.ForeignKey(
@@ -391,6 +391,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English introduction"),
     )
+    intro_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic introduction"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
+    )
     history_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -400,6 +408,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English history"),
+    )
+    history_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic history"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
     )
     economy_om = RichTextField(
         blank=True,
@@ -411,6 +427,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English economy"),
     )
+    economy_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic economy"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
+    )
     culture_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -420,6 +444,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English culture"),
+    )
+    culture_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic culture"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
     )
     geography_om = RichTextField(
         blank=True,
@@ -431,6 +463,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English geography description"),
     )
+    geography_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic geography description"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
+    )
     attractions_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -440,6 +480,14 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English attractions"),
+    )
+    attractions_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic attractions"),
+        help_text=_(
+            "Optional translation; Afaan Oromoo stays authoritative."
+        ),
     )
     quick_facts = models.JSONField(
         default=list,
@@ -512,6 +560,12 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         "geography_en",
         "attractions_om",
         "attractions_en",
+        "intro_am",
+        "history_am",
+        "economy_am",
+        "culture_am",
+        "geography_am",
+        "attractions_am",
     )
     translation_invariant_fields = (
         "geography",
@@ -543,6 +597,12 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
         APIField("geography_en"),
         APIField("attractions_om"),
         APIField("attractions_en"),
+        APIField("intro_am"),
+        APIField("history_am"),
+        APIField("economy_am"),
+        APIField("culture_am"),
+        APIField("geography_am"),
+        APIField("attractions_am"),
         APIField("quick_facts"),
         APIField("hero_image"),
         APIField("latitude"),
@@ -608,6 +668,17 @@ class GeographyProfilePage(AuthoritativeOromoPageMixin, Page):
                 FieldPanel("attractions_en"),
             ],
             heading=_("Woreda profile sections"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("intro_am"),
+                FieldPanel("history_am"),
+                FieldPanel("economy_am"),
+                FieldPanel("culture_am"),
+                FieldPanel("geography_am"),
+                FieldPanel("attractions_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
         ),
         MultiFieldPanel(
             [

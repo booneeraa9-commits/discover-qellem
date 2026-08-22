@@ -14,7 +14,7 @@ from wagtail.search import index
 from places.models import Geography
 from qellem_cms.content_validation import (
     PUBLIC_RICH_TEXT_FEATURES,
-    AuthoritativeOromoPageMixin,
+    MultilingualPageMixin,
     text_has_meaning,
     validate_approved_image,
 )
@@ -40,7 +40,7 @@ class PartOfSpeech(models.TextChoices):
     OTHER = "other", _("Other")
 
 
-class HistoryCultureIndexPage(AuthoritativeOromoPageMixin, Page):
+class HistoryCultureIndexPage(MultilingualPageMixin, Page):
     introduction = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -70,7 +70,7 @@ class HistoryCultureIndexPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class PeopleIndexPage(AuthoritativeOromoPageMixin, Page):
+class PeopleIndexPage(MultilingualPageMixin, Page):
     introduction = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -100,7 +100,7 @@ class PeopleIndexPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class GlossaryIndexPage(AuthoritativeOromoPageMixin, Page):
+class GlossaryIndexPage(MultilingualPageMixin, Page):
     introduction = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -130,7 +130,7 @@ class GlossaryIndexPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class ArchiveEntryPage(AuthoritativeOromoPageMixin, Page):
+class ArchiveEntryPage(MultilingualPageMixin, Page):
     category = models.CharField(max_length=20, choices=ArchiveCategory.choices)
     geography = models.ForeignKey(
         Geography,
@@ -207,7 +207,7 @@ class ArchiveEntryPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class DeceasedPersonPage(AuthoritativeOromoPageMixin, Page):
+class DeceasedPersonPage(MultilingualPageMixin, Page):
     canonical_name = models.CharField(
         max_length=255,
         help_text=_("The verified name used unchanged in every language."),
@@ -324,7 +324,7 @@ class DeceasedPersonPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class GlossaryTermPage(AuthoritativeOromoPageMixin, Page):
+class GlossaryTermPage(MultilingualPageMixin, Page):
     canonical_term = models.CharField(
         max_length=255,
         help_text=_("The authoritative Afaan Oromoo term used in every language."),
@@ -389,9 +389,10 @@ class NewsCategory(models.TextChoices):
 
 
 class BilingualCompanionFieldsMixin(models.Model):
-    """Reject English content whose Afaan Oromoo counterpart is missing."""
+    """Reject translated content whose Afaan Oromoo counterpart is missing."""
 
-    # Pairs of (english_field_name, oromo_field_name).
+    # Pairs of (translation_field_name, oromo_field_name); English and
+    # Amharic companions both require the authoritative Oromo original.
     bilingual_field_pairs = ()
 
     class Meta:
@@ -404,15 +405,15 @@ class BilingualCompanionFieldsMixin(models.Model):
         except ValidationError as error:
             error.update_error_dict(errors)
 
-        for en_field, om_field in self.bilingual_field_pairs:
-            if text_has_meaning(getattr(self, en_field, "")) and not text_has_meaning(
+        for translated_field, om_field in self.bilingual_field_pairs:
+            if text_has_meaning(getattr(self, translated_field, "")) and not text_has_meaning(
                 getattr(self, om_field, "")
             ):
                 errors.setdefault(
                     om_field,
                     _(
                         "Provide the authoritative Afaan Oromoo content before "
-                        "adding the English version."
+                        "adding a translation."
                     ),
                 )
 
@@ -420,7 +421,7 @@ class BilingualCompanionFieldsMixin(models.Model):
             raise ValidationError(errors)
 
 
-class ArchiveIndexPage(AuthoritativeOromoPageMixin, Page):
+class ArchiveIndexPage(MultilingualPageMixin, Page):
     """Single parent page for news, events, and community stories."""
 
     introduction = RichTextField(
@@ -458,7 +459,7 @@ class ArchiveIndexPage(AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class NewsArticle(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
+class NewsArticle(BilingualCompanionFieldsMixin, MultilingualPageMixin, Page):
     """A bilingual news article with a category, date, and ordered gallery."""
 
     title_om = models.CharField(
@@ -470,6 +471,12 @@ class NewsArticle(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Pa
         blank=True,
         verbose_name=_("English title"),
     )
+    title_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic title"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     body_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -479,6 +486,12 @@ class NewsArticle(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Pa
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English body"),
+    )
+    body_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic body"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     category = models.CharField(
         max_length=20,
@@ -498,18 +511,22 @@ class NewsArticle(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Pa
     subpage_types = []
 
     required_om_fields = ("title_om", "body_om")
-    public_rich_text_fields = ("body_om", "body_en")
+    public_rich_text_fields = ("body_om", "body_en", "body_am")
     translation_invariant_fields = ("category", "published_date", "slug")
     bilingual_field_pairs = (
         ("title_en", "title_om"),
         ("body_en", "body_om"),
+        ("title_am", "title_om"),
+        ("body_am", "body_om"),
     )
 
     api_fields = [
         APIField("title_om"),
         APIField("title_en"),
+        APIField("title_am"),
         APIField("body_om"),
         APIField("body_en"),
+        APIField("body_am"),
         APIField("category"),
         APIField("published_date"),
         APIField("featured_image"),
@@ -533,6 +550,13 @@ class NewsArticle(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Pa
                 FieldPanel("body_en"),
             ],
             heading=_("Article body"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("title_am"),
+                FieldPanel("body_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
         ),
         InlinePanel("gallery_images", label=_("Gallery images")),
     ]
@@ -578,17 +602,25 @@ class NewsArticleGalleryImage(Orderable):
         blank=True,
         verbose_name=_("English caption"),
     )
+    caption_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic caption"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
 
     api_fields = [
         APIField("image"),
         APIField("caption_om"),
         APIField("caption_en"),
+        APIField("caption_am"),
     ]
 
     panels = [
         FieldPanel("image"),
         FieldPanel("caption_om"),
         FieldPanel("caption_en"),
+        FieldPanel("caption_am"),
     ]
 
     def clean(self):
@@ -597,16 +629,16 @@ class NewsArticleGalleryImage(Orderable):
             super().clean()
         except ValidationError as error:
             error.update_error_dict(errors)
-        if self.caption_en and not self.caption_om:
+        if (self.caption_en or self.caption_am) and not self.caption_om:
             errors["caption_om"] = _(
                 "Provide the authoritative Afaan Oromoo caption before "
-                "adding the English version."
+                "adding a translation."
             )
         if errors:
             raise ValidationError(errors)
 
 
-class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
+class Event(BilingualCompanionFieldsMixin, MultilingualPageMixin, Page):
     """A bilingual public event with a schedule and an optional location."""
 
     title_om = models.CharField(
@@ -618,6 +650,12 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
         blank=True,
         verbose_name=_("English title"),
     )
+    title_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic title"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     body_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -627,6 +665,12 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English body"),
+    )
+    body_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic body"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     event_start = models.DateTimeField()
     event_end = models.DateTimeField(null=True, blank=True)
@@ -639,6 +683,12 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
         max_length=255,
         blank=True,
         verbose_name=_("English location"),
+    )
+    location_text_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic location"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
@@ -655,7 +705,7 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
     subpage_types = []
 
     required_om_fields = ("title_om", "body_om")
-    public_rich_text_fields = ("body_om", "body_en")
+    public_rich_text_fields = ("body_om", "body_en", "body_am")
     translation_invariant_fields = (
         "event_start",
         "event_end",
@@ -667,17 +717,23 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
         ("title_en", "title_om"),
         ("body_en", "body_om"),
         ("location_text_en", "location_text_om"),
+        ("title_am", "title_om"),
+        ("body_am", "body_om"),
+        ("location_text_am", "location_text_om"),
     )
 
     api_fields = [
         APIField("title_om"),
         APIField("title_en"),
+        APIField("title_am"),
         APIField("body_om"),
         APIField("body_en"),
+        APIField("body_am"),
         APIField("event_start"),
         APIField("event_end"),
         APIField("location_text_om"),
         APIField("location_text_en"),
+        APIField("location_text_am"),
         APIField("latitude"),
         APIField("longitude"),
         APIField("featured_image"),
@@ -709,6 +765,14 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
                 FieldPanel("body_en"),
             ],
             heading=_("Event body"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("title_am"),
+                FieldPanel("location_text_am"),
+                FieldPanel("body_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
         ),
     ]
 
@@ -742,7 +806,7 @@ class Event(BilingualCompanionFieldsMixin, AuthoritativeOromoPageMixin, Page):
             raise ValidationError(errors)
 
 
-class CommunityStory(AuthoritativeOromoPageMixin, Page):
+class CommunityStory(MultilingualPageMixin, Page):
     """A community-submitted story that is public only after approval."""
 
     author_name = models.CharField(max_length=255)
@@ -755,6 +819,12 @@ class CommunityStory(AuthoritativeOromoPageMixin, Page):
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English story"),
+    )
+    story_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic story"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     submitted_at = models.DateTimeField(default=timezone.now)
     approved = models.BooleanField(
@@ -769,13 +839,14 @@ class CommunityStory(AuthoritativeOromoPageMixin, Page):
     subpage_types = []
 
     required_om_fields = ("story_om",)
-    public_rich_text_fields = ("story_om", "story_en")
+    public_rich_text_fields = ("story_om", "story_en", "story_am")
     translation_invariant_fields = ("author_name", "submitted_at", "approved", "slug")
 
     api_fields = [
         APIField("author_name"),
         APIField("story_om"),
         APIField("story_en"),
+        APIField("story_am"),
         APIField("submitted_at"),
         APIField("approved"),
     ]
@@ -796,6 +867,12 @@ class CommunityStory(AuthoritativeOromoPageMixin, Page):
             ],
             heading=_("Story"),
         ),
+        MultiFieldPanel(
+            [
+                FieldPanel("story_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
+        ),
     ]
 
     def clean(self):
@@ -805,12 +882,14 @@ class CommunityStory(AuthoritativeOromoPageMixin, Page):
         except ValidationError as error:
             error.update_error_dict(errors)
 
-        if self.story_en and not text_has_meaning(self.story_om):
+        if (self.story_en or self.story_am) and not text_has_meaning(
+            self.story_om
+        ):
             errors.setdefault(
                 "story_om",
                 _(
                     "Provide the authoritative Afaan Oromoo story before "
-                    "adding the English version."
+                    "adding a translation."
                 ),
             )
 
@@ -829,6 +908,12 @@ class Person(index.Indexed, ClusterableModel):
         max_length=255,
         blank=True,
         verbose_name=_("English name"),
+    )
+    name_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic name"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     slug = models.SlugField(
         max_length=255,
@@ -855,6 +940,12 @@ class Person(index.Indexed, ClusterableModel):
         features=PUBLIC_RICH_TEXT_FEATURES,
         verbose_name=_("English biography"),
     )
+    bio_am = RichTextField(
+        blank=True,
+        features=PUBLIC_RICH_TEXT_FEATURES,
+        verbose_name=_("Amharic biography"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     photo = models.ForeignKey(
         get_image_model_string(),
         null=True,
@@ -879,11 +970,13 @@ class Person(index.Indexed, ClusterableModel):
     api_fields = [
         APIField("name_om"),
         APIField("name_en"),
+        APIField("name_am"),
         APIField("slug"),
         APIField("birth_year"),
         APIField("death_year"),
         APIField("bio_om"),
         APIField("bio_en"),
+        APIField("bio_am"),
         APIField("photo"),
         APIField("woreda_slugs"),
         APIField("is_zone_notable"),
@@ -915,6 +1008,13 @@ class Person(index.Indexed, ClusterableModel):
                 FieldPanel("bio_en"),
             ],
             heading=_("Biography"),
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("name_am"),
+                FieldPanel("bio_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
         ),
         InlinePanel("placements", label=_("Woreda placements")),
     ]
@@ -948,10 +1048,10 @@ class Person(index.Indexed, ClusterableModel):
         if not text_has_meaning(self.name_om):
             errors["name_om"] = _("The authoritative Afaan Oromoo name is required.")
 
-        if self.bio_en and not text_has_meaning(self.bio_om):
+        if (self.bio_en or self.bio_am) and not text_has_meaning(self.bio_om):
             errors["bio_om"] = _(
                 "Provide the authoritative Afaan Oromoo biography before "
-                "adding the English version."
+                "adding a translation."
             )
 
         if (
@@ -1014,6 +1114,12 @@ class TimelineEvent(index.Indexed, models.Model):
         verbose_name=_("English year label"),
         help_text=_("Optional while the English translation is pending."),
     )
+    year_am = models.CharField(
+        max_length=40,
+        blank=True,
+        verbose_name=_("Amharic year label"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     year_int = models.IntegerField(
         help_text=_("Numeric year used to order the timeline."),
     )
@@ -1027,8 +1133,19 @@ class TimelineEvent(index.Indexed, models.Model):
         verbose_name=_("English title"),
         help_text=_("Optional while the English translation is pending."),
     )
+    title_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic title"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     text_om = models.TextField(
         verbose_name=_("Afaan Oromoo text"),
+    )
+    text_am = models.TextField(
+        blank=True,
+        verbose_name=_("Amharic text"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
     )
     text_en = models.TextField(
         blank=True,
@@ -1044,16 +1161,27 @@ class TimelineEvent(index.Indexed, models.Model):
         FieldPanel("title_en"),
         FieldPanel("text_om"),
         FieldPanel("text_en"),
+        MultiFieldPanel(
+            [
+                FieldPanel("year_am"),
+                FieldPanel("title_am"),
+                FieldPanel("text_am"),
+            ],
+            heading=_("Amharic (optional translation)"),
+        ),
     ]
 
     api_fields = [
         APIField("year_om"),
         APIField("year_en"),
+        APIField("year_am"),
         APIField("year_int"),
         APIField("title_om"),
         APIField("title_en"),
+        APIField("title_am"),
         APIField("text_om"),
         APIField("text_en"),
+        APIField("text_am"),
     ]
 
     search_fields = [

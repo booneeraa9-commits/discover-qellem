@@ -7,10 +7,15 @@ from wagtail.images.api.v2.views import ImagesAPIViewSet
 
 from archive.api import PersonAPIViewSet, TimelineEventAPIViewSet
 from partners.api import SponsorAPIViewSet, SupporterAPIViewSet
+from qellem_cms.i18n_api import LanguageAwareAPIViewSetMixin
 
 
-class PublicPagesAPIViewSet(PagesAPIViewSet):
+class PublicPagesAPIViewSet(LanguageAwareAPIViewSetMixin, PagesAPIViewSet):
     """Pages endpoint that hides unapproved community stories from anonymous users."""
+
+    known_query_parameters = PagesAPIViewSet.known_query_parameters.union(
+        ["lang"]
+    )
 
     def get_base_queryset(self):
         from archive.models import CommunityStory
