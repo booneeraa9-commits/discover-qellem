@@ -45,3 +45,13 @@ CORS_ALLOWED_ORIGINS = (
 # Only the public API may be called cross-origin; admin and page routes stay
 # same-origin.
 CORS_URLS_REGEX = r"^/api/"
+
+# Allow the FE dev server to send session/CSRF cookies cross-origin for
+# the /staff editor dashboard (#38). Off unless explicitly enabled.
+CORS_ALLOW_CREDENTIALS = boolean("DJANGO_CORS_ALLOW_CREDENTIALS", False)
+if CORS_ALLOW_CREDENTIALS:
+    # The browser only sends cookies to origins listed explicitly, and
+    # Django only accepts their CSRF tokens when trusted.
+    CSRF_TRUSTED_ORIGINS = sorted(
+        {*CSRF_TRUSTED_ORIGINS, *CORS_ALLOWED_ORIGINS}
+    )
