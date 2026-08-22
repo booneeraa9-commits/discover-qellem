@@ -2,7 +2,7 @@
 
 - **Owner:** QA Engineer
 - **Status:** Living document — update as pages port and gates change
-- **Last run of gates:** 2026-08-21 against `main` @ `3777e96` (Sprint 1 merged, PR #57)
+- **Last run of gates:** 2026-08-22 against `main` @ `e6cec87` (Sprint 2 merged, PR #77)
 - **Reference build:** `demo-vanilla-reference` branch (visual + content spec)
 
 Every PR is blocked from merge until QA posts the sign-off block (see
@@ -11,25 +11,43 @@ refers to.
 
 ---
 
-## Sprint 2 status (updated as PRs land)
+## Sprint 3 status (updated as PRs land)
 
-**On `main` (Sprint 1, PR #57):** Compose `cms`/`web` services; web app shell
-(tokens, fonts, theme init script); sticky glass nav with EN/OM + dark toggles
-and mobile drawer; bilingual footer; home hero + stats + feature grid; i18n
-string system (`[OM]` placeholders allowed for Sprint 2). Routes shipped: `/`
-and `/404` only.
+**On `main` (Sprint 2, PR #77):** all public routes render from local typed
+data (CMS wiring is Sprint 3 backend work). Verified in the Sprint 3 regression
+sweep: 31 static pages build; no horizontal scroll at 375/768/1280; no broken
+images; no missing `alt`; no emojis/`any`/console logs; drawer and lightbox
+keyboard behavior pass.
 
-**In flight (Sprint 2):**
-- Backend: #59 (pytest/ruff tooling — **PR #65, QA APPROVED**), #22 (Wagtail
-  API v2), #23 (news/event/story models), #25 (Person), #24 (place fields),
-  #27 (inauguration article), #26 (12 woreda fixtures), #28 (remaining content).
-- Frontend: #15 (cards), #42 (lightbox), #43 (dark-mode hero overlays), #20
-  (motion), #14 (SVG map), #17 (woreda page), #18 (news/history/support/…).
+Routes shipped: `/`, `/about`, `/components` (dev preview — see bug #81),
+`/contribute`, `/history`, `/news`, `/news/<slug>` (8), `/places`,
+`/place/<slug>` (12, canonical OM slugs), `/staff`, `/support`, `/404`.
+
+**In flight (Sprint 3):**
+- Backend (sequence): #22 (Wagtail API v2), #23 (news/event/story models),
+  #25 (Person), #24 (place fields), #27 (inauguration article), #26 (12
+  woreda fixtures), #28 (remaining content).
+- Frontend (parallel): #19 (PWA: manifest/SW/install banner/offline), #33 (OSM
+  embed per woreda), #16 (home sections: previews, notable people, plan visit,
+  at-a-glance table, sponsors marquee, support CTA), #34 (a11y audit), #36
+  (SEO: OG/Twitter, canonical, sitemap.xml, robots.txt).
 
 **Sign-off log:**
 | PR | Result | Date |
 |---|---|---|
 | #65 (pytest/ruff tooling) | APPROVED | 2026-08-21 |
+| #77 (Sprint 2 UI integration) | merged by PM | 2026-08-21 |
+
+**Hard gates for Sprint 3 PRs (re-checked on every PR):**
+- No emojis in user-visible strings (grep Unicode ranges).
+- Canonical OM woreda names exactly as `qa/CONTENT_FACTS.md`; canonical OM slugs
+  only (`dambi-doolloo`, `haawwaa-galaan`, …).
+- Inauguration gallery order **project13, project6, project3, project1,
+  project2** (#61).
+- Dark mode readable on every new page — see the known failures in #67/#80
+  (do not accept new instances of `--brand-400`-on-dark or white-chips-in-dark).
+- No horizontal scroll at 375px; touch targets >= 44px on new controls (#66).
+- Images have `alt` (or `alt=""`); no `any` in TS; no console.log/print.
 
 ---
 
@@ -39,22 +57,26 @@ QA drives a headless Chromium (system `chromium` + `puppeteer-core`) to check
 console errors, horizontal scroll, broken images, missing `alt`, touch-target
 sizes (<44px), heading-order skips, WCAG contrast (text-only, image/gradient
 backgrounds flagged for manual review), Tab order, and drawer Esc behavior, and
-to capture light/dark screenshots at 375/768/1280px. The script lives in the QA
-sandbox (`/home/user/qatools/qa-harness.js`); it is not committed to the repo.
+to capture light/dark screenshots at 375/768/1280px. The scripts live in the QA
+sandbox (`/home/user/qatools/qa-harness.js` + `contrast-scan.js`); they are not
+committed to the repo.
 
 ```bash
 # Prereqs (QA sandbox): chromium + puppeteer-core + a running `npm run dev`
 chromium --version                      # e.g. 151.x
 cd /home/user/qatools && node -e "require('puppeteer-core')"
 
-# Run against the dev server (MUST use localhost, see bug #68)
-BASE_URL=http://localhost:3000 ROUTES=/ node qa-harness.js
-# report -> /home/user/qatools/out/report.json + screenshots
+# Full sweep (scroll/alt/targets/drawer + screenshots)
+BASE_URL=http://localhost:3000 ROUTES="/,/news,/places,/place/dambi-doolloo" node qa-harness.js
+
+# Theme-controlled contrast scan (explicit light/dark passes)
+BASE_URL=http://localhost:3000 ROUTES="/,/news,/places,/history" node contrast-scan.js
+# reports -> /home/user/qatools/out/report.json + contrast.json + screenshots
 ```
 
 Known harness caveats:
 - Contrast over a `background-image` (photo/gradient) is skipped — verify hero
-  readability visually/manually.
+  and footer readability manually (footer is dark in both themes by design).
 - Use `http://localhost:3000`, not `127.0.0.1` (dev server blocks chunks on
   other origins — bug #68).
 
@@ -257,49 +279,83 @@ lands**; a route does not get a QA sign-off until every applicable row passes.
 
 ---
 
-## 2b. Sprint 2 component checks (as they land)
+## 2b. Sprint 2 component checks (verified on main @ e6cec87)
 
-Run these in addition to §2's common checks (C1–C12). Each row must pass before
-the issue's PR is signed off.
+Run these in addition to §2's common checks (C1–C12).
 
-### Cards (issue #15)
+### Cards (issue #15) — VERIFIED (one dark-mode contrast bug, #80)
 - Place card: canonical OM name + EN pair, image, badge(s), link to
-  `/place/<canonical-slug>`; hover lift 350ms; focus ring on keyboard focus.
+  `/place/<canonical-slug>`; hover lift; focus ring on keyboard focus.
 - News card: title, date (ISO internally, localized display), category chip,
   link to `/news/<slug>`.
-- Person/story/sponsor/supporter cards: content matches demo; no emoji initials
-  (use initials in text, not emoji).
-- Card links are real `<a>` (not `div onclick`); whole-card hit area works.
+- Person/story/sponsor/supporter cards: content matches demo; no emoji initials.
+- Card links are real `<a>`; whole-card hit area works.
+- KNOWN FAIL: `.news-cat` and `.place-stat-chip` are 1.41:1 in dark mode
+  (white chip + `--brand-800` text) — bug #80.
 
-### Lightbox / gallery (issue #42)
-- Opens on gallery click; `role="dialog"` + `aria-modal="true"`; focus moves
-  into the lightbox on open and returns to the trigger on close.
-- Keyboard: Esc closes; ←/→ navigate; prev/next buttons have labels.
-- Touch: swipe left/right navigates; buttons >= 44px.
-- Image order matches the source (inauguration gallery MUST be
-  project13, project6, project3, project1, project2 — bug #61).
+### Lightbox / gallery (issue #42) — VERIFIED (functional + a11y)
+- `role="dialog"` + `aria-modal="true"`; focus moves into the lightbox on open
+  and returns to the trigger on close (tested).
+- Esc closes; left/right arrows navigate; Tab cycles only close/prev/next
+  (tested). Prev/next buttons have labels.
+- Touch swipe navigates; buttons >= 44px.
+- Inauguration gallery order is project13, project6, project3, project1,
+  project2 (VERIFIED — #61 resolved).
 
-### Zone map (issues #14 / #33)
-- SVG map: clickable woreda shapes; each has an accessible name; keyboard
-  focusable with visible focus; clicking navigates to `/place/<slug>`.
-- OSM embed (issue #33): iframe has a `title`; does not cause horizontal scroll
-  at 375px; has a fallback link to the place page.
+### Zone map (issue #14 landed; #33 OSM pending)
+- SVG map: clickable woreda pins (`<a>` in SVG, keyboard-focusable, aria-labels
+  with EN+OM names); clicking navigates to `/place/<slug>`. VERIFIED.
+- OSM embed (issue #33): iframe `title`; no horizontal scroll at 375px;
+  fallback link. PENDING (Sprint 3).
 
-### Woreda/town page (issue #17)
-- All 12 slugs render (canonical slugs only — bug #62); unknown slug → graceful
-  not-found.
-- Sections match demo: hero + chips, about/read-more, key-facts table, culture
-  grid, places to discover, gallery, notable people, map.
-- Hero overlay readable in dark mode (issue #43); no hardcoded gradient inline
-  in TSX (see §0b note / bug #63-comment on #43).
-- Facts/numbers match `qa/CONTENT_FACTS.md` and trace to `provenance` sources.
+### Woreda/town page (issue #17) — VERIFIED
+- All 12 canonical slugs render; unknown slug gives a 404 + friendly page.
+- Sections match demo (hero, about/read-more, key facts, culture, places,
+  gallery, notable people, map).
+- Hero overlay uses `--hero-vign-*` tokens in globals.css (no inline gradient).
+- Facts/numbers match `qa/CONTENT_FACTS.md`; data in
+  `apps/web/src/lib/places-data.ts` (CMS wiring is #22/#30).
 
-### News / history / support / staff / 404 (issue #18)
-- News list + Events tab; article detail; history timeline; support page with
-  sponsors/supporters and inert Chapa CTA; staff login; bilingual 404.
-- `/contribute` and `/about` links exist in the footer — confirm with PM whether
-  these routes are in scope (they are in the demo but absent from the Sprint 2
-  route list).
+### News / history / support / staff / 404 (issue #18) — VERIFIED
+- News list + category filter; article detail; history timeline; support page
+  with sponsors/supporters + inert Chapa CTA; staff login; bilingual 404.
+- `/contribute` and `/about` exist and are linked from the footer.
+- KNOWN FAIL: `.tl-year` and `.person-role` at 4.24/4.11:1 in dark mode
+  (extended #67).
+
+---
+
+## 2c. Sprint 3 checklists (pending features)
+
+### PWA / offline (issue #19) — pending
+- [ ] Manifest with `name`, `short_name`, `start_url`, `display: standalone`,
+  `theme_color #0b3d2e`, `background_color`, icons 192/512 + maskable +
+  apple-touch.
+- [ ] Service worker registers; precaches nav shell + fonts + CSS/JS.
+- [ ] Offline shell after first visit (`/`, `/places`, `/news` render cached).
+  Test via CDP network emulation (offline) after a warm load.
+- [ ] Install banner shows; dismiss persists via
+  `localStorage.dq_install_dismissed === "1"` across reloads (demo behavior).
+- [ ] SW cache versioned and purges stale caches on activate.
+
+### OSM embed (issue #33) — pending
+- [ ] Per-woreda embed on `/place/<slug>`; iframe `title`; lazy-loaded.
+- [ ] No horizontal scroll at 375px; fallback link to the woreda page.
+
+### Home sections (issue #16) — pending
+- [ ] Places preview, news preview, stories, notable people, plan visit,
+  at-a-glance table, sponsors marquee, support CTA.
+- [ ] Sponsors marquee: pauses on hover, honors `prefers-reduced-motion`,
+  keyboard-operable, no horizontal scroll from the marquee track.
+- [ ] At-a-glance table numbers match `qa/CONTENT_FACTS.md`.
+
+### A11y audit (issue #34) — pending
+- [ ] Must close #67, #80, #82 (contrast) and #66 (touch targets).
+- [ ] axe-core CI step (or equivalent); document triaged exceptions.
+
+### SEO (issue #36) — pending
+- [ ] `sitemap.xml` lists only public routes (exclude `/components` — bug #81).
+- [ ] `robots.txt` present; canonical URLs + OG/Twitter meta per page.
 
 ---
 
@@ -491,27 +547,29 @@ before launch (issue **#44**).
 
 ## 9. Bug register
 
-Baseline bugs found on `main` are written up in `qa/bugs/` (issue-ready bodies
-+ `gh` commands). Summary (updated 2026-08-21 after Sprint 1):
+Summary (updated 2026-08-22 after Sprint 2, PR #77):
 
-| ID | GitHub | Severity | Lane | Title | Status |
-|---|---|---|---|---|---|
-| 001 | [#47](https://github.com/booneeraa9-commits/discover-qellem/issues/47) | P1 | frontend | `npx tsc --noEmit` fails on fresh clone (`LayoutProps`) | FIXED in Sprint 1 (PR #57); closed |
-| 002 | [#48](https://github.com/booneeraa9-commits/discover-qellem/issues/48) | P1 | backend/docs | `pytest` + `ruff` documented but not installed/configured | dup of #59; closed |
-| 003 | [#49](https://github.com/booneeraa9-commits/discover-qellem/issues/49) | P2 | backend | 11 × `treebeard.E001` warnings | dup of #60; closed |
-| 004 | [#50](https://github.com/booneeraa9-commits/discover-qellem/issues/50) | P1 | content | Inauguration gallery order wrong in demo | dup of #61; closed |
-| 005 | [#51](https://github.com/booneeraa9-commits/discover-qellem/issues/51) | P1 | content | Place slug divergence (canonical OM vs demo) | dup of #62; closed |
-| 006 | [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` ignored; no `.env` load for native dev | OPEN |
-| 007 | [#64](https://github.com/booneeraa9-commits/discover-qellem/issues/64) | P1 | frontend | Closed mobile drawer stays in Tab order | OPEN |
-| 008 | [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets <44px (nav 39, drawer/footer 32, Staff 19, mailto 22) | OPEN |
-| 009 | [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | `.kicker` dark-mode contrast 4.24:1 < 4.5:1 | OPEN |
-| 010 | [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 (`allowedDevOrigins`) | OPEN |
+| GitHub | Severity | Lane | Title | Status |
+|---|---|---|---|---|
+| [#59](https://github.com/booneeraa9-commits/discover-qellem/issues/59) | P1 | backend | pytest + ruff not installed/enforced | FIXED (PR #65, APPROVED) |
+| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` warnings | OPEN |
+| [#61](https://github.com/booneeraa9-commits/discover-qellem/issues/61) | P1 | content | Inauguration gallery order | RESOLVED on main (project13,6,3,1,2 verified) |
+| [#62](https://github.com/booneeraa9-commits/discover-qellem/issues/62) | P1 | content | Place slug divergence | RESOLVED on main (canonical OM slugs used) |
+| [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` ignored; no `.env` load | OPEN (retested) |
+| [#64](https://github.com/booneeraa9-commits/discover-qellem/issues/64) | P1 | frontend | Closed drawer in tab order | FIXED (Sprint 2 commit db09f8e, `inert`); verified |
+| [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets <44px | PARTIAL — icon-btn/social/page-btn fixed; nav 39, drawer/footer 32, Staff 19, mailto 22 remain (retested) |
+| [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | brand-400-on-paper contrast 4.24:1 | OPEN, extended: also `.tl-year`, `.person-role` |
+| [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 | OPEN (retested, `allowedDevOrigins` still missing) |
+| [#80](https://github.com/booneeraa9-commits/discover-qellem/issues/80) | P1 | frontend | Dark-mode contrast: active nav 2.54, chips 2.54, card chips 1.41 | NEW (Sprint 3 sweep) |
+| [#81](https://github.com/booneeraa9-commits/discover-qellem/issues/81) | P2 | frontend | Dev-only `/components` page ships in production build | NEW |
+| [#82](https://github.com/booneeraa9-commits/discover-qellem/issues/82) | P2 | frontend | Gold sponsor initials 4.37:1 (light mode) | NEW |
 
-Canonical PM-filed bugs (not mine): #59 (pytest/ruff — PR #65), #60 (treebeard),
-#61 (gallery order — **BE must use project13,6,3,1,2**), #62 (place slugs).
+Sprint 2 verified clean: no emojis, no `any`, no console.log/print, no
+hardcoded hex outside `globals.css` (only `themeColor` meta), all 12 canonical
+OM names + slugs, no horizontal scroll, no broken images, no missing `alt`,
+drawer + lightbox keyboard behavior pass, reduced-motion honored.
 
-Already tracked on GitHub (do not re-file): Wagtail API v2 not wired (**#22**),
-compose `cms`/`web` services (**#8**, closed by PR #45).
+Already tracked on GitHub (do not re-file): Wagtail API v2 not wired (**#22**).
 
 ---
 
