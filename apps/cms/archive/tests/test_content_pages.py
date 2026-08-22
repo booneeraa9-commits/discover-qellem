@@ -222,7 +222,7 @@ class CommunityStoryTests(TestCase):
         self.assertFalse(saved.approved)
         self.assertIsNotNone(saved.submitted_at)
 
-    def test_story_requires_om_text(self):
+    def test_story_requires_text_in_at_least_one_language(self):
         story = make_story(story_om="")
 
         with self.assertRaises(ValidationError) as error:
@@ -230,8 +230,17 @@ class CommunityStoryTests(TestCase):
 
         self.assertIn("story_om", error.exception.message_dict)
 
-    def test_english_story_requires_om_story(self):
+    def test_unapproved_english_only_story_is_allowed(self):
+        # Changed by #32: anonymous submissions may arrive EN/AM-only;
+        # the authoritative OM story is enforced at approval time.
         story = make_story(story_om="", story_en="<p>English only.</p>")
+        self.index.add_child(instance=story)
+        story.full_clean()
+
+    def test_approved_english_story_requires_om_story(self):
+        story = make_story(
+            story_om="", story_en="<p>English only.</p>", approved=True
+        )
 
         with self.assertRaises(ValidationError) as error:
             self.index.add_child(instance=story)

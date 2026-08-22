@@ -807,9 +807,27 @@ class Event(BilingualCompanionFieldsMixin, MultilingualPageMixin, Page):
 
 
 class CommunityStory(MultilingualPageMixin, Page):
-    """A community-submitted story that is public only after approval."""
+    """A community-submitted story that is public only after approval.
 
-    author_name = models.CharField(max_length=255)
+    Anonymous visitors may submit stories through the public API (#32);
+    submissions arrive unapproved and unpublished, in any of the three
+    languages. The authoritative Afaan Oromoo story becomes mandatory at
+    the moment an editor approves the story for publication.
+    """
+
+    author_name = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text=_("Optional; anonymous community submissions are allowed."),
+    )
+    geography = models.ForeignKey(
+        "places.Geography",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="community_stories",
+        help_text=_("Optional place this story is about."),
+    )
     story_om = RichTextField(
         blank=True,
         features=PUBLIC_RICH_TEXT_FEATURES,
@@ -838,12 +856,24 @@ class CommunityStory(MultilingualPageMixin, Page):
     parent_page_types = ["archive.ArchiveIndexPage"]
     subpage_types = []
 
-    required_om_fields = ("story_om",)
     public_rich_text_fields = ("story_om", "story_en", "story_am")
-    translation_invariant_fields = ("author_name", "submitted_at", "approved", "slug")
+    translation_invariant_fields = (
+        "author_name",
+        "submitted_at",
+        "approved",
+        "slug",
+        "geography",
+    )
+
+    @property
+    def required_om_fields(self):
+        # The authoritative Oromo story is only enforced once an editor
+        # approves the story; unapproved submissions may be EN/AM-only.
+        return ("story_om",) if self.approved else ()
 
     api_fields = [
         APIField("author_name"),
+        APIField("geography_slug"),
         APIField("story_om"),
         APIField("story_en"),
         APIField("story_am"),
@@ -855,6 +885,7 @@ class CommunityStory(MultilingualPageMixin, Page):
         MultiFieldPanel(
             [
                 FieldPanel("author_name"),
+                FieldPanel("geography"),
                 FieldPanel("submitted_at"),
                 FieldPanel("approved"),
             ],
@@ -882,19 +913,35 @@ class CommunityStory(MultilingualPageMixin, Page):
         except ValidationError as error:
             error.update_error_dict(errors)
 
-        if (self.story_en or self.story_am) and not text_has_meaning(
-            self.story_om
+        if self.approved:
+            if (self.story_en or self.story_am) and not text_has_meaning(
+                self.story_om
+            ):
+                errors.setdefault(
+                    "story_om",
+                    _(
+                        "Provide the authoritative Afaan Oromoo story before "
+                        "approving a story with translations."
+                    ),
+                )
+        elif not any(
+            text_has_meaning(getattr(self, field))
+            for field in ("story_om", "story_en", "story_am")
         ):
             errors.setdefault(
                 "story_om",
                 _(
-                    "Provide the authoritative Afaan Oromoo story before "
-                    "adding a translation."
+                    "Provide the story in at least one language "
+                    "(Afaan Oromoo preferred)."
                 ),
             )
 
         if errors:
             raise ValidationError(errors)
+
+    @property
+    def geography_slug(self):
+        return self.geography.slug if self.geography_id else None
 
 
 class Person(index.Indexed, ClusterableModel):
