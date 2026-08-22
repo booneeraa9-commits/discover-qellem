@@ -33,14 +33,15 @@ class ScopedPageAccessTests(EditorialTestMixin, TestCase):
         super().setUpTestData()
         cls.editor.groups.add(Group.objects.get(name=SUBJECT_EDITORS))
         cls.homepage = HomePage.objects.get()
-        cls.index = GeographyIndexPage(
-            title="Aanaalee fi Bulchiinsa Magaalaa",
-            slug="places",
-            introduction="Iddoowwan Qellem Wallaggaa.",
+        cls.index = GeographyIndexPage.objects.get(
+            slug="places", locale__language_code="om"
         )
-        cls.homepage.add_child(instance=cls.index)
-        cls.dambi_page = cls.make_profile(cls.dambi)
-        cls.sayyo_page = cls.make_profile(cls.sayyo)
+        cls.dambi_page = GeographyProfilePage.objects.get(
+            slug="dambi-doolloo", locale__language_code="om"
+        )
+        cls.sayyo_page = GeographyProfilePage.objects.get(
+            slug="sayyoo", locale__language_code="om"
+        )
 
     @classmethod
     def make_profile(cls, geography):
@@ -164,16 +165,12 @@ class PageActionEnforcementTests(EditorialTestMixin, TestCase):
     def setUpTestData(cls):
         super().setUpTestData()
         cls.homepage = HomePage.objects.get()
-        cls.index = GeographyIndexPage(
-            title="Aanaalee fi Bulchiinsa Magaalaa",
-            slug="places",
-            introduction="Iddoowwan Qellem Wallaggaa.",
+        cls.index = GeographyIndexPage.objects.get(
+            slug="places", locale__language_code="om"
         )
-        cls.homepage.add_child(instance=cls.index)
-        from places.testing import geography_profile_kwargs
-
-        cls.profile = GeographyProfilePage(**geography_profile_kwargs(cls.dambi))
-        cls.index.add_child(instance=cls.profile)
+        cls.profile = GeographyProfilePage.objects.get(
+            slug="dambi-doolloo", locale__language_code="om"
+        )
 
     def request(self, data=None):
         request = RequestFactory().post("/admin/pages/action/", data or {})

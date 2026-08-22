@@ -27,7 +27,11 @@ class GeographyPageTests(TestCase):
         self.homepage = HomePage.objects.get()
         self.sayyoo = Geography.objects.get(slug="sayyoo")
 
-    def make_index(self, slug="places"):
+    def make_index(self, slug=None):
+        if slug is None:
+            from places.testing import get_places_index
+
+            return get_places_index()
         page = GeographyIndexPage(
             title="Aanaalee fi Bulchiinsa Magaalaa",
             slug=slug,
@@ -37,9 +41,9 @@ class GeographyPageTests(TestCase):
         return page
 
     def make_profile(self, parent=None, geography=None):
-        from places.testing import geography_profile_kwargs
+        from places.testing import create_test_woreda, geography_profile_kwargs
 
-        geography = geography or self.sayyoo
+        geography = geography or create_test_woreda()
         page = GeographyProfilePage(**geography_profile_kwargs(geography))
         (parent or self.make_index()).add_child(instance=page)
         return page
@@ -70,9 +74,11 @@ class GeographyPageTests(TestCase):
         self.assertIn("geography", error.exception.message_dict)
 
     def test_profile_placement_is_enforced_outside_the_editor_ui(self):
-        from places.testing import geography_profile_kwargs
+        from places.testing import create_test_woreda, geography_profile_kwargs
 
-        profile = GeographyProfilePage(**geography_profile_kwargs(self.sayyoo))
+        profile = GeographyProfilePage(
+            **geography_profile_kwargs(create_test_woreda())
+        )
         self.homepage.add_child(instance=profile)
 
         with self.assertRaises(ValidationError) as error:
@@ -101,13 +107,16 @@ class GeographyPageTests(TestCase):
         self.assertIn("slug", error.exception.message_dict)
 
     def test_one_geography_profile_per_locale_is_enforced(self):
+        from places.testing import geography_profile_kwargs
+
         first = self.make_profile()
         second = GeographyProfilePage(
-            title=self.sayyoo.canonical_name,
-            slug=self.sayyoo.slug,
-            geography=self.sayyoo,
-            introduction="Seensa biraa.",
-            overview="Ibsa biraa.",
+            **geography_profile_kwargs(
+                first.geography,
+                introduction="Seensa biraa.",
+                overview="Ibsa biraa.",
+                slug="aanaa-yaalii-2",
+            )
         )
         with self.assertRaises(ValidationError) as error:
             first.get_parent().add_child(instance=second)

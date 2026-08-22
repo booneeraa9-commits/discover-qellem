@@ -5,8 +5,12 @@ from django.test import TestCase
 
 from archive.models import Person
 from home.models import HomePage
-from places.models import Geography, GeographyIndexPage, GeographyProfilePage
-from places.testing import geography_profile_kwargs
+from places.models import Geography, GeographyProfilePage
+from places.testing import (
+    create_test_woreda,
+    geography_profile_kwargs,
+    get_places_index,
+)
 
 PAGES_URL = "/api/v2/pages/"
 
@@ -33,16 +37,12 @@ class ProfileFieldTestCase(TestCase):
         cls.homepage = HomePage.objects.get()
         cls.dambi = Geography.objects.get(slug="dambi-doolloo")
         cls.sayyoo = Geography.objects.get(slug="sayyoo")
-        cls.index = GeographyIndexPage(
-            title="Aanaalee fi Bulchiinsa Magaalaa",
-            slug="places",
-            introduction="Iddoowwan Qellem Wallaggaa.",
-        )
-        cls.homepage.add_child(instance=cls.index)
+        cls.index = get_places_index()
+        cls.test_woreda = create_test_woreda()
 
     def make_profile(self, geography=None, **overrides):
         page = GeographyProfilePage(
-            **geography_profile_kwargs(geography or self.dambi, **overrides)
+            **geography_profile_kwargs(geography or self.test_woreda, **overrides)
         )
         self.index.add_child(instance=page)
         return page
@@ -188,8 +188,14 @@ class ProfileApiSerializationTests(ProfileFieldTestCase):
         )
         self.assertEqual(response.status_code, 200)
         items = response.json()["items"]
-        self.assertEqual(len(items), 1)
-        self.assertEqual(items[0]["quick_facts"], VALID_QUICK_FACTS)
+        # The 12 seeded woreda profiles are also listed; find ours by slug.
+        matches = [
+            item
+            for item in items
+            if item["geography_slug"] == self.test_woreda.slug
+        ]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["quick_facts"], VALID_QUICK_FACTS)
 
 
 class ProfileAdminPanelTests(TestCase):
