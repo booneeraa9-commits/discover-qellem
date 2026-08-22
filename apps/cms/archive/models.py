@@ -373,13 +373,17 @@ class GlossaryTermPage(AuthoritativeOromoPageMixin, Page):
 
 
 class NewsCategory(models.TextChoices):
+    """PM-approved 9-category taxonomy; keys match the frontend categoryKey."""
+
     DEVELOPMENT = "development", _("Development / Misooma")
+    ECONOMY = "economy", _("Economy / Dinagdee")
+    ENVIRONMENT = "environment", _("Environment / Naannoo")
+    MINERALS = "minerals", _("Minerals / Mineraala")
+    AGRICULTURE = "agriculture", _("Agriculture / Qonna")
+    HEALTH = "health", _("Health / Fayyaa")
+    EDUCATION = "education", _("Education / Barnoota")
     CULTURE = "culture", _("Culture / Aadaa")
-    ECONOMY = "economy", _("Economy / Diinaagdee")
-    INFRASTRUCTURE = "infrastructure", _("Infrastructure")
-    HEALTH = "health", _("Health")
-    EDUCATION = "education", _("Education")
-    GOVERNANCE = "governance", _("Governance")
+    TRADE = "trade", _("Trade / Daldala")
 
 
 class BilingualCompanionFieldsMixin(models.Model):

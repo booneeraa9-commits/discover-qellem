@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
                 ('title_en', models.CharField(blank=True, max_length=255, verbose_name='English title')),
                 ('body_om', wagtail.fields.RichTextField(blank=True, verbose_name='Afaan Oromoo body')),
                 ('body_en', wagtail.fields.RichTextField(blank=True, verbose_name='English body')),
-                ('category', models.CharField(choices=[('development', 'Development / Misooma'), ('culture', 'Culture / Aadaa'), ('economy', 'Economy / Diinaagdee'), ('infrastructure', 'Infrastructure'), ('health', 'Health'), ('education', 'Education'), ('governance', 'Governance')], max_length=20)),
+                ('category', models.CharField(choices=[('development', 'Development / Misooma'), ('economy', 'Economy / Dinagdee'), ('environment', 'Environment / Naannoo'), ('minerals', 'Minerals / Mineraala'), ('agriculture', 'Agriculture / Qonna'), ('health', 'Health / Fayyaa'), ('education', 'Education / Barnoota'), ('culture', 'Culture / Aadaa'), ('trade', 'Trade / Daldala')], max_length=20)),
                 ('published_date', models.DateField()),
                 ('featured_image', models.ForeignKey(blank=True, help_text='Only an image with approved rights may be selected.', null=True, on_delete=django.db.models.deletion.PROTECT, related_name='+', to='wagtailimages.image')),
             ],
