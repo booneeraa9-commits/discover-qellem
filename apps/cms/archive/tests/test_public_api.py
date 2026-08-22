@@ -108,8 +108,9 @@ class ArchiveApiTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         items = response.json()["items"]
-        self.assertEqual(len(items), 1)
-        self.assertEqual(items[0]["category"], "development")
+        by_title = {item["title_om"]: item for item in items}
+        self.assertIn("Mata Duree Oduu", by_title)
+        self.assertEqual(by_title["Mata Duree Oduu"]["category"], "development")
 
     def test_archive_index_exposes_introduction(self):
         response = self.client.get(f"{PAGES_URL}{self.index.pk}/")
