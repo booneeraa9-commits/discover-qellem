@@ -3213,7 +3213,10 @@ body.photo-nav .nav:not(.scrolled) {
   left: 8px;
   z-index: 300;
   transform: translateY(-200%);
-  background: var(--brand-800);
+  /* Use literal deep brand green so the skip link stays white-on-dark-green
+     in both themes (--brand-800 inverts to a light tone in dark mode which
+     made white text 1.4:1). Matches the footer background. */
+  background: #0b3d2e;
   color: #fff;
   padding: 12px 18px;
   border-radius: 10px;
@@ -3221,6 +3224,7 @@ body.photo-nav .nav:not(.scrolled) {
   font-size: 14px;
   box-shadow: var(--shadow-lg);
   transition: transform 0.2s var(--ease);
+  border: 2px solid var(--gold-400);
 }
 
 .skip-link:focus-visible {
