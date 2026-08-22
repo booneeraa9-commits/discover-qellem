@@ -129,6 +129,11 @@ export default async function RootLayout({
 }) {
   const lang = await resolveRequestLang();
 
+  // Preconnect to a remote CMS origin so CMS media fetches start early.
+  const cmsHost = process.env.NEXT_PUBLIC_CMS_URL;
+  const cmsPreconnect =
+    cmsHost && /^https?:\/\//.test(cmsHost) ? cmsHost.replace(/\/+$/, "") : null;
+
   return (
     <html
       lang={lang}
@@ -137,6 +142,9 @@ export default async function RootLayout({
       className={`${fraunces.variable} ${inter.variable} ${notoSansEthiopic.variable}`}
     >
       <head>
+        {cmsPreconnect ? (
+          <link rel="preconnect" href={cmsPreconnect} crossOrigin="anonymous" />
+        ) : null}
         <script dangerouslySetInnerHTML={{ __html: prePaintInitScript }} />
       </head>
       <body>
