@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next";
-import { newsSlugs } from "@/lib/news-data";
-import { placeSlugs } from "@/lib/places-data";
+import { getAllNews, getAllPlaces } from "@/lib/cms";
 import { SITE_URL } from "@/lib/site";
 
 // /staff (disallowed in robots) and /offline (utility) are intentionally
-// excluded. Rebuilt from the CMS in #30.
+// excluded. Slugs come from the CMS with the local mock fallback.
 const STATIC_ROUTES = ["", "/places", "/news", "/history", "/support", "/contribute", "/about"];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [news, places] = await Promise.all([getAllNews(), getAllPlaces()]);
   const lastModified = new Date();
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
@@ -17,15 +17,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : 0.7,
   }));
 
-  const placeEntries: MetadataRoute.Sitemap = placeSlugs.map((slug) => ({
-    url: `${SITE_URL}/place/${slug}`,
+  const placeEntries: MetadataRoute.Sitemap = places.map((place) => ({
+    url: `${SITE_URL}/place/${place.geography_slug ?? place.meta?.slug ?? ""}`,
     lastModified,
     changeFrequency: "monthly",
     priority: 0.6,
   }));
 
-  const newsEntries: MetadataRoute.Sitemap = newsSlugs.map((slug) => ({
-    url: `${SITE_URL}/news/${slug}`,
+  const newsEntries: MetadataRoute.Sitemap = news.map((article) => ({
+    url: `${SITE_URL}/news/${article.meta?.slug ?? ""}`,
     lastModified,
     changeFrequency: "monthly",
     priority: 0.6,

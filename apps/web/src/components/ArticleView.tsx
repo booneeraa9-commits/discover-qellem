@@ -76,10 +76,12 @@ export default function ArticleView({ article }: { article: NewsArticle }) {
                 <CalendarDays aria-hidden="true" width={14} height={14} />
                 {formatDate(article.date)}
               </span>
-              <span>
-                <MapPin aria-hidden="true" width={14} height={14} />
-                {place}
-              </span>
+              {place.trim() !== "" ? (
+                <span>
+                  <MapPin aria-hidden="true" width={14} height={14} />
+                  {place}
+                </span>
+              ) : null}
             </div>
 
             <div className="article-hero">

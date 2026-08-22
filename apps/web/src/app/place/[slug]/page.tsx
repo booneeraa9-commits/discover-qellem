@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PlaceView from "@/components/PlaceView";
-import { getPlace, placeSlugs } from "@/lib/places-data";
+import { cmsToPlace } from "@/lib/adapters";
+import { getAllPeople, getAllPlaces, getPlaceBySlug, imageUrl, stripRichText, truncateText } from "@/lib/cms";
 import { buildMetadata } from "@/lib/seo";
 
-// Static route params for the 12 canonical slugs (qa/CONTENT_FACTS.md §3).
-export function generateStaticParams() {
-  return placeSlugs.map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const places = await getAllPlaces();
+  return places
+    .map((place) => ({ slug: place.geography_slug ?? place.meta?.slug ?? "" }))
+    .filter((entry) => entry.slug !== "");
 }
 
 export async function generateMetadata({
@@ -15,13 +18,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const place = getPlace(slug);
-  if (!place) return {};
+  const profile = await getPlaceBySlug(slug);
+  if (!profile) return {};
+  const name = profile.geography_name ?? profile.title;
   return buildMetadata({
-    title: `${place.name.en} — Discover Qellem`,
-    description: place.tagline.en,
+    title: `${name} — Discover Qellem`,
+    description: truncateText(
+      stripRichText(profile.intro_en) || stripRichText(profile.intro_om),
+      200,
+    ),
     path: `/place/${slug}`,
-    image: place.heroImage,
+    image: imageUrl(profile.hero_image ?? profile.featured_image, "/hero.jpg"),
   });
 }
 
@@ -31,8 +38,9 @@ export default async function PlacePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const place = getPlace(slug);
-  if (!place) notFound();
+  const [profile, people] = await Promise.all([getPlaceBySlug(slug), getAllPeople()]);
+  if (!profile) notFound();
 
-  return <PlaceView place={place} />;
+  const peopleBySlug = new Map(people.map((person) => [person.slug, person]));
+  return <PlaceView place={cmsToPlace(profile, peopleBySlug)} />;
 }
