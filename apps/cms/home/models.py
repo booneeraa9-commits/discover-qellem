@@ -70,6 +70,7 @@ class HomePage(AuthoritativeOromoPageMixin, Page):
         "archive.HistoryCultureIndexPage",
         "archive.PeopleIndexPage",
         "archive.GlossaryIndexPage",
+        "archive.ArchiveIndexPage",
     ]
 
     required_om_fields = ("introduction", "overview")

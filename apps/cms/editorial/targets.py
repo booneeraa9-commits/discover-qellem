@@ -44,10 +44,14 @@ def _related_geography_id(instance, field_name="geography"):
 def page_subject(page_or_class):
     from archive.models import (
         ArchiveEntryPage,
+        ArchiveIndexPage,
+        CommunityStory,
         DeceasedPersonPage,
+        Event,
         GlossaryIndexPage,
         GlossaryTermPage,
         HistoryCultureIndexPage,
+        NewsArticle,
         PeopleIndexPage,
     )
     from home.models import HomePage
@@ -64,6 +68,10 @@ def page_subject(page_or_class):
         return EditorialSubject.PEOPLE
     if issubclass(model, (GlossaryIndexPage, GlossaryTermPage)):
         return EditorialSubject.GLOSSARY_LANGUAGE
+    if issubclass(model, (ArchiveIndexPage, NewsArticle, Event)):
+        return EditorialSubject.NEWS_FEED
+    if issubclass(model, CommunityStory):
+        return EditorialSubject.PUBLIC_SUBMISSIONS
     return EditorialSubject.HOME_ZONE
 
 
