@@ -3,11 +3,11 @@
 from wagtail.api.v2.router import WagtailAPIRouter
 from wagtail.api.v2.views import PagesAPIViewSet
 from wagtail.documents.api.v2.views import DocumentsAPIViewSet
-from wagtail.images.api.v2.views import ImagesAPIViewSet
 
 from archive.api import PersonAPIViewSet, TimelineEventAPIViewSet
 from partners.api import SponsorAPIViewSet, SupporterAPIViewSet
 from qellem_cms.i18n_api import LanguageAwareAPIViewSetMixin
+from qellem_cms.images_api import RenditionedImagesAPIViewSet
 
 
 class PublicPagesAPIViewSet(LanguageAwareAPIViewSetMixin, PagesAPIViewSet):
@@ -34,7 +34,7 @@ class PublicPagesAPIViewSet(LanguageAwareAPIViewSetMixin, PagesAPIViewSet):
 api_router = WagtailAPIRouter("wagtailapi")
 
 api_router.register_endpoint("pages", PublicPagesAPIViewSet)
-api_router.register_endpoint("images", ImagesAPIViewSet)
+api_router.register_endpoint("images", RenditionedImagesAPIViewSet)
 api_router.register_endpoint("documents", DocumentsAPIViewSet)
 api_router.register_endpoint("people", PersonAPIViewSet)
 api_router.register_endpoint("timeline", TimelineEventAPIViewSet)
