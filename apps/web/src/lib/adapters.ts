@@ -171,8 +171,8 @@ export function cmsToSponsorCard(sponsor: CmsSponsor): SponsorCardData {
   return {
     name: {
       om: sponsor.display_name,
-      en: sponsor.display_name,
-      am: "[AM draft]",
+      en: sponsor.display_name_en || sponsor.display_name,
+      am: sponsor.display_name_am || "[AM draft]",
     },
     href: sponsor.website_url || "/support",
     initials: initialsOf(sponsor.display_name),
@@ -184,8 +184,8 @@ export function cmsToSupporterCard(supporter: CmsSupporter): SupporterCardData {
   return {
     name: {
       om: supporter.display_name,
-      en: supporter.display_name,
-      am: "[AM draft]",
+      en: supporter.display_name_en || supporter.display_name,
+      am: supporter.display_name_am || "[AM draft]",
     },
     role: {
       om: supporter.role_om,

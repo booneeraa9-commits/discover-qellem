@@ -199,10 +199,80 @@ export function localizedField(obj: unknown, field: string): LocalizedText {
   };
 }
 
-/** Extract a displayable image URL from a Wagtail image object. */
+/** Extract a displayable image URL from a Wagtail image object. Wagtail emits
+ *  an absolute download_url; defensively prepend the CMS origin when the URL
+ *  is relative (dev before the backend ships absolute URLs). Mock-mode images
+ *  keep their local /hero.jpg + /img/*.jpg paths. */
 export function imageUrl(image: CmsImage | null | undefined, fallback = ""): string {
   const url = image?.meta?.download_url;
-  return url && url.length > 0 ? url : fallback;
+  if (!url || url.length === 0) return fallback;
+  if (url.startsWith("http") || url.startsWith("data:")) return url;
+  if (!CMS_MOCK) {
+    const host = process.env.NEXT_PUBLIC_CMS_URL;
+    if (host) return `${host.replace(/\/+$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
+  }
+  return url;
+}
+
+/** Canonical rendition specs from apps/cms/qellem_cms/images_api.py. */
+export type RenditionSpec = "fill-400x300" | "fill-800x600" | "max-1600x1200" | "original";
+
+/** Resolve a specific rendition URL, falling back through specs then original. */
+export function renditionUrl(
+  image: CmsImage | null | undefined,
+  spec: RenditionSpec,
+  fallbackSpecs: RenditionSpec[] = [],
+): string {
+  const renditions = image?.renditions ?? {};
+  const chain = [spec, ...fallbackSpecs, "original"];
+  for (const candidate of chain) {
+    const url = renditions[candidate];
+    if (url && url.length > 0) return url;
+  }
+  return imageUrl(image);
+}
+
+/**
+ * Fetch every image rendition once (the /api/v2/images/ listing carries the
+ * renditions object, issue #112) and index them by id. Cached for the request
+ * lifetime. Returns an empty map in mock mode or when the endpoint fails.
+ */
+let imageRenditionsPromise: Promise<Map<number, Record<string, string>>> | null = null;
+
+export function getAllImageRenditions(): Promise<Map<number, Record<string, string>>> {
+  if (CMS_MOCK) return Promise.resolve(new Map());
+  if (imageRenditionsPromise) return imageRenditionsPromise;
+
+  imageRenditionsPromise = fetchCms<CmsListing<CmsImage>>("/images/", { fields: "*" })
+    .then((listing) => {
+      const map = new Map<number, Record<string, string>>();
+      for (const image of listing.items) {
+        if (image.id && image.renditions) map.set(image.id, image.renditions);
+      }
+      return map;
+    })
+    .catch(() => new Map<number, Record<string, string>>());
+
+  return imageRenditionsPromise;
+}
+
+/** Attach rendition URLs to an image object (in place). */
+export function attachRenditions(
+  image: CmsImage | null | undefined,
+  map: Map<number, Record<string, string>>,
+): CmsImage | null {
+  if (!image) return null;
+  if (image.id && map.has(image.id) && !image.renditions) {
+    image.renditions = map.get(image.id);
+  }
+  return image;
+}
+
+export function galleryImage(
+  item: { image: CmsImage | null },
+  map: Map<number, Record<string, string>>,
+): CmsImage | null {
+  return attachRenditions(item.image, map);
 }
 
 /** Strip Wagtail rich-text markup down to plain text. */
@@ -489,6 +559,8 @@ function mockSponsors(): CmsSponsor[] {
   return ZONE_SPONSORS.map((sponsor, i) => ({
     id: i + 1,
     display_name: sponsor.name.om,
+    display_name_en: sponsor.name.en,
+    display_name_am: sponsor.name.am,
     partner_kind: "organization",
     website_url: sponsor.href.startsWith("http") ? sponsor.href : "",
     display_mode: "name_only",
@@ -503,6 +575,8 @@ function mockSupporters(): CmsSupporter[] {
   return ZONE_SUPPORTERS.map((supporter, i) => ({
     id: i + 1,
     display_name: supporter.name.om,
+    display_name_en: supporter.name.en,
+    display_name_am: supporter.name.am,
     partner_kind: "organization",
     website_url: supporter.href ?? "",
     display_mode: "name_only",
