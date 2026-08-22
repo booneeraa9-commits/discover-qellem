@@ -201,13 +201,15 @@ def model_create_target(model, *, data=None):
 def possible_subjects_for_model(model):
     """Return subjects that may be chosen without touching the database."""
 
-    from archive.models import Person
+    from archive.models import Person, TimelineEvent
     from partners.models import Collaborator, Sponsor
     from places.models import DatedStatistic, Geography, GeographyAlias
     from provenance.models import MediaRights, SourceCitation, SourceRecord
 
     if issubclass(model, Person):
         return frozenset({EditorialSubject.PEOPLE})
+    if issubclass(model, TimelineEvent):
+        return frozenset({EditorialSubject.HISTORY_CULTURE})
     if issubclass(model, (Geography, GeographyAlias)):
         return frozenset({EditorialSubject.GEOGRAPHY})
     if issubclass(model, DatedStatistic):

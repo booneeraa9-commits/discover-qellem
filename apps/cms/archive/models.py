@@ -994,3 +994,69 @@ class PersonPlacement(Orderable):
 
     def __str__(self):
         return f"{self.person} - {self.geography}"
+
+
+class TimelineEvent(index.Indexed, models.Model):
+    """One entry on the zone history timeline (issue #28).
+
+    Afaan Oromoo is authoritative: the OM year label and text are
+    required, the English companions are optional reviewed translations.
+    ``year_int`` is the numeric sort key for labels such as "1898/1903".
+    """
+
+    year_om = models.CharField(
+        max_length=40,
+        verbose_name=_("Afaan Oromoo year label"),
+    )
+    year_en = models.CharField(
+        max_length=40,
+        blank=True,
+        verbose_name=_("English year label"),
+        help_text=_("Optional while the English translation is pending."),
+    )
+    year_int = models.IntegerField(
+        help_text=_("Numeric year used to order the timeline."),
+    )
+    text_om = models.TextField(
+        verbose_name=_("Afaan Oromoo text"),
+    )
+    text_en = models.TextField(
+        blank=True,
+        verbose_name=_("English text"),
+        help_text=_("Optional while the English translation is pending."),
+    )
+
+    panels = [
+        FieldPanel("year_om"),
+        FieldPanel("year_en"),
+        FieldPanel("year_int"),
+        FieldPanel("text_om"),
+        FieldPanel("text_en"),
+    ]
+
+    search_fields = [
+        index.SearchField("year_om"),
+        index.SearchField("year_en"),
+        index.SearchField("text_om"),
+        index.SearchField("text_en"),
+    ]
+
+    class Meta:
+        ordering = ["year_int", "pk"]
+        verbose_name = _("timeline event")
+        verbose_name_plural = _("timeline events")
+
+    def __str__(self):
+        return f"{self.year_om}: {self.text_om[:60]}"
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.year_om and self.year_om != self.year_om.strip():
+            errors["year_om"] = _(
+                "The year label cannot begin or end with whitespace."
+            )
+        if self.text_om and not self.text_om.strip():
+            errors["text_om"] = _("The Afaan Oromoo text cannot be blank.")
+        if errors:
+            raise ValidationError(errors)

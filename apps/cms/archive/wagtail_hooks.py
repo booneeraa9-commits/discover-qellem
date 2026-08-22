@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.views.snippets import SnippetViewSet
 
-from archive.models import Person
+from archive.models import Person, TimelineEvent
 
 
 class PersonSnippetViewSet(SnippetViewSet):
@@ -16,3 +16,14 @@ class PersonSnippetViewSet(SnippetViewSet):
 
 
 register_snippet(PersonSnippetViewSet)
+
+
+class TimelineEventSnippetViewSet(SnippetViewSet):
+    model = TimelineEvent
+    icon = "date"
+    menu_label = _("Timeline events")
+    list_display = ["year_om", "year_en", "year_int", "text_om"]
+    search_fields = ["year_om", "year_en", "text_om", "text_en"]
+
+
+register_snippet(TimelineEventSnippetViewSet)
