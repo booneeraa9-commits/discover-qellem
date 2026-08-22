@@ -3492,3 +3492,37 @@ body.photo-nav .nav:not(.scrolled) {
 .success-card h2 {
   font-size: 24px;
 }
+
+/* ============================================================
+   Amharic "needs translation" badge (Sprint 5)
+   ============================================================ */
+
+.am-draft-badge {
+  display: inline-block;
+  margin-inline-start: 10px;
+  vertical-align: 0.28em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  background: var(--ink-100);
+  border: 1px solid var(--ink-200);
+}
+
+[data-theme="dark"] .am-draft-badge {
+  color: var(--ink-500);
+  background: var(--ink-200);
+  border-color: var(--ink-100);
+}
+
+/* Over the photo hero the badge keeps a white-tinted glass treatment. */
+.place-hero-photo .am-draft-badge {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}

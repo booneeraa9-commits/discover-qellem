@@ -45,7 +45,12 @@ export default function PlaceView({ place }: { place: Place }) {
           <div className="place-hero-grid">
             <div>
               <span className="kicker kicker-light">{typeLabel}</span>
-              <h1 className="place-hero-title">{name}</h1>
+              <h1 className="place-hero-title">
+                {name}
+                {lang === "am" && place.amNeedsTranslation ? (
+                  <span className="am-draft-badge">[AM draft]</span>
+                ) : null}
+              </h1>
               <p className="place-hero-tagline">{tagline}</p>
             </div>
             <div className="place-quickfacts place-quickfacts-hero">

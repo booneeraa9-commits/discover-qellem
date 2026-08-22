@@ -12,6 +12,7 @@ import type {
 } from "@/components/cards";
 import { dict, type LocalizedText } from "@/lib/i18n";
 import {
+  fieldNeedsTranslation,
   getTranslatedField,
   imageUrl,
   initialsOf,
@@ -232,6 +233,7 @@ export function cmsToNewsArticle(article: CmsNewsArticle): NewsArticle {
       src: imageUrl(item.image, "/hero.jpg"),
       caption: item.caption_en || item.caption_om || undefined,
     })),
+    amNeedsTranslation: fieldNeedsTranslation(article, "body", "am"),
   };
 }
 
@@ -312,6 +314,11 @@ export function cmsToPlace(
     sections,
     people,
     coords: [profile.latitude ?? 8.5, profile.longitude ?? 34.8],
+    amNeedsTranslation:
+      fieldNeedsTranslation(profile, "intro", "am") ||
+      fieldNeedsTranslation(profile, "history", "am") ||
+      fieldNeedsTranslation(profile, "economy", "am") ||
+      fieldNeedsTranslation(profile, "attractions", "am"),
   };
 }
 

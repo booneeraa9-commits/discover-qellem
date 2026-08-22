@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check, Globe } from "lucide-react";
 import type { Lang } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-client";
@@ -8,8 +9,6 @@ import { useT } from "@/lib/i18n-client";
 interface LangOption {
   code: Lang;
   labelKey: string;
-  /** Disabled pending the coordinated AM-enable flip (backend *_am + ?lang). */
-  disabled?: boolean;
 }
 
 // Language endonyms live in the dict ("lang.name.*") so every UI string stays
@@ -17,7 +16,7 @@ interface LangOption {
 const LANG_OPTIONS: LangOption[] = [
   { code: "om", labelKey: "lang.name.om" },
   { code: "en", labelKey: "lang.name.en" },
-  { code: "am", labelKey: "lang.name.am", disabled: true },
+  { code: "am", labelKey: "lang.name.am" },
 ];
 
 function langCode(lang: Lang): string {
@@ -26,15 +25,26 @@ function langCode(lang: Lang): string {
 
 /**
  * Compact language dropdown for the nav action cluster. Keeps the existing
- * Globe + code-pill button shape; expands into a 3-option menu (OM/EN active,
- * AM disabled with a "Coming soon" hint).
+ * Globe + code-pill button shape; expands into a 3-option menu (OM/EN/AM).
+ * Choosing a language sets the dq_lang cookie (via the i18n store) and calls
+ * router.refresh() so server components re-render in the new language.
  */
 export function LangMenu() {
   const { t, lang, setLang } = useT();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => setOpen(false), []);
+
+  const choose = useCallback(
+    (code: Lang) => {
+      setLang(code);
+      close();
+      router.refresh();
+    },
+    [setLang, close, router],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -75,19 +85,10 @@ export function LangMenu() {
               type="button"
               className="lang-menu-item"
               data-active={lang === option.code ? "true" : undefined}
-              disabled={option.disabled}
-              aria-disabled={option.disabled || undefined}
-              title={option.disabled ? t("lang.amComingSoon") : undefined}
-              onClick={() => {
-                if (option.disabled) return;
-                setLang(option.code);
-                close();
-              }}
+              onClick={() => choose(option.code)}
             >
               <span>{t(option.labelKey)}</span>
-              {option.disabled ? (
-                <span className="lang-soon">{t("lang.amComingSoon")}</span>
-              ) : lang === option.code ? (
+              {lang === option.code ? (
                 <Check aria-hidden="true" width={14} height={14} />
               ) : null}
             </button>
@@ -99,11 +100,12 @@ export function LangMenu() {
 }
 
 /**
- * Vertical 3-option language list for the mobile drawer. AM is disabled with
- * a "Coming soon" hint, matching the dropdown.
+ * Vertical 3-option language list for the mobile drawer. Same behaviour as
+ * the dropdown: sets the cookie and refreshes server components.
  */
 export function LangList({ onSelect }: { onSelect?: () => void }) {
   const { t, lang, setLang } = useT();
+  const router = useRouter();
 
   return (
     <div className="drawer-langs">
@@ -112,19 +114,13 @@ export function LangList({ onSelect }: { onSelect?: () => void }) {
           key={option.code}
           type="button"
           className={`drawer-lang-item${lang === option.code ? " active" : ""}`}
-          disabled={option.disabled}
-          aria-disabled={option.disabled || undefined}
-          title={option.disabled ? t("lang.amComingSoon") : undefined}
           onClick={() => {
-            if (option.disabled) return;
             setLang(option.code);
             onSelect?.();
+            router.refresh();
           }}
         >
           <span>{t(option.labelKey)}</span>
-          {option.disabled ? (
-            <span className="lang-soon">{t("lang.amComingSoon")}</span>
-          ) : null}
         </button>
       ))}
     </div>

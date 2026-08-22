@@ -10,6 +10,7 @@ import {
   stripRichText,
   truncateText,
 } from "@/lib/cms";
+import { resolveRequestLang } from "@/lib/lang-server";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -27,14 +28,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const article = await getNewsBySlug(slug);
   if (!article) return {};
+  const lang = await resolveRequestLang();
   return buildMetadata({
-    title: `${getTranslatedField(article, "title", "en", "om")} — Discover Qellem`,
+    title: `${getTranslatedField(article, "title", "en")} — Discover Qellem`,
     description: truncateText(
-      stripRichText(article.body_en) || getTranslatedField(article, "title", "en", "om"),
+      stripRichText(article.body_en) || getTranslatedField(article, "title", "en"),
       200,
     ),
     path: `/news/${slug}`,
     image: imageUrl(article.featured_image, "/hero.jpg"),
+    lang,
   });
 }
 

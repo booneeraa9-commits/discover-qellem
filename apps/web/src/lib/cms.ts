@@ -149,15 +149,17 @@ async function withFallback<T>(key: string, loader: () => Promise<T>, mock: () =
 
 // ---- helpers ---------------------------------------------------------------
 
-/** Pick the right *_om / *_en / *_am field for `lang`, with an OM-first fallback.
- *  An empty Amharic field yields the "[AM draft]" placeholder (the convention
- *  established in the i18n scaffold). */
-export function getTranslatedField(
-  obj: unknown,
-  field: string,
-  lang: Lang,
-  fallbackLang: Lang = "om",
-): string {
+/** Pick the right *_om / *_en / *_am field for `lang`.
+ *
+ *  Fallback chain (Sprint 5, issue #83):
+ *    - the requested language when it has text;
+ *    - EN and AM fall back to OM (authoritative);
+ *    - OM never falls back to EN.
+ *
+ *  Untranslated AM content therefore renders the OM text — the "[AM draft]"
+ *  marker is exposed separately via fieldNeedsTranslation() so the UI can
+ *  render a muted badge instead of substituting a placeholder. */
+export function getTranslatedField(obj: unknown, field: string, lang: Lang): string {
   const record = (obj ?? {}) as Record<string, unknown>;
   const pick = (l: Lang): string => {
     const value = record[`${field}_${l}`];
@@ -166,22 +168,33 @@ export function getTranslatedField(
 
   const primary = pick(lang);
   if (primary.trim() !== "") return primary;
-  if (lang === "am") return "[AM draft]";
 
-  const fallback = pick(fallbackLang);
-  if (fallback.trim() !== "") return fallback;
-  if (fallbackLang !== "en") {
-    const en = pick("en");
-    if (en.trim() !== "") return en;
+  if (lang === "en" || lang === "am") {
+    const om = pick("om");
+    if (om.trim() !== "") return om;
   }
   return "";
 }
 
-/** Build a tri-lingual LocalizedText from a *_om / *_en / *_am field group. */
+/** True when AM is the active language and the *_am field has no text yet —
+ *  the "needs translation" flag QA/editors use to spot unfilled AM content. */
+export function fieldNeedsTranslation(
+  obj: unknown,
+  field: string,
+  lang: Lang,
+): boolean {
+  if (lang !== "am") return false;
+  const record = (obj ?? {}) as Record<string, unknown>;
+  const value = record[`${field}_am`];
+  return typeof value !== "string" || value.trim() === "";
+}
+
+/** Build a tri-lingual LocalizedText from a *_om / *_en / *_am field group.
+ *  AM falls back to OM text when the *_am field is empty (see getTranslatedField). */
 export function localizedField(obj: unknown, field: string): LocalizedText {
   return {
-    om: getTranslatedField(obj, field, "om", "en"),
-    en: getTranslatedField(obj, field, "en", "om"),
+    om: getTranslatedField(obj, field, "om"),
+    en: getTranslatedField(obj, field, "en"),
     am: getTranslatedField(obj, field, "am"),
   };
 }
