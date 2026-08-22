@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { localize, type LocalizedText } from "@/lib/i18n";
+import type { ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export interface PlaceCardData {
@@ -10,7 +12,7 @@ export interface PlaceCardData {
   slug: string;
   name: LocalizedText;
   teaser: LocalizedText;
-  image: string;
+  image: ImageSource;
   imageAlt?: string;
   /** Quick-stat chip shown over the image, e.g. { label: "Population", value: "59,343" }. */
   statLabel: LocalizedText;
@@ -31,8 +33,7 @@ export function PlaceCard({ data, className = "" }: PlaceCardProps) {
   return (
     <Link href={`/place/${data.slug}`} className={`place-card ${className}`.trim()}>
       <div className="place-media">
-        {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided image; next/image wiring lands in Sprint 3 */}
-        <img src={data.image} alt={data.imageAlt ?? name} loading="lazy" />
+        <ResponsiveImage src={data.image} alt={data.imageAlt ?? name} mainRendition="fill-400x300" />
         <span className="place-stat-chip">
           {statLabel}: {data.statValue}
         </span>

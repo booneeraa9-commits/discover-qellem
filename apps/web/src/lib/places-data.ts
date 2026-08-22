@@ -1,4 +1,5 @@
 import type { LocalizedText } from "@/lib/i18n";
+import type { ImageSource } from "@/lib/cms";
 
 // Local typed placeholder data for the 12 woredas/towns. The shape mirrors
 // what the Wagtail CMS will return in Sprint 3 (issues #29/#30); pages read
@@ -34,7 +35,7 @@ export interface Place {
   type: PlaceType;
   name: LocalizedText;
   tagline: LocalizedText;
-  heroImage: string;
+  heroImage: ImageSource;
   heroAlt: LocalizedText;
   quickFacts: PlaceQuickFact[];
   intro: LocalizedText[];

@@ -1,9 +1,12 @@
 import NewsView from "@/components/NewsView";
 import { categoriesFor, cmsToNewsCard } from "@/lib/adapters";
-import { getAllNews } from "@/lib/cms";
+import { getAllImageRenditions, getAllNews } from "@/lib/cms";
 
 export default async function NewsPage() {
-  const articles = await getAllNews();
+  const [articles, imagesById] = await Promise.all([
+    getAllNews(),
+    getAllImageRenditions(),
+  ]);
   const sorted = [...articles].sort((a, b) =>
     b.published_date.localeCompare(a.published_date),
   );
@@ -11,7 +14,7 @@ export default async function NewsPage() {
   return (
     <NewsView
       articles={sorted.map((article) => ({
-        ...cmsToNewsCard(article),
+        ...cmsToNewsCard(article, imagesById),
         categoryKey: article.category,
       }))}
       categories={categoriesFor(sorted)}

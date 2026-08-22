@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { resolveImageUrl, type ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export interface LightboxImage {
-  src: string;
+  src: ImageSource;
   caption?: string;
 }
 
@@ -157,8 +158,8 @@ export function Lightbox({
         >
           <ChevronLeft aria-hidden="true" />
         </button>
-        {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided photo; next/image wiring lands in Sprint 3 */}
-        <img className="lb-img" src={current.src} alt={cap ?? ""} />
+        {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided photo */}
+        <img className="lb-img" src={resolveImageUrl(current.src)} alt={cap ?? ""} />
         {cap ? <div className="lb-cap">{cap}</div> : null}
         <button
           type="button"

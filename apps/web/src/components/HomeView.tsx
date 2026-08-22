@@ -16,6 +16,7 @@ import GlanceTable from "@/components/GlanceTable";
 import { Reveal } from "@/components/Reveal";
 import SponsorsMarquee from "@/components/SponsorsMarquee";
 import ZoneMap from "@/components/ZoneMap";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import {
   NewsCard,
   PersonCard,
@@ -78,12 +79,14 @@ export default function HomeView({ news, places, people, glance, sponsors }: Hom
   return (
     <main className="page" id="main-content">
       <section className="place-hero place-hero-photo home-hero">
-        <div
-          className="place-hero-bg"
-          role="img"
-          aria-label={t("home.hero.imageAlt")}
-          style={{ backgroundImage: "url('/hero.jpg')" }}
-        />
+        <div className="place-hero-bg">
+          <ResponsiveImage
+            src="/hero.jpg"
+            alt={t("home.hero.imageAlt")}
+            priority
+            fill
+          />
+        </div>
         <div className="container">
           <div className="place-hero-grid">
             <div>

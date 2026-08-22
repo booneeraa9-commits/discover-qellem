@@ -12,6 +12,7 @@ import type {
 } from "@/components/cards";
 import { dict, type LocalizedText } from "@/lib/i18n";
 import {
+  attachRenditions,
   fieldNeedsTranslation,
   getTranslatedField,
   imageUrl,
@@ -21,6 +22,7 @@ import {
   richTextParagraphs,
   stripRichText,
   truncateText,
+  type ImageSource,
 } from "@/lib/cms";
 import type {
   CmsNewsArticle,
@@ -115,7 +117,10 @@ export function categoriesFor(articles: CmsNewsArticle[]): CategoryOption[] {
 
 // ---- card adapters ---------------------------------------------------------
 
-export function cmsToNewsCard(article: CmsNewsArticle): NewsCardData {
+export function cmsToNewsCard(
+  article: CmsNewsArticle,
+  imagesById?: Map<number, Record<string, string>>,
+): NewsCardData {
   const om = truncateText(stripRichText(article.body_om) || article.title_om, 220);
   const en = truncateText(stripRichText(article.body_en) || article.title_en, 220);
   return {
@@ -128,11 +133,15 @@ export function cmsToNewsCard(article: CmsNewsArticle): NewsCardData {
     date: article.published_date,
     title: localizedField(article, "title"),
     excerpt: { om: om || article.title_om, en: en || article.title_en, am: "[AM draft]" },
-    image: imageUrl(article.featured_image, "/hero.jpg"),
+    image: (attachRenditions(article.featured_image, imagesById ?? new Map()) ??
+      "/hero.jpg") as ImageSource,
   };
 }
 
-export function cmsToPlaceCard(place: CmsPlaceProfile): PlaceCardData {
+export function cmsToPlaceCard(
+  place: CmsPlaceProfile,
+  imagesById?: Map<number, Record<string, string>>,
+): PlaceCardData {
   const name = place.geography_name ?? place.title;
   const population = place.quick_facts.find((fact) => fact.label_en === "Population");
   return {
@@ -143,7 +152,10 @@ export function cmsToPlaceCard(place: CmsPlaceProfile): PlaceCardData {
       en: truncateText(stripRichText(place.intro_en), 200),
       am: "[AM draft]",
     },
-    image: imageUrl(place.hero_image ?? place.featured_image, "/hero.jpg"),
+    image: (attachRenditions(
+      place.hero_image ?? place.featured_image,
+      imagesById ?? new Map(),
+    ) ?? "/hero.jpg") as ImageSource,
     statLabel: population
       ? localizedField(population, "label")
       : { en: "Population", om: "Uummata", am: "[AM draft]" },
@@ -151,7 +163,10 @@ export function cmsToPlaceCard(place: CmsPlaceProfile): PlaceCardData {
   };
 }
 
-export function cmsToPersonCard(person: CmsPerson): PersonCardData {
+export function cmsToPersonCard(
+  person: CmsPerson,
+  imagesById?: Map<number, Record<string, string>>,
+): PersonCardData {
   const omBio = stripRichText(person.bio_om);
   const enBio = stripRichText(person.bio_en) || omBio;
   return {
@@ -163,7 +178,9 @@ export function cmsToPersonCard(person: CmsPerson): PersonCardData {
     },
     years: yearsLabel(person),
     role: { om: omBio, en: enBio, am: "[AM draft]" },
-    image: imageUrl(person.photo) || undefined,
+    image: (attachRenditions(person.photo, imagesById ?? new Map()) ?? undefined) as
+      | ImageSource
+      | undefined,
   };
 }
 
@@ -207,7 +224,10 @@ export function cmsToTimeline(event: CmsTimelineEvent): TimelineEvent {
   };
 }
 
-export function cmsToNewsArticle(article: CmsNewsArticle): NewsArticle {
+export function cmsToNewsArticle(
+  article: CmsNewsArticle,
+  imagesById?: Map<number, Record<string, string>>,
+): NewsArticle {
   const omParas = richTextParagraphs(article.body_om);
   const enParas = richTextParagraphs(article.body_en);
   const omExcerpt = truncateText(stripRichText(article.body_om) || article.title_om, 240);
@@ -228,9 +248,11 @@ export function cmsToNewsArticle(article: CmsNewsArticle): NewsArticle {
     title: localizedField(article, "title"),
     excerpt: { om: omExcerpt, en: enExcerpt, am: "[AM draft]" },
     body: zipParagraphs(omParas, enParas),
-    image: imageUrl(article.featured_image, "/hero.jpg"),
+    image: (attachRenditions(article.featured_image, imagesById ?? new Map()) ??
+      "/hero.jpg") as ImageSource,
     gallery: article.gallery_images.map((item) => ({
-      src: imageUrl(item.image, "/hero.jpg"),
+      src: (attachRenditions(item.image, imagesById ?? new Map()) ??
+        "/hero.jpg") as ImageSource,
       caption: item.caption_en || item.caption_om || undefined,
     })),
     amNeedsTranslation: fieldNeedsTranslation(article, "body", "am"),
@@ -240,6 +262,7 @@ export function cmsToNewsArticle(article: CmsNewsArticle): NewsArticle {
 export function cmsToPlace(
   profile: CmsPlaceProfile,
   peopleById?: Map<string, CmsPerson>,
+  imagesById?: Map<number, Record<string, string>>,
 ): Place {
   const name = profile.geography_name ?? profile.title;
 
@@ -307,7 +330,10 @@ export function cmsToPlace(
       en: stripRichText(profile.intro_en) || stripRichText(profile.intro_om),
       am: "[AM draft]",
     },
-    heroImage: imageUrl(profile.hero_image ?? profile.featured_image, "/hero.jpg"),
+    heroImage: (attachRenditions(
+      profile.hero_image ?? profile.featured_image,
+      imagesById ?? new Map(),
+    ) ?? "/hero.jpg") as ImageSource,
     heroAlt: { om: name, en: name, am: "[AM draft]" },
     quickFacts,
     intro,

@@ -275,6 +275,15 @@ export function galleryImage(
   return attachRenditions(item.image, map);
 }
 
+/** A CMS image object (with renditions) or a plain URL (mock / local assets). */
+export type ImageSource = string | CmsImage;
+
+/** Resolve an ImageSource to a concrete URL string (for plain <img> consumers). */
+export function resolveImageUrl(src: ImageSource): string {
+  if (typeof src === "string") return src;
+  return imageUrl(src) || "/hero.jpg";
+}
+
 /** Strip Wagtail rich-text markup down to plain text. */
 export function stripRichText(html: string | null | undefined): string {
   if (!html) return "";
@@ -432,10 +441,10 @@ function mockNews(): CmsNewsArticle[] {
     body_am: "[AM draft]",
     category: article.categoryKey as NewsCategoryKey,
     published_date: article.date,
-    featured_image: article.image ? mockImage(article.image, i + 1) : null,
+    featured_image: article.image ? mockImage(resolveImageUrl(article.image), i + 1) : null,
     gallery_images: article.gallery.map(
       (g, j): CmsGalleryImage => ({
-        image: mockImage(g.src, j + 1),
+        image: mockImage(resolveImageUrl(g.src), j + 1),
         caption_om: g.caption ?? "",
         caption_en: g.caption ?? "",
         caption_am: "[AM draft]",
@@ -464,8 +473,8 @@ function mockPlaces(): CmsPlaceProfile[] {
       naming_origin: "",
       history: "",
       area_location: "",
-      featured_image: mockImage(place.heroImage, i + 1),
-      hero_image: mockImage(place.heroImage, i + 1),
+      featured_image: mockImage(resolveImageUrl(place.heroImage), i + 1),
+      hero_image: mockImage(resolveImageUrl(place.heroImage), i + 1),
       intro_om: place.intro.map((p) => `<p>${p.om}</p>`).join(""),
       intro_en: place.intro.map((p) => `<p>${p.en}</p>`).join(""),
       intro_am: "[AM draft]",
@@ -532,7 +541,7 @@ function mockPeople(): CmsPerson[] {
       bio_om: person.role.om,
       bio_en: person.role.en,
       bio_am: person.role.am,
-      photo: person.image ? mockImage(person.image, i + 1) : null,
+      photo: person.image ? mockImage(resolveImageUrl(person.image), i + 1) : null,
       woreda_slugs: [],
       is_zone_notable: true,
     };

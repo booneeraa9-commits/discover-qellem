@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { PersonCard } from "@/components/cards";
 import OsmMap from "@/components/OsmMap";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { Reveal } from "@/components/Reveal";
 import { localize } from "@/lib/i18n";
 import { useT } from "@/lib/i18n-client";
@@ -28,12 +29,15 @@ export default function PlaceView({ place }: { place: Place }) {
     <main className="page" id="main-content">
       {/* Photo hero */}
       <section className="place-hero place-hero-photo">
-        <div
-          className="place-hero-bg"
-          role="img"
-          aria-label={heroAlt}
-          style={{ backgroundImage: `url('${place.heroImage}')` }}
-        />
+        <div className="place-hero-bg">
+          <ResponsiveImage
+            src={place.heroImage}
+            alt={heroAlt}
+            priority
+            fill
+            mainRendition="max-1600x1200"
+          />
+        </div>
         <div className="container">
           <nav className="breadcrumb" aria-label={t("place.breadcrumb")}>
             <Link href="/">{t("nav.home")}</Link>

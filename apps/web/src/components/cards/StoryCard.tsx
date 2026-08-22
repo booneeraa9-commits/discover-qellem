@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { BookOpen, CalendarDays, MapPin } from "lucide-react";
+import ResponsiveImage from "@/components/ResponsiveImage";
 import { localize, type LocalizedText } from "@/lib/i18n";
+import type { ImageSource } from "@/lib/cms";
 import { useT } from "@/lib/i18n-client";
 
 export interface StoryCardData {
@@ -13,7 +15,7 @@ export interface StoryCardData {
   place: LocalizedText;
   /** ISO date, e.g. "2026-06-20". */
   date: string;
-  image: string;
+  image: ImageSource;
   imageAlt?: string;
 }
 
@@ -42,8 +44,7 @@ export function StoryCard({ data, className = "" }: StoryCardProps) {
   return (
     <article className={`story-card ${className}`.trim()}>
       <div className="story-media">
-        {/* eslint-disable-next-line @next/next/no-img-element -- CMS-provided image; next/image wiring lands in Sprint 3 */}
-        <img src={data.image} alt={data.imageAlt ?? title} loading="lazy" />
+        <ResponsiveImage src={data.image} alt={data.imageAlt ?? title} mainRendition="fill-400x300" />
       </div>
       <div>
         <div className="story-meta">
