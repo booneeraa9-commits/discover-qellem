@@ -32,6 +32,8 @@ class SponsorAPIViewSet(BaseAPIViewSet):
 
     listing_default_fields = BaseAPIViewSet.listing_default_fields + [
         "display_name",
+        "display_name_en",
+        "display_name_am",
         "partner_kind",
         "website_url",
         "display_mode",
@@ -55,6 +57,8 @@ class SupporterAPIViewSet(BaseAPIViewSet):
 
     listing_default_fields = BaseAPIViewSet.listing_default_fields + [
         "display_name",
+        "display_name_en",
+        "display_name_am",
         "partner_kind",
         "website_url",
         "display_mode",

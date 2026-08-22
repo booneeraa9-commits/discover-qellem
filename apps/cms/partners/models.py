@@ -30,7 +30,22 @@ class PublicDisplayStatus(models.TextChoices):
 
 class PublicPartnerBase(models.Model):
     partner_kind = models.CharField(max_length=12, choices=PartnerKind.choices)
-    display_name = models.CharField(max_length=255)
+    display_name = models.CharField(
+        max_length=255,
+        help_text=_("Required canonical Afaan Oromoo public name."),
+    )
+    display_name_en = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("English display name"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
+    display_name_am = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("Amharic display name"),
+        help_text=_("Optional translation; Afaan Oromoo stays authoritative."),
+    )
     website_url = models.URLField(blank=True)
     image = models.ForeignKey(
         get_image_model_string(),
@@ -80,10 +95,12 @@ class PublicPartnerBase(models.Model):
         super().clean()
         errors = {}
 
-        if self.display_name and self.display_name != self.display_name.strip():
-            errors["display_name"] = _(
-                "The public display name cannot begin or end with whitespace."
-            )
+        for field_name in ("display_name", "display_name_en", "display_name_am"):
+            value = getattr(self, field_name)
+            if value and value != value.strip():
+                errors[field_name] = _(
+                    "The public display name cannot begin or end with whitespace."
+                )
 
         if self.display_start and self.display_end:
             if self.display_end < self.display_start:
@@ -135,6 +152,8 @@ class Sponsor(PublicPartnerBase):
 
     api_fields = [
         APIField("display_name"),
+        APIField("display_name_en"),
+        APIField("display_name_am"),
         APIField("partner_kind"),
         APIField("website_url"),
         APIField("display_mode"),
@@ -149,6 +168,8 @@ class Sponsor(PublicPartnerBase):
             [
                 FieldPanel("partner_kind"),
                 FieldPanel("display_name"),
+                FieldPanel("display_name_en"),
+                FieldPanel("display_name_am"),
                 FieldPanel("website_url"),
                 FieldPanel("image"),
                 FieldPanel("display_mode"),
@@ -243,6 +264,8 @@ class Collaborator(PublicPartnerBase):
 
     api_fields = [
         APIField("display_name"),
+        APIField("display_name_en"),
+        APIField("display_name_am"),
         APIField("partner_kind"),
         APIField("website_url"),
         APIField("display_mode"),
@@ -261,6 +284,8 @@ class Collaborator(PublicPartnerBase):
             [
                 FieldPanel("partner_kind"),
                 FieldPanel("display_name"),
+                FieldPanel("display_name_en"),
+                FieldPanel("display_name_am"),
                 FieldPanel("website_url"),
                 FieldPanel("image"),
                 FieldPanel("display_mode"),
