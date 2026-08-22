@@ -8,13 +8,9 @@ Contract sources of truth:
 - qa/CONTENT_FACTS.md (verified facts, 12 canonical woredas, 9 categories)
 - qa/API_CONTRACT.md (endpoint/shape/filter/error contracts)
 
-NOTE for reviewers — two decisions are encoded deliberately (see inline
+NOTE for reviewers — one decision is encoded deliberately (see inline
 comments):
-1. People slug: the PM contract lists ``jaal-laggasaa-wagii-metta``; the seed
-   and FE currently use ``jaal-laggasaa-wagii`` / ``jaal-laggasaa-wagii-meettaa``.
-   This test asserts the PM's canonical list and will fail until the slug is
-   reconciled (tracked in a content bug).
-2. Sponsors/supporters are seeded ``pending`` + ``inactive`` by design, so the
+1. Sponsors/supporters are seeded ``pending`` + ``inactive`` by design, so the
    anonymous public endpoint returns 0 until the PM approves display. The
    contract asserts the seeded row counts (10/6) at the model level, the
    0-by-default public behaviour, and the 10/6 public count after display
@@ -68,9 +64,8 @@ EXPECTED_PERSON_SLUGS = {
     "jote-tulu",
     "sadii-akkayyuu",
     "gidamii-guus-agaloo",
-    # PM contract slug. The current seed uses "jaal-laggasaa-wagii" and the
-    # FE used "jaal-laggasaa-wagii-meettaa" — reconcile before merge.
-    "jaal-laggasaa-wagii-metta",
+    # Canonical Oromo slug per qa/CONTENT_FACTS.md (full name: Jaal Laggasaa Wagii Meettaa).
+    "jaal-laggasaa-wagii",
 }
 
 EXPECTED_GALLERY_STEMS = [
