@@ -61,6 +61,8 @@
 
   /* Section-kicker accent. Must stay >= 4.5:1 on paper in both themes. */
   --kicker-accent: #16704f;
+  /* Gold text for gold-on-gold-light surfaces (sponsor initials). */
+  --gold-ink: #6b4d0e;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -118,6 +120,7 @@
 
   /* Bright gold — 6.9:1 on the dark paper (vs brand-400's 4.24:1). */
   --kicker-accent: #c7963a;
+  --gold-ink: #e3c07a;
 }
 
 /* Expose the runtime tokens to Tailwind utilities (bg-brand-800, text-gold-500, ...).
@@ -432,7 +435,9 @@ hr {
 }
 
 [data-theme="dark"] .nav-links a.active {
-  color: var(--brand-400);
+  /* brand-400 (#1f8a63) on brand-100 (#0d4534) was ~2.5:1 (bug #80);
+     light brand-800 text keeps the active fill and clears AA easily. */
+  color: var(--brand-800);
   background: var(--brand-100);
 }
 
@@ -484,7 +489,7 @@ hr {
 
 [data-theme="dark"] .lang-label {
   background: var(--brand-100);
-  color: var(--brand-400);
+  color: var(--brand-200);
 }
 
 .menu-btn {
@@ -513,6 +518,11 @@ body.photo-nav .nav:not(.scrolled) .nav-links a {
 
 body.photo-nav .nav:not(.scrolled) .nav-links a:hover {
   background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+body.photo-nav .nav:not(.scrolled) .nav-links a.active {
+  background: rgba(255, 255, 255, 0.24);
   color: #fff;
 }
 
@@ -606,7 +616,7 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .drawer a.active {
-  color: var(--brand-400);
+  color: var(--brand-800);
 }
 
 @media (max-width: 720px) {
@@ -1370,7 +1380,8 @@ body.photo-nav .nav:not(.scrolled) {
   padding: 5px 11px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
-  color: var(--brand-800);
+  /* constant deep green — the white chip never inverts (bug #80) */
+  color: #0b3d2e;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1388,7 +1399,7 @@ body.photo-nav .nav:not(.scrolled) {
   height: 40px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
-  color: var(--brand-800);
+  color: #0b3d2e;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1442,7 +1453,8 @@ body.photo-nav .nav:not(.scrolled) {
   padding: 5px 11px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
-  color: var(--brand-800);
+  /* constant deep green — the white pill never inverts (bug #80) */
+  color: #0b3d2e;
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -1568,7 +1580,7 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .story-author {
-  color: var(--brand-400);
+  color: var(--brand-700);
 }
 
 /* Person card */
@@ -1632,7 +1644,7 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .person-role {
-  color: var(--brand-400);
+  color: var(--brand-700);
 }
 
 .person-name {
@@ -1696,7 +1708,7 @@ body.photo-nav .nav:not(.scrolled) {
 
 .sponsor-pill-gold .sponsor-mark {
   background: var(--gold-100);
-  color: var(--gold-700);
+  color: var(--gold-ink);
 }
 
 .sponsor-logo {
@@ -2463,12 +2475,17 @@ body.photo-nav .nav:not(.scrolled) {
 
 [data-theme="dark"] .chip {
   background: var(--brand-100);
-  color: var(--brand-400);
+  color: var(--brand-900);
 }
 
 .chip.gold {
   background: var(--gold-100);
-  color: var(--gold-700);
+  color: var(--gold-ink);
+}
+
+[data-theme="dark"] .chip.gold {
+  background: var(--gold-100);
+  color: var(--gold-ink);
 }
 
 /* Article */
@@ -2777,7 +2794,7 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .tl-year {
-  color: var(--brand-400);
+  color: var(--brand-700);
 }
 
 .tl-title {
@@ -3303,7 +3320,7 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .lang-menu-item[data-active="true"] {
-  color: var(--brand-400);
+  color: var(--brand-800);
 }
 
 .lang-menu-item:disabled {
@@ -3380,10 +3397,98 @@ body.photo-nav .nav:not(.scrolled) {
 }
 
 [data-theme="dark"] .drawer-lang-item.active {
-  color: var(--brand-400);
+  color: var(--brand-800);
 }
 
 .drawer-lang-item:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* ============================================================
+   Share-a-story form (contribute page, #32)
+   ============================================================ */
+
+.form-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--ink-200);
+  background: var(--paper);
+  color: var(--ink-900);
+  font-family: inherit;
+  font-size: 14.5px;
+  outline: none;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+[data-theme="dark"] .form-select {
+  background: var(--ink-50);
+  color: var(--ink-900);
+}
+
+.form-select:focus {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px rgba(31, 138, 99, 0.12);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-800);
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--brand-600);
+}
+
+.field-error {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+.form-summary {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--danger);
+  background: color-mix(in oklab, var(--danger) 8%, var(--paper));
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Honeypot: visually hidden but present for bots. */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.success-card h2 {
+  font-size: 24px;
 }

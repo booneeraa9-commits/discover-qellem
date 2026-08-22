@@ -90,6 +90,46 @@ export async function fetchCms<T>(
   }
 }
 
+/** POST JSON to the CMS, returning the raw status + parsed body so callers can
+ *  branch on 201/400/429/503 without exceptions. Throws only on network-level
+ *  failure (unreachable host). */
+export async function postCms<T = unknown>(
+  path: string,
+  body: unknown,
+): Promise<{ status: number; data: T }> {
+  let base = CMS_API_URL;
+  if (base.startsWith("/")) {
+    if (typeof window === "undefined") {
+      throw new Error(
+        "CMS API base URL is relative; set NEXT_PUBLIC_CMS_API_URL to an absolute URL.",
+      );
+    }
+    base = `${window.location.origin}${base}`;
+  }
+
+  const url = new URL(`${base}${path}`);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), CMS_TIMEOUT_MS);
+  try {
+    const response = await fetch(url.toString(), {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    const text = await response.text();
+    let data: T;
+    try {
+      data = JSON.parse(text) as T;
+    } catch {
+      data = text as T;
+    }
+    return { status: response.status, data };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // ---- fetch result cache (listings are static between deploys) --------------
 const listingCache = new Map<string, Promise<unknown>>();
 
