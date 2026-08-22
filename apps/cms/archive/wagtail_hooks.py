@@ -22,8 +22,8 @@ class TimelineEventSnippetViewSet(SnippetViewSet):
     model = TimelineEvent
     icon = "date"
     menu_label = _("Timeline events")
-    list_display = ["year_om", "year_en", "year_int", "text_om"]
-    search_fields = ["year_om", "year_en", "text_om", "text_en"]
+    list_display = ["year_om", "year_en", "year_int", "title_om"]
+    search_fields = ["year_om", "year_en", "title_om", "title_en", "text_om", "text_en"]
 
 
 register_snippet(TimelineEventSnippetViewSet)

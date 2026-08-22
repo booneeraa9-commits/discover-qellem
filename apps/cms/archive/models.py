@@ -1017,6 +1017,16 @@ class TimelineEvent(index.Indexed, models.Model):
     year_int = models.IntegerField(
         help_text=_("Numeric year used to order the timeline."),
     )
+    title_om = models.CharField(
+        max_length=255,
+        verbose_name=_("Afaan Oromoo title"),
+    )
+    title_en = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name=_("English title"),
+        help_text=_("Optional while the English translation is pending."),
+    )
     text_om = models.TextField(
         verbose_name=_("Afaan Oromoo text"),
     )
@@ -1030,13 +1040,27 @@ class TimelineEvent(index.Indexed, models.Model):
         FieldPanel("year_om"),
         FieldPanel("year_en"),
         FieldPanel("year_int"),
+        FieldPanel("title_om"),
+        FieldPanel("title_en"),
         FieldPanel("text_om"),
         FieldPanel("text_en"),
+    ]
+
+    api_fields = [
+        APIField("year_om"),
+        APIField("year_en"),
+        APIField("year_int"),
+        APIField("title_om"),
+        APIField("title_en"),
+        APIField("text_om"),
+        APIField("text_en"),
     ]
 
     search_fields = [
         index.SearchField("year_om"),
         index.SearchField("year_en"),
+        index.SearchField("title_om"),
+        index.SearchField("title_en"),
         index.SearchField("text_om"),
         index.SearchField("text_en"),
     ]
@@ -1047,7 +1071,7 @@ class TimelineEvent(index.Indexed, models.Model):
         verbose_name_plural = _("timeline events")
 
     def __str__(self):
-        return f"{self.year_om}: {self.text_om[:60]}"
+        return f"{self.year_om}: {self.title_om}"
 
     def clean(self):
         super().clean()

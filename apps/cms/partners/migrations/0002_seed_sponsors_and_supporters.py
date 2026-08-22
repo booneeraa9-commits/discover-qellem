@@ -1,9 +1,8 @@
-"""Seed the six verified sponsors and six supporters (issue #28).
+"""Seed the ten verified sponsors and six supporters (issue #28).
 
-Names, roles, and bilingual strings mirror the PM-approved frontend
-support page (``apps/web/src/app/support/page.tsx``). The frontend lists
-only six sponsor organizations, not the ten the issue mentions - the
-shortfall is documented in the pull request as a content gap for the PM.
+Names, roles, and bilingual strings mirror ZONE_SPONSORS and
+ZONE_SUPPORTERS verbatim from ``apps/web/src/lib/zone-data.ts``
+(PM-confirmed roster of 10 sponsor organizations and 6 supporters).
 
 Every record is seeded with ``public_display_status=pending`` and
 ``is_active=False``: nothing becomes publicly visible until the PM (or a
@@ -20,6 +19,8 @@ ROSTER_SOURCE_TITLE = (
 SEED_EDITOR_USERNAME = "content-seed-bot"
 
 # (display_name, recognition_text_om, recognition_text_en)
+# All 10 organizations verbatim (OM names) from ZONE_SPONSORS in
+# apps/web/src/lib/zone-data.ts, in roster order.
 SPONSORS = (
     (
         "Bulchiinsa Godina Qeellam Wallaggaa",
@@ -47,9 +48,29 @@ SPONSORS = (
         "With thanks to the Zone Agriculture Office.",
     ),
     (
+        "Waajjira Tuurizimii Godinaa",
+        "Waajjira Tuurizimii Godinaa galateeffanna.",
+        "With thanks to the Zone Culture & Tourism Office.",
+    ),
+    (
+        "Waajjira Saayinsii fi Teek.",
+        "Waajjira Saayinsii fi Teek. galateeffanna.",
+        "With thanks to the Oromia Science & Technology Auth.",
+    ),
+    (
         "Waldaa Bunaa Qeellam",
         "Waldaa Bunaa Qeellam galateeffanna.",
         "With thanks to the Kellem Coffee Cooperatives Union.",
+    ),
+    (
+        "Abbaa Taayitaa Daandii Oromiyaa",
+        "Abbaa Taayitaa Daandii Oromiyaa galateeffanna.",
+        "With thanks to the Oromia Roads Authority.",
+    ),
+    (
+        "Dhaabbata Qabeenya Biyyoolessaa",
+        "Dhaabbata Qabeenya Biyyoolessaa galateeffanna.",
+        "With thanks to the Cultural Heritage Authority.",
     ),
 )
 
@@ -152,12 +173,10 @@ def _get_roster_source(apps):
             "subject": "mixed",
             "geography": zone,
             "private_description": (
-                "Sponsor and supporter roster mirrored from the "
-                "PM-approved frontend support page "
-                "(apps/web/src/app/support/page.tsx). Only six sponsor "
-                "organizations are listed there; the four additional "
-                "sponsors requested by issue #28 are a documented "
-                "content gap awaiting PM input."
+                "Sponsor and supporter roster mirrored verbatim from "
+                "ZONE_SPONSORS and ZONE_SUPPORTERS in "
+                "apps/web/src/lib/zone-data.ts (PM-confirmed: 10 "
+                "sponsor organizations, 6 supporters)."
             ),
         },
     )

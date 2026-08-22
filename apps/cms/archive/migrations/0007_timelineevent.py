@@ -18,6 +18,8 @@ class Migration(migrations.Migration):
                 ('year_om', models.CharField(max_length=40, verbose_name='Afaan Oromoo year label')),
                 ('year_en', models.CharField(blank=True, help_text='Optional while the English translation is pending.', max_length=40, verbose_name='English year label')),
                 ('year_int', models.IntegerField(help_text='Numeric year used to order the timeline.')),
+                ('title_om', models.CharField(max_length=255, verbose_name='Afaan Oromoo title')),
+                ('title_en', models.CharField(blank=True, help_text='Optional while the English translation is pending.', max_length=255, verbose_name='English title')),
                 ('text_om', models.TextField(verbose_name='Afaan Oromoo text')),
                 ('text_en', models.TextField(blank=True, help_text='Optional while the English translation is pending.', verbose_name='English text')),
             ],

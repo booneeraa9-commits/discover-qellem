@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from wagtail.api import APIField
 from wagtail.images import get_image_model_string
 from wagtail.snippets.models import register_snippet
 
@@ -132,6 +133,17 @@ class Sponsor(PublicPartnerBase):
     )
     sponsorship_level = models.CharField(max_length=120, blank=True)
 
+    api_fields = [
+        APIField("display_name"),
+        APIField("partner_kind"),
+        APIField("website_url"),
+        APIField("display_mode"),
+        APIField("recognition_text_om"),
+        APIField("recognition_text_en"),
+        APIField("sponsorship_level"),
+        APIField("display_order"),
+    ]
+
     panels = [
         MultiFieldPanel(
             [
@@ -228,6 +240,21 @@ class Collaborator(PublicPartnerBase):
         blank=True,
         help_text=_("Private public-recognition and portrait consent evidence."),
     )
+
+    api_fields = [
+        APIField("display_name"),
+        APIField("partner_kind"),
+        APIField("website_url"),
+        APIField("display_mode"),
+        APIField("role_om"),
+        APIField("role_en"),
+        APIField("affiliation_om"),
+        APIField("affiliation_en"),
+        APIField("contribution_period"),
+        APIField("description_om"),
+        APIField("description_en"),
+        APIField("display_order"),
+    ]
 
     panels = [
         MultiFieldPanel(
