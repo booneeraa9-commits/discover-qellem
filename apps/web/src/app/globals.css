@@ -488,8 +488,11 @@ hr {
 }
 
 [data-theme="dark"] .lang-label {
+  /* brand-100 (0d4534) bg with light brand-800 text = ~9:1 — the swap fix
+     from #101 was reverted by mistake and left brand-200 (dark green) text
+     on dark green bg at 1.25:1 (bug #129). */
   background: var(--brand-100);
-  color: var(--brand-200);
+  color: var(--brand-800);
 }
 
 .menu-btn {
