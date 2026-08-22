@@ -6,7 +6,8 @@ API viewsets that serve that content:
 
 - ``?lang=<code>``: every companion group is resolved to a single value
   under its generic base key (``title``, ``body``, ...), preferring the
-  requested language and falling back to Afaan Oromoo, then English.
+  requested language and falling back to the authoritative Afaan Oromoo
+  value only (never to English; the FE renders its own draft markers).
   The suffixed keys are removed from the response.
 - no ``lang`` parameter: the response keeps every suffixed key
   unchanged (backwards compatible) and additionally exposes a
@@ -17,7 +18,7 @@ API viewsets that serve that content:
 from wagtail.api.v2.utils import BadRequestError
 
 LANGUAGE_CODES = ("om", "en", "am")
-FALLBACK_ORDER = ("om", "en")
+FALLBACK_ORDER = ("om",)
 _SUFFIXES = tuple(f"_{code}" for code in LANGUAGE_CODES)
 
 
@@ -38,7 +39,7 @@ def _companion_bases(data):
 
 
 def _resolve(data, base, lang):
-    """Pick the requested language with OM-then-EN fallback."""
+    """Pick the requested language, falling back to Afaan Oromoo only."""
 
     for code in (lang, *FALLBACK_ORDER):
         value = data.get(f"{base}_{code}")

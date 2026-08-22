@@ -388,6 +388,22 @@ class NewsCategory(models.TextChoices):
     TRADE = "trade", _("Trade / Daldala")
 
 
+# Amharic labels for the nine NewsCategory keys (issue #116). Python
+# choices are strictly (value, label) two-tuples, so the third "column"
+# lives in this companion mapping; the API and frontend read it by key.
+NEWS_CATEGORY_LABELS_AM = {
+    NewsCategory.DEVELOPMENT: _("ልማት"),
+    NewsCategory.ECONOMY: _("ኢኮኖሚ"),
+    NewsCategory.ENVIRONMENT: _("አካባቢ"),
+    NewsCategory.MINERALS: _("ማዕድናት"),
+    NewsCategory.AGRICULTURE: _("ግብርና"),
+    NewsCategory.HEALTH: _("ጤና"),
+    NewsCategory.EDUCATION: _("ትምህርት"),
+    NewsCategory.CULTURE: _("ባህል"),
+    NewsCategory.TRADE: _("ንግድ"),
+}
+
+
 class BilingualCompanionFieldsMixin(models.Model):
     """Reject translated content whose Afaan Oromoo counterpart is missing."""
 
@@ -528,6 +544,7 @@ class NewsArticle(BilingualCompanionFieldsMixin, MultilingualPageMixin, Page):
         APIField("body_en"),
         APIField("body_am"),
         APIField("category"),
+        APIField("category_label_am"),
         APIField("published_date"),
         APIField("featured_image"),
         APIField("gallery_images"),
@@ -560,6 +577,10 @@ class NewsArticle(BilingualCompanionFieldsMixin, MultilingualPageMixin, Page):
         ),
         InlinePanel("gallery_images", label=_("Gallery images")),
     ]
+
+    @property
+    def category_label_am(self):
+        return str(NEWS_CATEGORY_LABELS_AM.get(self.category, ""))
 
     def clean(self):
         errors = {}
