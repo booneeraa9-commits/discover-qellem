@@ -98,7 +98,33 @@ authoritative for the port (issue **#27**).
   "Dr. Utukaanaa Odaa" is correct. Confirm the EN transliteration with the PM
   before the article is ported.
 
-## 5. Demo content notes for reviewers
+## 5. News categories (canonical — Sprint 3 taxonomy gate)
+
+Every news seed/article must carry exactly one of these 9 keys (PM-approved,
+2026-08-22). Any other key → QA blocks the PR.
+
+| Key | EN label | OM label (exact) |
+|---|---|---|
+| `development` | Development | `Misooma` |
+| `economy` | Economy | `Dinagdee` |
+| `environment` | Environment | `Naannoo` |
+| `minerals` | Minerals | `Mineraala` |
+| `agriculture` | Agriculture | `Qonna` |
+| `health` | Health | `Fayyaa` |
+| `education` | Education | `Barnoota` |
+| `culture` | Culture | `Aadaa` |
+| `trade` | Trade | `Daldala` |
+
+Hard rules:
+- `economy` OM MUST be `"Dinagdee"` — not `"Diinaagdee"`.
+- `minerals` OM MUST be `"Mineraala"` — not `"Albuuda"`.
+- The FE data (`apps/web/src/lib/news-data.ts`) uses these keys:
+  `development, economy, environment, minerals, agriculture, health,
+  education, culture`; the demo also uses `trade` for the markets event.
+
+---
+
+## 6. Demo content notes for reviewers
 
 - Demo defaults UI language to **EN** on load (index.html `lang="en"`), then
   toggles. Production should confirm the default (OM is authoritative).

@@ -36,6 +36,22 @@ at 375px; needs >= 4.5:1" — not "looks bad". List any follow-up issues filed.>
 8. New model/permission/endpoint without tests.
 9. `console.log` / `print` debug statements left in.
 10. Out-of-sync migration file.
+11. **News category keys** — every news seed/article must use exactly one of the 9
+    canonical keys: `development`, `economy`, `environment`, `minerals`,
+    `agriculture`, `health`, `education`, `culture`, `trade`. Any other key →
+    block. (See `qa/CONTENT_FACTS.md` §News categories.)
+12. **Category OM labels** — `economy` OM must be exactly `"Dinagdee"` (not
+    `"Diinaagdee"`); `minerals` OM must be exactly `"Mineraala"` (not
+    `"Albuuda"`). Flag any deviation.
+13. **Canonical slugs/names** — place slugs must be the 12 canonical OM slugs
+    (dambi-doolloo, sayyoo, haawwaa-galaan, daallee-sadii, daallee-waabaraa,
+    gaawoo-qeebbee, yamaalogii-walal, anfilloo, gidaamii, laaloo-qilee,
+    sadii-canqaa, jimmaa-horroo); woreda names the 12 canonical OM spellings.
+14. **Inauguration gallery order** — must be project13, project6, project3,
+    project1, project2 (bug #61).
+15. **Dark-mode contrast** — no new `--brand-400`-on-dark text (2.54:1) and no
+    white-on-white card chips (`.news-cat`/`.place-stat-chip` at 1.41:1) — see
+    #80/#67.
 
 ### Remember
 
