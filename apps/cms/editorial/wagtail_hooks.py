@@ -211,6 +211,9 @@ def enforce_bulk_action_scope(request, action_type, objects, action_class):
         "publish": EditorialAction.PUBLISH,
         "unpublish": EditorialAction.ARCHIVE,
         "delete": EditorialAction.ARCHIVE,
+        # Partner bulk approval (#120) needs the same editorial power as
+        # flipping the record through the ordinary snippet edit form.
+        "approve_for_display": EditorialAction.EDIT,
     }
     action = action_map.get(action_type)
     for instance in objects:
