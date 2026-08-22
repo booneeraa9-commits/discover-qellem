@@ -1,0 +1,13 @@
+{
+  "name": "qa-i18n-harness",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QA headless-browser harness for the Discover Qellem i18n flip (issue #87). Not part of the app bundle.",
+  "main": "lang-check.js",
+  "scripts": {
+    "check": "node lang-check.js"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.8.0"
+  }
+}
