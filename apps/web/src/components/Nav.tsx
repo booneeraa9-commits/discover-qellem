@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Globe, Menu, Moon, Sun, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
+import { LangList, LangMenu } from "@/components/LanguageSwitcher";
 import { useT } from "@/lib/i18n-client";
 import { useTheme } from "@/lib/theme-client";
 
@@ -21,7 +22,7 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 export default function Nav() {
-  const { t, lang, toggleLang } = useT();
+  const { t } = useT();
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
 
@@ -61,7 +62,6 @@ export default function Nav() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  const langLabel = lang === "om" ? "EN" : "OM";
   const ThemeIcon = theme === "dark" ? Sun : Moon;
 
   return (
@@ -91,16 +91,7 @@ export default function Nav() {
         </nav>
 
         <div className="nav-actions">
-          <button
-            type="button"
-            className="icon-btn lang-btn"
-            onClick={toggleLang}
-            title={t("lang.switch")}
-            aria-label={t("lang.switch")}
-          >
-            <Globe aria-hidden="true" width={18} height={18} />
-            <span className="lang-label">{langLabel}</span>
-          </button>
+          <LangMenu />
           <button
             type="button"
             className="icon-btn"
@@ -166,6 +157,11 @@ export default function Nav() {
             </Link>
           ))}
         </nav>
+
+        <div className="drawer-lang">
+          <span className="drawer-lang-title">{t("lang.menu")}</span>
+          <LangList onSelect={closeDrawer} />
+        </div>
       </div>
     </header>
   );

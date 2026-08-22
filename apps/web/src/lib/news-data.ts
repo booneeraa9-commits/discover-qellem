@@ -22,29 +22,29 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "dembi-dollo-inauguration-2026",
     categoryKey: "development",
-    category: { en: "Development", om: "Misooma" },
+    category: { en: "Development", om: "Misooma", am: "[AM draft]" },
     date: "2026-08-21",
-    place: { en: "Dembi Dolo", om: "Dambi Doolloo" },
+    place: { en: "Dembi Dolo", om: "Dambi Doolloo", am: "[AM draft]" },
     title: {
       en: "Projects worth over 650 million Birr inaugurated in Dembi Dolo",
-      om: "Magaalaa Dambi Doollootti pirojektiiwwan qarshii Miliyoona 650 oliin ijaaraman eebbifaman",
+      om: "Magaalaa Dambi Doollootti pirojektiiwwan qarshii Miliyoona 650 oliin ijaaraman eebbifaman", am: "[AM draft]",
     },
     excerpt: {
       en: "The Grand Oliqa Dingil Hall, built at more than 425 million Birr, is inaugurated together with the city corridor, clusters and the Science Café.",
-      om: "Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame, kooridarii magaalaa, kilaasterota fi Kaaffee Tekinooloojii waliin eebbifamaa jira.",
+      om: "Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame, kooridarii magaalaa, kilaasterota fi Kaaffee Tekinooloojii waliin eebbifamaa jira.", am: "[AM draft]",
     },
     body: [
       {
         en: "Multiple development projects built at a cost of more than 650 million Birr are being inaugurated in Dembi Dolo. The Grand Oliqa Dingil Hall, constructed for over 425 million Birr, is opened together with the city corridor development, multi-purpose service clusters, the Science & Technology Café and the city road network.",
-        om: "Pirojektiiwwan gosa garaagaraa qarshii Miliyoona 650 oliin ijaaraman Dambi Doollootti eebbifamaa jiru. Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame, kooridarii magaalaa, kilaasterota, Kaaffee Tekinooloojii fi marfata magaalichaa waliin eebbifamaa jira.",
+        om: "Pirojektiiwwan gosa garaagaraa qarshii Miliyoona 650 oliin ijaaraman Dambi Doollootti eebbifamaa jiru. Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame, kooridarii magaalaa, kilaasterota, Kaaffee Tekinooloojii fi marfata magaalichaa waliin eebbifamaa jira.", am: "[AM draft]",
       },
       {
         en: "The Mayor of Dembi Dolo, Obbo Girma Dangala, reported more than 32 projects underway. The Chief Administrator of Kellem Wollega, Obbo Gammachuu Gurmesa, stated that 2,284 projects worth more than 17 billion Birr have been completed over the last four years.",
-        om: "Kantiibaan Magaalaa Dambi Doolloo Obbo Girmaa Dangalaa pirojektoota 32 ol hojjetamaa jiraachuu himan. Bulchaan Godina Qellem Wallaggaa Obbo Gammachuu Gurmeessaa pirojektoota 2,284 qarshii Biliyoona 17 oliin waggoota afran darban xumuraman himan.",
+        om: "Kantiibaan Magaalaa Dambi Doolloo Obbo Girmaa Dangalaa pirojektoota 32 ol hojjetamaa jiraachuu himan. Bulchaan Godina Qellem Wallaggaa Obbo Gammachuu Gurmeessaa pirojektoota 2,284 qarshii Biliyoona 17 oliin waggoota afran darban xumuraman himan.", am: "[AM draft]",
       },
       {
         en: "Dr. Utukana Odaa, Deputy Head of the Office of the President of the Oromia Regional State, said the regional government's work in education, technology, economy and institution-building is succeeding at a high level.",
-        om: "Dr. Utukaanaa Odaa, Itt. Hoog. Waajjira Pirezidaantii Mootummaa Naannoo Oromiyaa, hojiin mootummaa naannoo barnootaa, teekinooloojii, dinagdee fi sirna ijaaruutti sadarkaa olaanaan milkaa'aa jiraachuu himan.",
+        om: "Dr. Utukaanaa Odaa, Itt. Hoog. Waajjira Pirezidaantii Mootummaa Naannoo Oromiyaa, hojiin mootummaa naannoo barnootaa, teekinooloojii, dinagdee fi sirna ijaaruutti sadarkaa olaanaan milkaa'aa jiraachuu himan.", am: "[AM draft]",
       },
     ],
     image: "/img/project6.jpg",
@@ -59,21 +59,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "coffee-2026",
     categoryKey: "economy",
-    category: { en: "Economy", om: "Dinagdee" },
+    category: { en: "Economy", om: "Dinagdee", am: "[AM draft]" },
     date: "2026-08-08",
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     title: {
       en: "Zone coffee production recorded at 134,213 tonnes",
-      om: "Oomishni buna godinaa toonnii 134,213 gahe",
+      om: "Oomishni buna godinaa toonnii 134,213 gahe", am: "[AM draft]",
     },
     excerpt: {
       en: "585,945 ha of coffee potential; in 2016 E.C. 484,841 ha were covered and 134,213 tonnes produced.",
-      om: "Lafti bunaaf mijatu hektaara 585,945; bara 2016 A.L.I hektaara 484,841 uwwifamee toonnii 134,213 oomishame.",
+      om: "Lafti bunaaf mijatu hektaara 585,945; bara 2016 A.L.I hektaara 484,841 uwwifamee toonnii 134,213 oomishame.", am: "[AM draft]",
     },
     body: [
       {
         en: "According to the zone profile, 484,841 ha were under coffee in 2016 E.C., producing 134,213 tonnes. 817 cooperatives with 156,500 members channel the harvest to market.",
-        om: "Akka ragaa waajjira godinaatti, bara 2016 A.L.I hektaara 484,841 bunaan uwwifamee toonnii 134,213 oomishame. Waldaaleen 817 miseensota 156,500 waliin oomisha gabaaf qopheessu.",
+        om: "Akka ragaa waajjira godinaatti, bara 2016 A.L.I hektaara 484,841 bunaan uwwifamee toonnii 134,213 oomishame. Waldaaleen 817 miseensota 156,500 waliin oomisha gabaaf qopheessu.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -82,21 +82,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "walal-2026",
     categoryKey: "environment",
-    category: { en: "Environment", om: "Naannoo" },
+    category: { en: "Environment", om: "Naannoo", am: "[AM draft]" },
     date: "2026-07-14",
-    place: { en: "Gawo Kebe", om: "Gaawoo Qeebbee" },
+    place: { en: "Gawo Kebe", om: "Gaawoo Qeebbee", am: "[AM draft]" },
     title: {
       en: "Dati Walal Park — a last home for species at risk",
-      om: "Paarkiin Dhaatii Walaal — mana dhiisaa bineensota baduuf jiraniif",
+      om: "Paarkiin Dhaatii Walaal — mana dhiisaa bineensota baduuf jiraniif", am: "[AM draft]",
     },
     excerpt: {
       en: "103,500 ha of rain forest; 20+ mammal and 150+ bird species.",
-      om: "Hektaara 103,500 bosona roobaa; bineensota 20+ fi simbirroota 150+.",
+      om: "Hektaara 103,500 bosona roobaa; bineensota 20+ fi simbirroota 150+.", am: "[AM draft]",
     },
     body: [
       {
         en: "Dati Walal was established by proclamation 87/2005 and gazetted 25 May 2012. It is home to hippo, buffalo and lion — IUCN-listed vulnerable species.",
-        om: "Paarkiin Dhaatii Walaal labsii 87/2005tiin hundeeffame; Caamsaa 25, 2012 beekame. Roobii, gafarsa fi leenca — IUCN'n balaaf saaxilamoo — of keessaa qaba.",
+        om: "Paarkiin Dhaatii Walaal labsii 87/2005tiin hundeeffame; Caamsaa 25, 2012 beekame. Roobii, gafarsa fi leenca — IUCN'n balaaf saaxilamoo — of keessaa qaba.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -105,21 +105,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "gold-2026",
     categoryKey: "minerals",
-    category: { en: "Minerals", om: "Mineraala" },
+    category: { en: "Minerals", om: "Mineraala", am: "[AM draft]" },
     date: "2026-06-03",
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     title: {
       en: "Gold recorded in five woredas",
-      om: "Warqee aanaalee shan keessatti argama",
+      om: "Warqee aanaalee shan keessatti argama", am: "[AM draft]",
     },
     excerpt: {
       en: "EMA (1988): gold in Anfillo, Dale Wabera, Hawa Gelan, Lalo Kile and Sayo.",
-      om: "Ragaan EMA (1988): warqee Anfilloo, Daallee Waabaraa, Haawwaa Galaan, Laaloo Qilee fi Sayyoo keessatti.",
+      om: "Ragaan EMA (1988): warqee Anfilloo, Daallee Waabaraa, Haawwaa Galaan, Laaloo Qilee fi Sayyoo keessatti.", am: "[AM draft]",
     },
     body: [
       {
         en: "Known minerals include gold, platinum (Lalo Kile), tantalum (Sayo) and uranium (Anfillo, Sayo). Platinum extraction is beginning in Lalo Kile.",
-        om: "Mineraalonni godina keessatti argaman warqee, pilaatiiniyam (Laaloo Qilee), tantaalam (Sayyoo) fi yuureniyam (Anfilloo, Sayyoo) dha. Pilaatiiniyamiin Laaloo Qilee keessatti baasuun jalqabaa jira.",
+        om: "Mineraalonni godina keessatti argaman warqee, pilaatiiniyam (Laaloo Qilee), tantaalam (Sayyoo) fi yuureniyam (Anfilloo, Sayyoo) dha. Pilaatiiniyamiin Laaloo Qilee keessatti baasuun jalqabaa jira.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -128,21 +128,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "honey-2026",
     categoryKey: "agriculture",
-    category: { en: "Agriculture", om: "Qonna" },
+    category: { en: "Agriculture", om: "Qonna", am: "[AM draft]" },
     date: "2026-05-19",
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     title: {
       en: "473,300 beehives — honey's big potential",
-      om: "Gaagura dammaa 473,300 — qabeenya guddaa",
+      om: "Gaagura dammaa 473,300 — qabeenya guddaa", am: "[AM draft]",
     },
     excerpt: {
       en: "473,300 hives (2015 E.C.) — modern methods are the answer to lift output.",
-      om: "Gaagura 473,300 (2015 A.L.I); teeknooloojii ammayyaa guddinaaf barbaaddi.",
+      om: "Gaagura 473,300 (2015 A.L.I); teeknooloojii ammayyaa guddinaaf barbaaddi.", am: "[AM draft]",
     },
     body: [
       {
         en: "The zone counts 473,300 hives (2015) and 339,193 (2016). Output remains low — modern hives will significantly raise production.",
-        om: "Gaagura dammaa 473,300 (2015) fi 339,193 (2016) jiru. Oomishni garuu gadi aanaa dha — gaagura ammayyaa guddina oomishaa fida.",
+        om: "Gaagura dammaa 473,300 (2015) fi 339,193 (2016) jiru. Oomishni garuu gadi aanaa dha — gaagura ammayyaa guddina oomishaa fida.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -151,21 +151,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "health-2026",
     categoryKey: "health",
-    category: { en: "Health", om: "Fayyaa" },
+    category: { en: "Health", om: "Fayyaa", am: "[AM draft]" },
     date: "2026-04-22",
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     title: {
       en: "Zone health in numbers",
-      om: "Fayyaa godinaa lakkoofsota ragaa irraa",
+      om: "Fayyaa godinaa lakkoofsota ragaa irraa", am: "[AM draft]",
     },
     excerpt: {
       en: "4 hospitals, 51 health centres, 256 health posts.",
-      om: "Hospitaalota 4, buufata fayyaa 51, kellaa fayyaa 256.",
+      om: "Hospitaalota 4, buufata fayyaa 51, kellaa fayyaa 256.", am: "[AM draft]",
     },
     body: [
       {
         en: "The zone has 4 hospitals, 51 health centres, 256 health posts and 372 drug vendors. One doctor currently serves 43,960 people.",
-        om: "Hospitaalota 4, buufata fayyaa 51, kellaa fayyaa 256 fi mana qorichaa 372 jiru. Doktorri tokko uummata 43,960 tajaajila.",
+        om: "Hospitaalota 4, buufata fayyaa 51, kellaa fayyaa 256 fi mana qorichaa 372 jiru. Doktorri tokko uummata 43,960 tajaajila.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -174,21 +174,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "schools-2026",
     categoryKey: "education",
-    category: { en: "Education", om: "Barnoota" },
+    category: { en: "Education", om: "Barnoota", am: "[AM draft]" },
     date: "2026-03-09",
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     title: {
       en: "348,516 students learning across the zone",
-      om: "Barattoota 348,516 godina keessatti baratu",
+      om: "Barattoota 348,516 godina keessatti baratu", am: "[AM draft]",
     },
     excerpt: {
       en: "452 government primary schools, 50 secondary schools, one teachers' college and one university.",
-      om: "Mana barumsaa 1–8 mootummaa 452, 9–12 50, koolleejjii barsiisota 1 fi yuunivarsiitii 1.",
+      om: "Mana barumsaa 1–8 mootummaa 452, 9–12 50, koolleejjii barsiisota 1 fi yuunivarsiitii 1.", am: "[AM draft]",
     },
     body: [
       {
         en: "In 2016 E.C. the zone had 452 government primary and 50 secondary schools, one teachers' college and one university — 348,516 students enrolled.",
-        om: "Bara 2016 A.L.I manneen barumsaa 1–8 mootummaa 452, 9–12 50, koolleejjii barsiisota 1 fi yuunivarsiitii 1 jiru — barattoonni 348,516.",
+        om: "Bara 2016 A.L.I manneen barumsaa 1–8 mootummaa 452, 9–12 50, koolleejjii barsiisota 1 fi yuunivarsiitii 1 jiru — barattoonni 348,516.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",
@@ -197,21 +197,21 @@ export const NEWS: NewsArticle[] = [
   {
     slug: "irreecha-2026",
     categoryKey: "culture",
-    category: { en: "Culture", om: "Aadaa" },
+    category: { en: "Culture", om: "Aadaa", am: "[AM draft]" },
     date: "2026-09-27",
-    place: { en: "Local water sites", om: "Madda bishaanii" },
+    place: { en: "Local water sites", om: "Madda bishaanii", am: "[AM draft]" },
     title: {
       en: "Irreecha celebration",
-      om: "Ayyaana Irreechaa",
+      om: "Ayyaana Irreechaa", am: "[AM draft]",
     },
     excerpt: {
       en: "Irreecha, the Oromo thanksgiving, gathers communities at the water.",
-      om: "Irreecha ayyaana galataa Oromoo — hawaasni madda bishaanii irratti walga'a.",
+      om: "Irreecha ayyaana galataa Oromoo — hawaasni madda bishaanii irratti walga'a.", am: "[AM draft]",
     },
     body: [
       {
         en: "Communities across Kellem mark Irreecha at local water sites — thanksgiving, song and gathering.",
-        om: "Hawaasni Qeellam Irreecha madda bishaanii irratti kabaja — galata, faaruu fi walga'ii hawaasaa.",
+        om: "Hawaasni Qeellam Irreecha madda bishaanii irratti kabaja — galata, faaruu fi walga'ii hawaasaa.", am: "[AM draft]",
       },
     ],
     image: "/hero.jpg",

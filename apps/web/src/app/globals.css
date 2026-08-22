@@ -64,6 +64,22 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Font stacks per language. OM keeps the same Latin stacks as EN (Fraunces
+   display / Inter UI). AM swaps in Noto Sans Ethiopic as the primary face for
+   body/UI and headings, with Inter/Fraunces as Latin fallbacks. These only
+   take effect once <html lang="am"> is set — the default language is still EN. */
+:lang(om) {
+  --serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+:lang(am) {
+  --sans: var(--font-noto-ethiopic), var(--font-inter), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: var(--font-noto-ethiopic), var(--font-fraunces), Georgia, "Times New Roman", serif;
+}
+
 [data-theme="dark"] {
   --brand-900: #dff3e7;
   --brand-800: #b9e3cd;
@@ -3235,4 +3251,139 @@ body.photo-nav .nav:not(.scrolled) {
   .skip-link {
     transition: none;
   }
+}
+
+/* ============================================================
+   Language switcher (3-option menu: OM / EN / AM-disabled)
+   ============================================================ */
+
+.lang-menu {
+  position: relative;
+}
+
+.lang-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 70;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--paper);
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.lang-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-800);
+  text-align: left;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.lang-menu-item:hover:not(:disabled) {
+  background: var(--ink-100);
+  color: var(--ink-900);
+}
+
+.lang-menu-item[data-active="true"] {
+  color: var(--brand-700);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .lang-menu-item[data-active="true"] {
+  color: var(--brand-400);
+}
+
+.lang-menu-item:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.lang-soon {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+  background: var(--ink-100);
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .lang-soon {
+  background: var(--ink-200);
+  color: var(--ink-500);
+}
+
+/* Drawer language section. */
+.drawer-lang {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ink-200);
+}
+
+.drawer-lang-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-bottom: 8px;
+}
+
+.drawer-langs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.drawer-lang-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-800);
+  text-align: left;
+  transition:
+    background 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.drawer-lang-item:hover:not(:disabled) {
+  background: var(--ink-100);
+  color: var(--ink-900);
+}
+
+.drawer-lang-item.active {
+  color: var(--brand-700);
+  background: var(--brand-100);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .drawer-lang-item.active {
+  color: var(--brand-400);
+}
+
+.drawer-lang-item:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

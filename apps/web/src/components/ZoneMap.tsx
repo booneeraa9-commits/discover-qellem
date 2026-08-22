@@ -16,18 +16,18 @@ interface MapPlace {
 // viewBox, matching the demo reference's pin layout. Slugs are the canonical
 // production slugs from qa/CONTENT_FACTS.md §3.
 const PLACES: MapPlace[] = [
-  { slug: "dambi-doolloo", name: { en: "Dembi Dolo", om: "Dambi Doolloo" }, x: 400, y: 245, capital: true },
-  { slug: "sayyoo", name: { en: "Sayo", om: "Sayyoo" }, x: 360, y: 280 },
-  { slug: "haawwaa-galaan", name: { en: "Hawa Gelan", om: "Haawwaa Galaan" }, x: 430, y: 300 },
-  { slug: "daallee-sadii", name: { en: "Dale Sadi", om: "Daallee Sadii" }, x: 490, y: 330 },
-  { slug: "daallee-waabaraa", name: { en: "Dale Wabera", om: "Daallee Waabaraa" }, x: 480, y: 270 },
-  { slug: "gaawoo-qeebbee", name: { en: "Gawo Kebe", om: "Gaawoo Qeebbee" }, x: 430, y: 210 },
-  { slug: "yamaalogii-walal", name: { en: "Yemalogi Welel", om: "Yamaalogii Walal" }, x: 370, y: 180 },
-  { slug: "anfilloo", name: { en: "Anfillo", om: "Anfilloo" }, x: 270, y: 260 },
-  { slug: "gidaamii", name: { en: "Gidami", om: "Gidaamii" }, x: 220, y: 210 },
-  { slug: "laaloo-qilee", name: { en: "Lalo Kile", om: "Laaloo Qilee" }, x: 500, y: 215 },
-  { slug: "sadii-canqaa", name: { en: "Sadi Chanka", om: "Sadii Canqaa" }, x: 470, y: 240 },
-  { slug: "jimmaa-horroo", name: { en: "Jimma Horo", om: "Jimmaa Horroo" }, x: 320, y: 170 },
+  { slug: "dambi-doolloo", name: { en: "Dembi Dolo", om: "Dambi Doolloo", am: "[AM draft]" }, x: 400, y: 245, capital: true },
+  { slug: "sayyoo", name: { en: "Sayo", om: "Sayyoo", am: "[AM draft]" }, x: 360, y: 280 },
+  { slug: "haawwaa-galaan", name: { en: "Hawa Gelan", om: "Haawwaa Galaan", am: "[AM draft]" }, x: 430, y: 300 },
+  { slug: "daallee-sadii", name: { en: "Dale Sadi", om: "Daallee Sadii", am: "[AM draft]" }, x: 490, y: 330 },
+  { slug: "daallee-waabaraa", name: { en: "Dale Wabera", om: "Daallee Waabaraa", am: "[AM draft]" }, x: 480, y: 270 },
+  { slug: "gaawoo-qeebbee", name: { en: "Gawo Kebe", om: "Gaawoo Qeebbee", am: "[AM draft]" }, x: 430, y: 210 },
+  { slug: "yamaalogii-walal", name: { en: "Yemalogi Welel", om: "Yamaalogii Walal", am: "[AM draft]" }, x: 370, y: 180 },
+  { slug: "anfilloo", name: { en: "Anfillo", om: "Anfilloo", am: "[AM draft]" }, x: 270, y: 260 },
+  { slug: "gidaamii", name: { en: "Gidami", om: "Gidaamii", am: "[AM draft]" }, x: 220, y: 210 },
+  { slug: "laaloo-qilee", name: { en: "Lalo Kile", om: "Laaloo Qilee", am: "[AM draft]" }, x: 500, y: 215 },
+  { slug: "sadii-canqaa", name: { en: "Sadi Chanka", om: "Sadii Canqaa", am: "[AM draft]" }, x: 470, y: 240 },
+  { slug: "jimmaa-horroo", name: { en: "Jimma Horo", om: "Jimmaa Horroo", am: "[AM draft]" }, x: 320, y: 170 },
 ];
 
 export default function ZoneMap() {

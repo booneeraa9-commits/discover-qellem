@@ -27,35 +27,35 @@ const GALLERY_IMAGES: GalleryProps["images"] = [
 const PLACES: PlaceCardData[] = [
   {
     slug: "dambi-doolloo",
-    name: { en: "Dembi Dolo", om: "Dambi Doolloo" },
+    name: { en: "Dembi Dolo", om: "Dambi Doolloo", am: "[AM draft]" },
     teaser: {
       en: "The capital of Kellem Wollega Zone, 652 km from Finfinnee.",
-      om: "Magaalaa guddoo godina Qeellam Wallaggaa — Finfinnee irraa km 652.",
+      om: "Magaalaa guddoo godina Qeellam Wallaggaa — Finfinnee irraa km 652.", am: "[AM draft]",
     },
     image: "/hero.jpg",
-    statLabel: { en: "Population", om: "Uummata" },
+    statLabel: { en: "Population", om: "Uummata", am: "[AM draft]" },
     statValue: "59,343",
   },
   {
     slug: "sayyoo",
-    name: { en: "Sayo", om: "Sayyoo" },
+    name: { en: "Sayo", om: "Sayyoo", am: "[AM draft]" },
     teaser: {
       en: "The historic root of the zone — land of the Sayyoo Oromo.",
-      om: "Lafa hundee godichaa — lafa Sayyoo Oromoo.",
+      om: "Lafa hundee godichaa — lafa Sayyoo Oromoo.", am: "[AM draft]",
     },
     image: "/hero.jpg",
-    statLabel: { en: "Population", om: "Uummata" },
+    statLabel: { en: "Population", om: "Uummata", am: "[AM draft]" },
     statValue: "179,458",
   },
   {
     slug: "haawwaa-galaan",
-    name: { en: "Hawa Gelan", om: "Haawwaa Galaan" },
+    name: { en: "Hawa Gelan", om: "Haawwaa Galaan", am: "[AM draft]" },
     teaser: {
       en: "A southern woreda with wide farmland and recorded gold.",
-      om: "Aanaa kibbaa — lafa qonnaa bal'aa fi warqee qabdu.",
+      om: "Aanaa kibbaa — lafa qonnaa bal'aa fi warqee qabdu.", am: "[AM draft]",
     },
     image: "/hero.jpg",
-    statLabel: { en: "Population", om: "Uummata" },
+    statLabel: { en: "Population", om: "Uummata", am: "[AM draft]" },
     statValue: "161,186",
   },
 ];
@@ -63,43 +63,43 @@ const PLACES: PlaceCardData[] = [
 const NEWS: NewsCardData[] = [
   {
     href: "/news/dembi-dollo-inauguration-2026",
-    category: { en: "Development", om: "Misooma" },
+    category: { en: "Development", om: "Misooma", am: "[AM draft]" },
     date: "2026-08-21",
     title: {
       en: "Projects worth over 650 million Birr inaugurated in Dembi Dolo",
-      om: "Magaalaa Dambi Doollootti pirojektiiwwan qarshii Miliyoona 650 oliin ijaaraman eebbifaman",
+      om: "Magaalaa Dambi Doollootti pirojektiiwwan qarshii Miliyoona 650 oliin ijaaraman eebbifaman", am: "[AM draft]",
     },
     excerpt: {
       en: "The Grand Oliqa Dingil Hall, built at more than 425 million Birr, is inaugurated.",
-      om: "Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame eebbifameera.",
+      om: "Galmi Oliiqaa Dingil qarshii Miliyoona 425 oliin ijaarame eebbifameera.", am: "[AM draft]",
     },
     image: "/hero.jpg",
   },
   {
     href: "/news/coffee-2026",
-    category: { en: "Economy", om: "Dinagdee" },
+    category: { en: "Economy", om: "Dinagdee", am: "[AM draft]" },
     date: "2026-08-08",
     title: {
       en: "Zone coffee production recorded at 134,213 tonnes",
-      om: "Oomishni buna godinaa toonnii 134,213 gahe",
+      om: "Oomishni buna godinaa toonnii 134,213 gahe", am: "[AM draft]",
     },
     excerpt: {
       en: "585,945 ha of coffee potential; 484,841 ha under coffee in 2016 E.C.",
-      om: "Lafti bunaaf mijatu hektaara 585,945; 484,841 bunaan uwwifame (2016 A.L.I).",
+      om: "Lafti bunaaf mijatu hektaara 585,945; 484,841 bunaan uwwifame (2016 A.L.I).", am: "[AM draft]",
     },
     image: "/hero.jpg",
   },
   {
     href: "/news/walal-2026",
-    category: { en: "Environment", om: "Naannoo" },
+    category: { en: "Environment", om: "Naannoo", am: "[AM draft]" },
     date: "2026-07-14",
     title: {
       en: "Dati Walal Park — a last home for species at risk",
-      om: "Paarkiin Dhaatii Walaal — mana dhiisaa bineensota baduuf jiraniif",
+      om: "Paarkiin Dhaatii Walaal — mana dhiisaa bineensota baduuf jiraniif", am: "[AM draft]",
     },
     excerpt: {
       en: "103,500 ha of rain forest; 20+ mammal and 150+ bird species.",
-      om: "Hektaara 103,500 bosona roobaa; bineensota 20+ fi simbirroota 150+.",
+      om: "Hektaara 103,500 bosona roobaa; bineensota 20+ fi simbirroota 150+.", am: "[AM draft]",
     },
     image: "/hero.jpg",
   },
@@ -110,14 +110,14 @@ const STORIES: StoryCardData[] = [
     href: "/news/coffee-road",
     title: {
       en: "The coffee road",
-      om: "Daandii bunaa",
+      om: "Daandii bunaa", am: "[AM draft]",
     },
     excerpt: {
       en: "At first light, sacks move toward markets and Dembi Dolo, then to Finfinnee and beyond.",
-      om: "Ganama barii qonyee bunaatiin guutamee gara gabaawwanii fi Dambi Doollootti ce'a.",
+      om: "Ganama barii qonyee bunaatiin guutamee gara gabaawwanii fi Dambi Doollootti ce'a.", am: "[AM draft]",
     },
-    author: { en: "Community contributor", om: "[OM] Community contributor" },
-    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa" },
+    author: { en: "Community contributor", om: "[OM] Community contributor", am: "[AM draft]" },
+    place: { en: "Kellem Wollega", om: "Qeellam Wallaggaa", am: "[AM draft]" },
     date: "2026-06-20",
     image: "/hero.jpg",
   },
@@ -125,14 +125,14 @@ const STORIES: StoryCardData[] = [
     href: "/news/dati-walal",
     title: {
       en: "Dati Walal National Park",
-      om: "Paarkii Dhaatii Walaal",
+      om: "Paarkii Dhaatii Walaal", am: "[AM draft]",
     },
     excerpt: {
       en: "Herds of hippo in the river look like huge black rocks afloat.",
-      om: "Gareen gafarsaa bishaan keessaa dhagaa gurraacha bishaan irra bololi'u fakkaata.",
+      om: "Gareen gafarsaa bishaan keessaa dhagaa gurraacha bishaan irra bololi'u fakkaata.", am: "[AM draft]",
     },
-    author: { en: "Community contributor", om: "[OM] Community contributor" },
-    place: { en: "Gawo Kebe", om: "Gaawoo Qeebbee" },
+    author: { en: "Community contributor", om: "[OM] Community contributor", am: "[AM draft]" },
+    place: { en: "Gawo Kebe", om: "Gaawoo Qeebbee", am: "[AM draft]" },
     date: "2026-07-02",
     image: "/hero.jpg",
   },
@@ -141,56 +141,56 @@ const STORIES: StoryCardData[] = [
 const PEOPLE: PersonCardData[] = [
   {
     slug: "dr-negasso-gidada",
-    name: { en: "Dr. Negasso Gidada", om: "Dr. Nagaasoo Gidaadaa" },
+    name: { en: "Dr. Negasso Gidada", om: "Dr. Nagaasoo Gidaadaa", am: "[AM draft]" },
     years: "1943–2019",
     role: {
       en: "First President of the FDRE (1995–2001) — born in Dembi Dolo.",
-      om: "Pireezidaantii FDRE isa jalqabaa (1995–2001) — Dambi Doolloo keessatti dhalate.",
+      om: "Pireezidaantii FDRE isa jalqabaa (1995–2001) — Dambi Doolloo keessatti dhalate.", am: "[AM draft]",
     },
     image: "/img/dr-nagaasoo.jpg",
   },
   {
     slug: "oliqa-dingil-booka",
-    name: { en: "Oliqa Dingil Booka", om: "Oliiqaa Dingil Bookaa" },
+    name: { en: "Oliqa Dingil Booka", om: "Oliiqaa Dingil Bookaa", am: "[AM draft]" },
     years: "c.1890–1930s",
     role: {
       en: "Hero of the Sayo highlands — anti-colonial leader.",
-      om: "Goota Baddaa Sayyoo — qabsoo ittisa koloneeffataa.",
+      om: "Goota Baddaa Sayyoo — qabsoo ittisa koloneeffataa.", am: "[AM draft]",
     },
     image: "/img/oliqaa-dingil.jpg",
   },
   {
     slug: "jote-tulu",
-    name: { en: "Jote Tulu", om: "Jootee Tulluu" },
+    name: { en: "Jote Tulu", om: "Jootee Tulluu", am: "[AM draft]" },
     years: "d. 1932",
     role: {
       en: "Ruler of Leqa Qellem who moved his seat to Gidami in 1884 E.C.",
-      om: "Abbaa Bulchaa Leqa Qellem — bara 1884 A.L.I. teessoo isaa Gidaamiitti jijjiire.",
+      om: "Abbaa Bulchaa Leqa Qellem — bara 1884 A.L.I. teessoo isaa Gidaamiitti jijjiire.", am: "[AM draft]",
     },
   },
 ];
 
 const SPONSORS: SponsorCardData[] = [
   {
-    name: { en: "Kellem Wollega Zone Administration", om: "Bulchiinsa Godina Qeellam Wallaggaa" },
+    name: { en: "Kellem Wollega Zone Administration", om: "Bulchiinsa Godina Qeellam Wallaggaa", am: "[AM draft]" },
     href: "/support",
     initials: "KW",
     tint: "brand",
   },
   {
-    name: { en: "Kellem Wollega Communication Office", om: "Waajjiira Oduu Godina Qeellam" },
+    name: { en: "Kellem Wollega Communication Office", om: "Waajjiira Oduu Godina Qeellam", am: "[AM draft]" },
     href: "/support",
     initials: "CO",
     tint: "gold",
   },
   {
-    name: { en: "Dembi Dolo University", om: "Yuunivarsiitii Dambi Doolloo" },
+    name: { en: "Dembi Dolo University", om: "Yuunivarsiitii Dambi Doolloo", am: "[AM draft]" },
     href: "/support",
     initials: "DD",
     tint: "brand",
   },
   {
-    name: { en: "Dembi Dolo City Administration", om: "Bulchiinsa Magaalaa Dambi Doolloo" },
+    name: { en: "Dembi Dolo City Administration", om: "Bulchiinsa Magaalaa Dambi Doolloo", am: "[AM draft]" },
     href: "/support",
     initials: "DC",
     tint: "gold",
@@ -199,39 +199,39 @@ const SPONSORS: SponsorCardData[] = [
 
 const SUPPORTERS: SupporterCardData[] = [
   {
-    name: { en: "Ato Gammachuu Gurmesa", om: "Obbo Gammachuu Gurmeessaa" },
+    name: { en: "Ato Gammachuu Gurmesa", om: "Obbo Gammachuu Gurmeessaa", am: "[AM draft]" },
     role: {
       en: "Chief Administrator, Kellem Wollega Zone",
-      om: "Bulchaa Godina Qeellam Wallaggaa",
+      om: "Bulchaa Godina Qeellam Wallaggaa", am: "[AM draft]",
     },
     initials: "GG",
   },
   {
-    name: { en: "Ato Girma Dangala", om: "Obbo Girmaa Dangalaa" },
-    role: { en: "Mayor, Dembi Dolo City", om: "Kantiibaa Magaalaa Dambi Doolloo" },
+    name: { en: "Ato Girma Dangala", om: "Obbo Girmaa Dangalaa", am: "[AM draft]" },
+    role: { en: "Mayor, Dembi Dolo City", om: "Kantiibaa Magaalaa Dambi Doolloo", am: "[AM draft]" },
     initials: "GD",
   },
   {
-    name: { en: "Dr. Utukana Odaa", om: "Dr. Utukaanaa Odaa" },
+    name: { en: "Dr. Utukana Odaa", om: "Dr. Utukaanaa Odaa", am: "[AM draft]" },
     role: {
       en: "Deputy Head, Office of the President, Oromia",
-      om: "Itt. Hoog. Waajjira Pirezidaantii Oromiyaa",
+      om: "Itt. Hoog. Waajjira Pirezidaantii Oromiyaa", am: "[AM draft]",
     },
     initials: "UO",
   },
   {
-    name: { en: "Kellem Culture & Tourism Office", om: "Waajjira Tuurizimii Qeellam" },
-    role: { en: "Research & photography partner", om: "Deeggarsa qorannoo fi suuraa" },
+    name: { en: "Kellem Culture & Tourism Office", om: "Waajjira Tuurizimii Qeellam", am: "[AM draft]" },
+    role: { en: "Research & photography partner", om: "Deeggarsa qorannoo fi suuraa", am: "[AM draft]" },
     initials: "KT",
   },
   {
-    name: { en: "The People of Kellem Wollega", om: "Hawaasa Qeellam Wallaggaa" },
-    role: { en: "The story and soul of this site", om: "Seenaa fi qabeenya — hundee fuula kanaa" },
+    name: { en: "The People of Kellem Wollega", om: "Hawaasa Qeellam Wallaggaa", am: "[AM draft]" },
+    role: { en: "The story and soul of this site", om: "Seenaa fi qabeenya — hundee fuula kanaa", am: "[AM draft]" },
     initials: "HW",
   },
   {
-    name: { en: "Farmers & Cooperatives", om: "Qonnaan bultootaa fi Waldaalee" },
-    role: { en: "817 co-ops, 156,500 members", om: "817 waldaalee, miseensota 156,500" },
+    name: { en: "Farmers & Cooperatives", om: "Qonnaan bultootaa fi Waldaalee", am: "[AM draft]" },
+    role: { en: "817 co-ops, 156,500 members", om: "817 waldaalee, miseensota 156,500", am: "[AM draft]" },
     initials: "FW",
   },
 ];
