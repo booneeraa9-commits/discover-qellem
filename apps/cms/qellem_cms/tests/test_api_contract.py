@@ -17,6 +17,7 @@ comments):
    approval.
 """
 
+import unittest
 from pathlib import PurePosixPath
 
 from django.contrib.auth import get_user_model
@@ -277,3 +278,97 @@ class PeopleContractTests(TestCase):
             "People slug set mismatch — reconcile the canonical slug for "
             "Jaal Laggasaa Wagi (see qa/API_CONTRACT.md and the content bug).",
         )
+
+
+# =============================================================================
+# Sprint 5 additions (issue #84 follow-up + pending BE).
+# =============================================================================
+
+class LanguageProjectionContractTests(TestCase):
+    """?lang=om|en|am projection with OM-then-EN fallback (landed in #107)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from archive.models import ArchiveIndexPage, NewsArticle
+
+        cls.index = ArchiveIndexPage.objects.get()
+        cls.article = NewsArticle(
+            title="OM BODY",
+            slug="lang-fallback-contract",
+            title_om="OM BODY",
+            title_en="EN BODY",
+            title_am="",
+            body_om="<p>OM BODY</p>",
+            body_en="<p>EN BODY</p>",
+            body_am="",
+            category=NewsCategory.DEVELOPMENT,
+            published_date="2026-08-21",
+        )
+        cls.index.add_child(instance=cls.article)
+
+    def _detail(self, params):
+        return self.client.get(
+            f"/api/v2/pages/{self.article.pk}/",
+            {**params, "format": "json"},
+        )
+
+    def test_lang_am_falls_back_to_om_not_en(self):
+        response = self._detail({"lang": "am"})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["title"], "OM BODY")
+        self.assertEqual(payload["body"], "<p>OM BODY</p>")
+        self.assertNotIn("EN BODY", payload["title"])
+        self.assertNotIn("EN BODY", payload["body"])
+
+    def test_lang_om_and_en_resolve_their_own_language(self):
+        self.assertEqual(self._detail({"lang": "om"}).json()["title"], "OM BODY")
+        self.assertEqual(self._detail({"lang": "en"}).json()["title"], "EN BODY")
+
+    def test_lang_projection_removes_suffixed_keys(self):
+        payload = self._detail({"lang": "am"}).json()
+        for key in ("title_om", "title_en", "title_am", "body_om", "body_en", "body_am"):
+            self.assertNotIn(key, payload, f"suffixed key {key} should be removed")
+
+    def test_invalid_lang_returns_400(self):
+        response = self._detail({"lang": "fr"})
+        self.assertEqual(response.status_code, 400)
+
+
+class PartnerBilingualFieldContractTests(TestCase):
+    """Sprint 5 BE: partner display_name_* and *_am companions (PENDING)."""
+
+    @unittest.skip("pending Sprint 5 BE: partners display_name_en/am + *_am fields")
+    def test_sponsors_expose_display_name_en_and_am(self):
+        raise NotImplementedError
+
+    @unittest.skip("pending Sprint 5 BE: partners display_name_en/am + *_am fields")
+    def test_supporters_expose_display_name_en_and_am(self):
+        raise NotImplementedError
+
+
+class NewsCategoryAmharicLabelContractTests(TestCase):
+    @unittest.skip("pending Sprint 5 BE: NewsCategory labels include Amharic")
+    def test_news_category_labels_include_amharic(self):
+        # Amharic is written in the Ethiopic script (U+1200–U+137F).
+        for choice in NewsCategory:
+            ethiopic = any("\u1200" <= ch <= "\u137f" for ch in choice.label)
+            self.assertTrue(ethiopic, f"{choice.name} label has no Amharic: {choice.label!r}")
+
+
+class ImageRenditionContractTests(TestCase):
+    """Sprint 5 BE: image endpoint exposes rendition URLs (issue #112)."""
+
+    @unittest.skip("pending Sprint 5 BE: /api/v2/images renditions (#112)")
+    def test_image_detail_exposes_rendition_urls(self):
+        from wagtail.images import get_image_model
+
+        Image = get_image_model()
+        image = Image.objects.first()
+        if image is None:
+            self.skipTest("no seeded images")
+        response = self.client.get(f"/api/v2/images/{image.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        renditions = response.json().get("meta", {}).get("renditions", {})
+        for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
+            self.assertIn(name, renditions, f"missing rendition {name}")

@@ -2,7 +2,8 @@
  *
  * Asserts the TARGET behaviour of the Afaan-Oromoo-default + Amharic flip.
  * Until #85 lands these are expected to FAIL in places — the harness exists to
- * tell the FE exactly what is missing.
+ * tell the FE exactly what is missing. Drive the real language menu (React
+ * store) rather than mutating the DOM so re-renders are exercised end to end.
  *
  * Usage:
  *   cd qa/scripts/i18n && npm install puppeteer-core
@@ -21,30 +22,37 @@ function check(name, ok, detail) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? " — " + detail : ""}`);
 }
 
-async function freshPage(browser, { lang = undefined } = {}) {
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1280, height: 900 });
-  await page.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
-  await page.evaluate(() => document.fonts.ready).catch(() => {});
-  return page;
-}
+// Endonyms live in lang.name.* and are stable across languages.
+const ENDONYM = { om: "Afaan Oromoo", en: "English", am: "አማርኛ" };
 
-function ethiopicInStack(page) {
-  return page.evaluate(() => {
-    const cs = getComputedStyle(document.documentElement);
-    const sans = cs.getPropertyValue("--sans");
-    const serif = cs.getPropertyValue("--serif");
-    return { sans, serif, sansEthiopic: /ethiopic|noto/i.test(sans) };
-  });
-}
-
-async function setLang(page, lang) {
-  await page.evaluate((code) => {
-    document.documentElement.setAttribute("lang", code);
-    window.localStorage.setItem("dq_lang", code);
-    document.cookie = `dq_lang=${code}; path=/; max-age=31536000; samesite=lax`;
-  }, lang);
+async function openMenuAndClick(page, code) {
+  // Open the dropdown (if not already open).
+  const panelOpen = await page.evaluate(() => !!document.querySelector(".lang-menu-panel"));
+  if (!panelOpen) {
+    await page.click("button.lang-btn");
+    await new Promise((r) => setTimeout(r, 150));
+  }
+  const clicked = await page.evaluate((endonym) => {
+    const opts = Array.from(document.querySelectorAll(".lang-menu-item, .drawer-lang-item, button"));
+    const target = opts.find((o) => (o.textContent || "").trim().startsWith(endonym));
+    if (!target) return { found: false, disabled: null };
+    target.click();
+    return { found: true, disabled: target.disabled === true || target.getAttribute("aria-disabled") === "true" };
+  }, ENDONYM[code]);
   await new Promise((r) => setTimeout(r, 300));
+  return clicked;
+}
+
+function htmlLang(page) {
+  return page.evaluate(() => document.documentElement.getAttribute("lang"));
+}
+
+async function setLangFallback(page, code) {
+  // DOM-only fallback (used only to check the font stack, which keys off
+  // the <html lang> attribute and therefore needs the attribute, not the
+  // store).
+  await page.evaluate((c) => document.documentElement.setAttribute("lang", c), code);
+  await new Promise((r) => setTimeout(r, 200));
 }
 
 (async () => {
@@ -61,7 +69,7 @@ async function setLang(page, lang) {
     await page.setViewport({ width: 1280, height: 900 });
     await page.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
     await page.evaluate(() => document.fonts.ready).catch(() => {});
-    const lang = await page.evaluate(() => document.documentElement.getAttribute("lang"));
+    const lang = await htmlLang(page);
     const omHero = await page.evaluate(() =>
       document.body.innerText.includes("Lafa Margaa") ||
       document.body.innerText.includes("Godina Qeellam Wallaggaa")
@@ -71,71 +79,104 @@ async function setLang(page, lang) {
     await ctx.close();
   }
 
-  const page = await freshPage(browser);
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1280, height: 900 });
+  await page.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
+  await page.evaluate(() => document.fonts.ready).catch(() => {});
 
-  // 2. html lang tracks each language + persists.
-  for (const code of ["om", "en", "am"]) {
-    await setLang(page, code);
-    const lang = await page.evaluate(() => document.documentElement.getAttribute("lang"));
-    check(`2a html lang == ${code}`, lang === code, `lang=${lang}`);
+  // 2. html lang tracks the real switcher for om and en.
+  for (const code of ["om", "en"]) {
+    const r = await openMenuAndClick(page, code);
+    const lang = await htmlLang(page);
+    check(`2a html lang == ${code} via switcher`, r.found && lang === code, `lang=${lang}`);
   }
 
-  // 4. Ethiopic font stack only when lang=am.
-  await setLang(page, "om");
-  const omStack = await ethiopicInStack(page);
-  check("4a OM font stack has no Ethiopic", !omStack.sansEthiopic, omStack.sans.slice(0, 60));
-  await setLang(page, "en");
-  const enStack = await ethiopicInStack(page);
-  check("4b EN font stack has no Ethiopic", !enStack.sansEthiopic, enStack.sans.slice(0, 60));
-  await setLang(page, "am");
-  const amStack = await ethiopicInStack(page);
-  check("4c AM font stack uses Ethiopic", amStack.sansEthiopic, amStack.sans.slice(0, 60));
+  // 2b. Cookie persistence across reload (switch to om, reload, still om).
+  await openMenuAndClick(page, "om");
+  await page.reload({ waitUntil: "load", timeout: 60000 });
+  await new Promise((r) => setTimeout(r, 600));
+  {
+    const lang = await htmlLang(page);
+    check("2b persisted lang survives reload (om)", lang === "om", `lang=${lang}`);
+  }
 
-  // 5. [AM draft] only in AM, never EN/OM.
-  await setLang(page, "am");
-  const amHasMarker = await page.evaluate(() => document.body.innerText.includes("[AM draft]"));
-  check("5a AM shows [AM draft] for unfilled keys", amHasMarker, "");
+  // 4. Ethiopic font stack only when lang=am (attribute-driven).
+  await setLangFallback(page, "om");
+  const omStack = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const sans = cs.getPropertyValue("--sans");
+    return { sans, ethiopic: /ethiopic|noto/i.test(sans) };
+  });
+  check("4a OM font stack has no Ethiopic", !omStack.ethiopic, omStack.sans.slice(0, 60));
+  await setLangFallback(page, "en");
+  const enStack = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const sans = cs.getPropertyValue("--sans");
+    return { sans, ethiopic: /ethiopic|noto/i.test(sans) };
+  });
+  check("4b EN font stack has no Ethiopic", !enStack.ethiopic, enStack.sans.slice(0, 60));
+  await setLangFallback(page, "am");
+  const amStack = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const sans = cs.getPropertyValue("--sans");
+    return { sans, ethiopic: /ethiopic|noto/i.test(sans) };
+  });
+  check("4c AM font stack uses Ethiopic", amStack.ethiopic, amStack.sans.slice(0, 60));
+
+  // 6. AM option state, then full click-through when enabled.
+  const amOption = await page.evaluate(() => {
+    const opts = Array.from(document.querySelectorAll("button"));
+    const am = opts.find((o) => (o.textContent || "").trim().startsWith("አማርኛ"));
+    if (!am) return { found: false };
+    return {
+      found: true,
+      disabled: am.disabled === true || am.getAttribute("aria-disabled") === "true",
+    };
+  });
+  check("6a AM option present", amOption.found, "");
+  check("6b AM option enabled (aria-disabled removed)", amOption.found && !amOption.disabled, JSON.stringify(amOption));
+
+  if (amOption.found && !amOption.disabled) {
+    const r = await openMenuAndClick(page, "am");
+    const after = await page.evaluate(() => ({
+      lang: document.documentElement.getAttribute("lang"),
+      cookie: document.cookie.includes("dq_lang=am"),
+      marker: document.body.innerText.includes("[AM draft]"),
+      ethiopic: /ethiopic|noto/i.test(getComputedStyle(document.documentElement).getPropertyValue("--sans")),
+    }));
+    check("6c click AM sets lang=am", after.lang === "am", JSON.stringify(after));
+    check("6d click AM sets dq_lang cookie", after.cookie, "");
+    check("6e click AM re-renders in Amharic ([AM draft] visible)", after.marker, "");
+    check("6f click AM applies Noto Sans Ethiopic", after.ethiopic, "");
+
+    // 5a. AM shows [AM draft]; OM fallback visible where AM blank (no EN leak).
+    const bodyText = await page.evaluate(() => document.body.innerText);
+    check("5a AM shows [AM draft] for unfilled keys", bodyText.includes("[AM draft]"), "");
+    check("5b AM does not leak EN strings for untranslated UI", !bodyText.includes("Explore woredas"), "");
+  } else {
+    check("5a AM shows [AM draft] for unfilled keys", false, "blocked: AM option disabled (6b)");
+    check("5b AM does not leak EN strings for untranslated UI", false, "blocked: AM option disabled (6b)");
+  }
+
+  // 5b'. EN/OM never show the [AM draft] marker.
   for (const code of ["en", "om"]) {
-    await setLang(page, code);
+    await openMenuAndClick(page, code);
     const has = await page.evaluate(() => document.body.innerText.includes("[AM draft]"));
-    check(`5b ${code.toUpperCase()} shows no [AM draft]`, !has, "");
+    check(`5c ${code.toUpperCase()} shows no [AM draft]`, !has, "");
   }
 
-  // 6. Switcher: AM option enabled (no aria-disabled), click -> cookie + re-render.
-  {
-    await setLang(page, "om");
-    const amState = await page.evaluate(() => {
-      const opts = Array.from(document.querySelectorAll("button, a, [role='menuitem'], [role='option']"));
-      const am = opts.find((o) => (o.textContent || "").includes("አማርኛ"));
-      if (!am) return { found: false };
-      return {
-        found: true,
-        disabled: am.getAttribute("aria-disabled") === "true" || am.disabled === true,
-      };
-    });
-    check("6a AM option present", amState.found, "");
-    check("6b AM option enabled (aria-disabled removed)", amState.found && !amState.disabled, JSON.stringify(amState));
-    // Click-through only if enabled.
-    if (amState.found && !amState.disabled) {
-      await page.evaluate(() => {
-        const opts = Array.from(document.querySelectorAll("button, a, [role='menuitem'], [role='option']"));
-        const am = opts.find((o) => (o.textContent || "").includes("አማርኛ"));
-        am.click();
-      });
-      await new Promise((r) => setTimeout(r, 400));
-      const after = await page.evaluate(() => ({
-        lang: document.documentElement.getAttribute("lang"),
-        cookie: document.cookie.includes("dq_lang=am"),
-        marker: document.body.innerText.includes("[AM draft]"),
-      }));
-      check("6c click AM sets lang=am", after.lang === "am", JSON.stringify(after));
-      check("6d click AM sets dq_lang cookie", after.cookie, "");
-      check("6e click AM re-renders in Amharic", after.marker, "");
-    }
+  // 2c. 404 and /offline render in the toggled language.
+  await openMenuAndClick(page, "am");
+  for (const route of ["/does-not-exist-qa", "/offline"]) {
+    await page.goto(BASE + route, { waitUntil: "load", timeout: 60000 });
+    await new Promise((r) => setTimeout(r, 600));
+    const lang = await htmlLang(page);
+    check(`2c ${route} renders with lang == am`, lang === "am", `lang=${lang}`);
   }
 
-  // 3. hreflang: om-ET / en / am present with the current page's path.
+  // 3. hreflang: om-ET / en / am present (and x-default when the flip adds it).
   {
+    await page.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
     const alt = await page.evaluate(() =>
       Array.from(document.querySelectorAll("link[rel='alternate'][hreflang]")).map((l) => ({
         hreflang: l.getAttribute("hreflang"),
@@ -146,11 +187,8 @@ async function setLang(page, lang) {
     check("3a hreflang om-ET present", codes.has("om-ET"), JSON.stringify(alt));
     check("3b hreflang en present", codes.has("en"), "");
     check("3c hreflang am present", codes.has("am"), "");
+    check("3d hreflang x-default present (om)", codes.has("x-default"), JSON.stringify(alt));
   }
-
-  // 7. Fallback (unit-level, via the app's own bundle is hard in-page — check
-  //    the runtime string when am has an empty value is covered by unit tests).
-  console.log("INFO  7. fallback localize()/translate() — covered by unit test (localize({om,en,am:''}, 'am') === om)");
 
   await browser.close();
 

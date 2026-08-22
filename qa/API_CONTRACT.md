@@ -210,25 +210,54 @@ project13, project6, project3, project1, project2 (§3d).
 
 ---
 
-## 7. Upcoming `?lang=om|en|am` + `*_am` fields (Sprint 4 backend)
+## 7. `?lang=om|en|am` + `*_am` fields (LANDED for archive/places in #107)
 
-Not landed as of `main @ 9798162` (a `?lang=` query currently 400s). When the
-backend adds the third language, the contract extends as follows — **the FE
-client types and the tests below must be added at that point**:
+**Status on `main @ 8a9e7f3`:** `?lang=` is live on `pages`, `people`, and
+`timeline` (via `LanguageAwareAPIViewSetMixin`). `*_am` companions exist on
+`NewsArticle`, `Event`, `CommunityStory`, and `GeographyProfilePage`.
 
-- `?lang=om|en|am` on `pages`/`people`/`timeline`/`news` must return the
-  requested language's field set (or the full object with per-language keys —
-  the BE must pick one and document it; QA locks whichever).
-- `*_am` fields (`title_am`, `body_am`, `caption_am`, …) are **optional**:
-  empty/absent when untranslated. The API must always return the key (empty
-  string) rather than omitting it, so the FE can null-safely fall back.
-- Fallback order is **OM first, then EN** (`getTranslatedField`), never
-  AM-first.
-- `lang=am` on a field that is empty must fall back to OM (not EN) in the FE.
-- Default language becomes `om` (Sprint 4 #85); the API must keep `locale: om`
-  as the primary page locale.
-- Amharic fields must never render the `[AM draft]` placeholder in EN/OM; the
-  placeholder only ever appears for AM content the editor has not filled.
+Behaviour (verified live + by contract tests):
+
+- `?lang=<code>` resolves every companion group (`title`, `body`, …) to a
+  single value under the **generic base key**, preferring the requested
+  language, then falling back **OM → EN** (`FALLBACK_ORDER = ("om", "en")`).
+- With `?lang`, the suffixed keys (`title_om`/`title_en`/`title_am`, …) are
+  **removed** from the response.
+- Without `?lang`, every suffixed key is kept and a `translations` object is
+  added mapping each base key to its three language values.
+- Invalid `?lang=` (anything but om/en/am) → 400
+  `{"message": "lang must be one of: om, en, am"}`.
+- **`?lang=am` with an empty `*_am` field returns the OM value — never EN.**
+  (Contract test `LanguageProjectionContractTests` asserts exactly this:
+  `title_am=""`, `title_om="OM BODY"`, `title_en="EN BODY"` → `?lang=am`
+  returns `"OM BODY"` and never `"EN BODY"`.)
+- Default language is still `en` (FE `DEFAULT_LANG`) until #85 flips it; the
+  API keeps `locale: om` as the primary page locale regardless.
+
+---
+
+## 7b. Sprint 5 BE additions (pending — gated by contract tests)
+
+These are documented targets; the matching contract tests are
+`@unittest.skip("pending Sprint 5 BE …")` today and must be un-skipped by the
+BE PR that lands them.
+
+### 7b-i. Partners bilingual fields (issue #122)
+- `Sponsor` + `Collaborator` expose `display_name_om/en/am` (OM authoritative;
+  EN/AM optional).
+- Companions `recognition_text_am`, `role_am`, `description_am` present
+  wherever the EN pair exists.
+- `/api/v2/sponsors/` + `/api/v2/supporters/` accept `?lang=om|en|am` with the
+  same OM-then-EN fallback.
+
+### 7b-ii. NewsCategory Amharic labels (issue #123)
+- Each of the 9 category labels carries an Amharic (Ethiopic script U+1200–U+137F)
+  component so the FE can render Amharic chips without a hardcoded dictionary.
+
+### 7b-iii. Image renditions (issue #112)
+- `/api/v2/images/<id>/` exposes `meta.renditions` with at least
+  `fill-400x300`, `fill-800x600`, `max-1600x1200`, and `original`, each with a
+  resolvable URL. (Currently only the original `download_url` exists.)
 
 ---
 
