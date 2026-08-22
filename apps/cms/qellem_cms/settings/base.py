@@ -208,6 +208,8 @@ WAGTAILSEARCH_BACKENDS = {
 REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "community_story_submissions": "5/hour",
+        # Session login endpoint for the FE editor dashboard (#38).
+        "auth_login": "10/min",
     },
 }
 

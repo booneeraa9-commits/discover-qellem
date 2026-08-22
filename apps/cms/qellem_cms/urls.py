@@ -7,12 +7,22 @@ from wagtail.documents import urls as wagtaildocs_urls
 
 from archive.api_submissions import CommunityStorySubmissionView
 from qellem_cms.api import api_router
+from qellem_cms.auth_api import (
+    CSRFTokenView,
+    LoginView,
+    LogoutView,
+    WhoAmIView,
+)
 from search import views as search_views
 
 urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path("api/v2/whoami/", WhoAmIView.as_view(), name="api_whoami"),
+    path("api/v2/auth/csrf/", CSRFTokenView.as_view(), name="api_auth_csrf"),
+    path("api/v2/auth/login/", LoginView.as_view(), name="api_auth_login"),
+    path("api/v2/auth/logout/", LogoutView.as_view(), name="api_auth_logout"),
     path(
         "api/v2/community-stories/",
         CommunityStorySubmissionView.as_view(),
