@@ -44,6 +44,10 @@ Routes shipped: `/`, `/about`, `/components` (dev preview — see bug #81),
   only (`dambi-doolloo`, `haawwaa-galaan`, …).
 - Inauguration gallery order **project13, project6, project3, project1,
   project2** (#61).
+- News category keys: exactly one of the 9 canonical keys (`development`,
+  `economy`, `environment`, `minerals`, `agriculture`, `health`, `education`,
+  `culture`, `trade`); `economy` OM = `"Dinagdee"`, `minerals` OM =
+  `"Mineraala"` (see `qa/CONTENT_FACTS.md` §5).
 - Dark mode readable on every new page — see the known failures in #67/#80
   (do not accept new instances of `--brand-400`-on-dark or white-chips-in-dark).
 - No horizontal scroll at 375px; touch targets >= 44px on new controls (#66).
