@@ -21,6 +21,10 @@ export interface CmsImage {
   id: number;
   title: string;
   meta: CmsImageMeta;
+  /** Present on /api/v2/images/ responses (issue #112): pre-sized variants.
+   *  Page serializers do not embed these yet, so the client enriches images
+   *  from the images endpoint via getAllImageRenditions(). */
+  renditions?: Record<string, string>;
 }
 
 export interface CmsGalleryImage {
@@ -159,6 +163,9 @@ export interface CmsTimelineEvent {
 export interface CmsSponsor {
   id: number;
   display_name: string;
+  /** Bilingual display names (issue #117). */
+  display_name_en: string;
+  display_name_am: string;
   partner_kind: string;
   website_url: string;
   display_mode: "name_only" | "image_and_name";
@@ -172,6 +179,9 @@ export interface CmsSponsor {
 export interface CmsSupporter {
   id: number;
   display_name: string;
+  /** Bilingual display names (issue #117). */
+  display_name_en: string;
+  display_name_am: string;
   partner_kind: string;
   website_url: string;
   display_mode: string;
