@@ -16,6 +16,8 @@ export interface NewsArticle {
   body: LocalizedText[];
   image: string;
   gallery: LightboxImage[];
+  /** True when AM is active but the CMS *_am content is still pending. */
+  amNeedsTranslation?: boolean;
 }
 
 export const NEWS: NewsArticle[] = [

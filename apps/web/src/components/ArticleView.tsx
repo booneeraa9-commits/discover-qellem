@@ -69,7 +69,12 @@ export default function ArticleView({ article }: { article: NewsArticle }) {
             </nav>
 
             <span className="chip">{category}</span>
-            <h1 style={{ marginTop: 14 }}>{title}</h1>
+            <h1 style={{ marginTop: 14 }}>
+              {title}
+              {lang === "am" && article.amNeedsTranslation ? (
+                <span className="am-draft-badge">[AM draft]</span>
+              ) : null}
+            </h1>
 
             <div className="meta-row">
               <span>

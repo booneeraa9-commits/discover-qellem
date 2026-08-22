@@ -19,6 +19,7 @@ import {
 } from "react";
 import {
   DEFAULT_LANG,
+  isLang,
   LANG_COOKIE,
   LANG_STORAGE_KEY,
   translate,
@@ -38,10 +39,6 @@ const LangContext = createContext<LangContextValue>({
   toggleLang: () => undefined,
   t: (key: string) => translate(DEFAULT_LANG, key),
 });
-
-function isLang(value: unknown): value is Lang {
-  return value === "en" || value === "om";
-}
 
 function readStoredLang(): Lang {
   try {
@@ -109,10 +106,12 @@ export function LangProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setLang = useCallback((next: Lang) => langStore.apply(next), []);
-  const toggleLang = useCallback(
-    () => langStore.apply(langStore.getSnapshot() === "en" ? "om" : "en"),
-    [],
-  );
+  const toggleLang = useCallback(() => {
+    const order: Lang[] = ["om", "en", "am"];
+    const current = langStore.getSnapshot();
+    const next = order[(order.indexOf(current) + 1) % order.length];
+    langStore.apply(next);
+  }, []);
   const t = useCallback((key: string) => translate(lang, key), [lang]);
 
   const value = useMemo(

@@ -1,9 +1,9 @@
 // Typed mirror of the Wagtail v2 API responses (apps/cms/*/api.py serializers).
 //
 // Field names map 1:1 to the backend serializer fields. Translated fields use
-// the *_om / *_en / *_am convention; *_am is optional because the backend
-// Amharic fields land in a later sprint — until then getTranslatedField()
-// returns the "[AM draft]" placeholder.
+// the *_om / *_en / *_am convention; *_am is optional while the backend
+// Amharic content is finalized — getTranslatedField() falls back to OM and
+// fieldNeedsTranslation() flags the gap for QA.
 //
 // Wagtail wraps pages in a "meta" object (slug, type, detail_url) and returns
 // listings as { meta: { total_count }, items: [...] }. Snippets (people,

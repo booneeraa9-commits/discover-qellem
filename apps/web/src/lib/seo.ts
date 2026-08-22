@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { langToLocale } from "./lang-server";
 import { absoluteUrl, SITE_DESCRIPTION, SITE_NAME } from "./site";
+import type { Lang } from "./i18n";
 
 interface BuildMetadataOptions {
   title: string;
   description?: string;
   path: string;
   image?: string;
-  /**
-   * hreflang alternates. Defaults to pointing all three languages at the same
-   * URL — language is negotiated client-side until the ?lang param and the
-   * backend *_am fields land (coordinated AM-enable flip).
-   */
+  /** Active language; drives og:locale. Defaults to OM. */
+  lang?: Lang;
+  /** hreflang alternates. Defaults to all three pointing at the same URL —
+   *  language is cookie-negotiated until /om|/en|/am path routing lands. */
   languages?: Record<string, string>;
 }
 
@@ -20,6 +21,7 @@ export function buildMetadata({
   description = SITE_DESCRIPTION,
   path,
   image = "/hero.jpg",
+  lang = "om",
   languages,
 }: BuildMetadataOptions): Metadata {
   const url = absoluteUrl(path);
@@ -31,6 +33,7 @@ export function buildMetadata({
     alternates: {
       canonical: url,
       languages: languages ?? {
+        "x-default": url,
         "om-ET": url,
         en: url,
         am: url,
@@ -41,7 +44,7 @@ export function buildMetadata({
       description,
       url,
       siteName: SITE_NAME,
-      locale: "en_US",
+      locale: langToLocale(lang),
       type: "website",
       images: [{ url: imageUrl, alt: title }],
     },

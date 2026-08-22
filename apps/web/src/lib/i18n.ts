@@ -23,17 +23,34 @@ export interface LocalizedText {
   am: string;
 }
 
-/** Resolve a localized string for the active language, falling back to English. */
-export function localize(text: LocalizedText, lang: Lang): string {
-  return text[lang] ?? text.en;
+export function isLang(value: unknown): value is Lang {
+  return value === "om" || value === "en" || value === "am";
 }
 
-// "am" is part of the Lang union but is intentionally NOT selectable in the
-// language switcher yet (disabled "Coming soon" option). It stays here so the
-// type system forces am-awareness across the codebase.
+/**
+ * Resolve a localized string for the active language.
+ *
+ * Fallback chain (issue #83 / Sprint 5):
+ *   - prefer the requested language;
+ *   - EN and AM fall back to OM (the authoritative language);
+ *   - OM never falls back to EN.
+ */
+export function localize(text: LocalizedText, lang: Lang): string {
+  const primary = text[lang];
+  if (primary && primary.trim() !== "") return primary;
+  if (lang === "en" || lang === "am") {
+    const om = text.om;
+    if (om && om.trim() !== "") return om;
+  }
+  return text.om ?? "";
+}
+
+// The user's language preference travels in the `dq_lang` cookie and
+// `localStorage.dq_lang`. Possible values: "om" | "en" | "am". OM is the
+// default — the authoritative content language.
 export const LANGS: readonly Lang[] = ["om", "en", "am"];
 
-export const DEFAULT_LANG: Lang = "en";
+export const DEFAULT_LANG: Lang = "om";
 
 export const LANG_STORAGE_KEY = "dq_lang";
 export const LANG_COOKIE = "dq_lang";

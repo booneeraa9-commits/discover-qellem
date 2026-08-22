@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import PlaceView from "@/components/PlaceView";
 import { cmsToPlace } from "@/lib/adapters";
 import { getAllPeople, getAllPlaces, getPlaceBySlug, imageUrl, stripRichText, truncateText } from "@/lib/cms";
+import { resolveRequestLang } from "@/lib/lang-server";
 import { buildMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
@@ -21,6 +22,7 @@ export async function generateMetadata({
   const profile = await getPlaceBySlug(slug);
   if (!profile) return {};
   const name = profile.geography_name ?? profile.title;
+  const lang = await resolveRequestLang();
   return buildMetadata({
     title: `${name} — Discover Qellem`,
     description: truncateText(
@@ -29,6 +31,7 @@ export async function generateMetadata({
     ),
     path: `/place/${slug}`,
     image: imageUrl(profile.hero_image ?? profile.featured_image, "/hero.jpg"),
+    lang,
   });
 }
 

@@ -42,6 +42,8 @@ export interface Place {
   people: PlacePerson[];
   /** [lat, lng] — used by the OSM embed in a later issue. */
   coords: [number, number];
+  /** True when AM is active but the CMS *_am content is still pending. */
+  amNeedsTranslation?: boolean;
 }
 
 const HERO = "/hero.jpg";
