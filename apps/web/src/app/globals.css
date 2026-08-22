@@ -489,7 +489,7 @@ hr {
 
 [data-theme="dark"] .lang-label {
   background: var(--brand-100);
-  color: var(--brand-400);
+  color: var(--brand-200);
 }
 
 .menu-btn {
@@ -518,6 +518,11 @@ body.photo-nav .nav:not(.scrolled) .nav-links a {
 
 body.photo-nav .nav:not(.scrolled) .nav-links a:hover {
   background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+body.photo-nav .nav:not(.scrolled) .nav-links a.active {
+  background: rgba(255, 255, 255, 0.24);
   color: #fff;
 }
 
@@ -2475,7 +2480,12 @@ body.photo-nav .nav:not(.scrolled) {
 
 .chip.gold {
   background: var(--gold-100);
-  color: var(--gold-700);
+  color: var(--gold-ink);
+}
+
+[data-theme="dark"] .chip.gold {
+  background: var(--gold-100);
+  color: var(--gold-ink);
 }
 
 /* Article */

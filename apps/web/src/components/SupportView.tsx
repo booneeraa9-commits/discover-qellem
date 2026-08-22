@@ -76,7 +76,10 @@ export default function SupportView({
               <p className="muted">{t("support.sponsors.sub")}</p>
               <div className="sponsor-row">
                 {sponsors.map((sponsor) => (
-                  <SponsorCard key={sponsor.initials} data={sponsor} />
+                  <SponsorCard
+                    key={sponsor.name.om ?? sponsor.initials}
+                    data={sponsor}
+                  />
                 ))}
               </div>
             </Reveal>
@@ -93,7 +96,10 @@ export default function SupportView({
           </div>
           <div className="supporters-grid">
             {supporters.map((supporter) => (
-              <SupporterCard key={supporter.initials} data={supporter} />
+              <SupporterCard
+                key={supporter.name.om ?? supporter.initials}
+                data={supporter}
+              />
             ))}
           </div>
         </div>
