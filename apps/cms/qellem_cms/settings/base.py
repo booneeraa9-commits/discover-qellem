@@ -216,6 +216,23 @@ WAGTAILADMIN_BASE_URL = os.environ.get(
     "http://localhost:8000",
 ).rstrip("/")
 
+# Fully-qualified URLs in API responses (issue #119).
+# Wagtail anchors detail_url/html_url on WAGTAILAPI_BASE_URL; media file
+# URLs are anchored by qellem_cms.media_urls on the request host, with
+# CMS_MEDIA_BASE_URL as an explicit override for proxy/split-origin
+# deployments (e.g. Caddy on AletCloud). Serving /media/ in production
+# stays with Caddy — Django only emits the URLs.
+WAGTAILAPI_BASE_URL = WAGTAILADMIN_BASE_URL
+CMS_MEDIA_BASE_URL = os.environ.get("CMS_MEDIA_BASE_URL", "").rstrip("/")
+
+# Honor X-Forwarded-Host from a trusted fronting proxy (Caddy) so
+# request-derived URLs carry the public host. Off by default; the
+# deploy config enables it explicitly.
+USE_X_FORWARDED_HOST = (
+    os.environ.get("DJANGO_USE_X_FORWARDED_HOST", "false").lower() == "true"
+)
+
+
 # Restrict CMS image uploads to the formats approved for this project.
 WAGTAILIMAGES_EXTENSIONS = ["jpg", "jpeg", "png", "webp"]
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = 10 * 1024 * 1024  # 10MB

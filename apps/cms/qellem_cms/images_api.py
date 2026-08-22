@@ -20,10 +20,12 @@ from wagtail.images import get_image_model
 from wagtail.images.api.v2.views import ImagesAPIViewSet
 from wagtail.images.exceptions import InvalidFilterSpecError
 
+from qellem_cms.media_urls import MediaURLAwareAPIViewSetMixin, absolute_media_url
+
 RENDITION_SPECS = ("fill-400x300", "fill-800x600", "max-1600x1200")
 
 
-class RenditionedImagesAPIViewSet(ImagesAPIViewSet):
+class RenditionedImagesAPIViewSet(MediaURLAwareAPIViewSetMixin, ImagesAPIViewSet):
     """Images endpoint whose responses include a ``renditions`` dict."""
 
     def listing_view(self, request):
@@ -46,12 +48,12 @@ class RenditionedImagesAPIViewSet(ImagesAPIViewSet):
             urls = {}
             for spec in RENDITION_SPECS:
                 try:
-                    urls[spec] = request.build_absolute_uri(
-                        image.get_rendition(spec).url
+                    urls[spec] = absolute_media_url(
+                        image.get_rendition(spec).url, request
                     )
                 except (InvalidFilterSpecError, OSError):
                     # A missing or unreadable source file must not break
                     # the whole listing; skip that variant.
                     continue
-            urls["original"] = request.build_absolute_uri(image.file.url)
+            urls["original"] = absolute_media_url(image.file.url, request)
             item["renditions"] = urls

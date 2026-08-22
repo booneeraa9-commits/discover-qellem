@@ -17,7 +17,6 @@ comments):
    approval.
 """
 
-import unittest
 from pathlib import PurePosixPath
 
 from django.contrib.auth import get_user_model
@@ -336,7 +335,6 @@ class LanguageProjectionContractTests(TestCase):
         response = self._detail({"lang": "fr"})
         self.assertEqual(response.status_code, 400)
 
-    @unittest.skip("pending Sprint 5 BE #117: strict OM-only fallback (FALLBACK_ORDER=('om',))")
     def test_lang_am_with_empty_om_never_falls_back_to_en(self):
         # Edge case #117 tightens: when the requested language AND OM are both
         # empty, the projection must still never surface the EN value (main
@@ -381,7 +379,6 @@ class PartnerBilingualFieldContractTests(TestCase):
     def _listing(self, url):
         return self.client.get(url, {"format": "json"}).json()["items"]
 
-    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_sponsors_expose_display_name_en_and_am(self):
         sponsor = Sponsor.objects.first()
         self._approve(sponsor)
@@ -394,7 +391,6 @@ class PartnerBilingualFieldContractTests(TestCase):
             self.assertTrue(item["display_name_en"])
             self.assertEqual(item["display_name_am"], "")
 
-    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
     def test_supporters_expose_display_name_en_and_am(self):
         supporter = Collaborator.objects.filter(partner_kind=PartnerKind.PERSON).first()
         self._approve(supporter, is_person=True)
@@ -406,7 +402,6 @@ class PartnerBilingualFieldContractTests(TestCase):
 
 
 class NewsCategoryAmharicLabelContractTests(TestCase):
-    @unittest.skip("pending Sprint 5 BE #117: NEWS_CATEGORY_LABELS_AM mapping")
     def test_news_category_labels_include_amharic(self):
         from archive.models import NEWS_CATEGORY_LABELS_AM
 
@@ -422,7 +417,6 @@ class NewsCategoryAmharicLabelContractTests(TestCase):
                 f"{choice.name} Amharic label has no Ethiopic: {am_label!r}",
             )
 
-    @unittest.skip("pending Sprint 5 BE #117: NewsArticle serializes category_label_am")
     def test_news_detail_serializes_category_label_am(self):
         from archive.models import NewsArticle
 
@@ -438,7 +432,6 @@ class NewsCategoryAmharicLabelContractTests(TestCase):
 class ImageRenditionContractTests(TestCase):
     """Sprint 5 BE #118: top-level rendition URLs on /api/v2/images/ (issue #112)."""
 
-    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
     def test_image_detail_exposes_rendition_urls(self):
         from wagtail.images import get_image_model
 
@@ -457,7 +450,6 @@ class ImageRenditionContractTests(TestCase):
         self.assertIn("meta", response.json())
         self.assertIn("download_url", response.json()["meta"])
 
-    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
     def test_image_listing_items_carry_renditions(self):
         response = self.client.get("/api/v2/images/", {"format": "json"})
         self.assertEqual(response.status_code, 200)
