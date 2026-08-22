@@ -5,6 +5,7 @@ from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
+from archive.api_submissions import CommunityStorySubmissionView
 from qellem_cms.api import api_router
 from search import views as search_views
 
@@ -12,6 +13,11 @@ urlpatterns = [
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    path(
+        "api/v2/community-stories/",
+        CommunityStorySubmissionView.as_view(),
+        name="community_story_submissions",
+    ),
     path("api/v2/", api_router.urls),
     path("search/", search_views.search, name="search"),
 ]

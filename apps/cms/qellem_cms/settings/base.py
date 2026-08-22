@@ -203,6 +203,14 @@ WAGTAILSEARCH_BACKENDS = {
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
+# Rate limiting for the anonymous community-story submission endpoint
+# (issue #32). ScopedRateThrottle keys anonymous clients by IP address.
+REST_FRAMEWORK = {
+    "DEFAULT_THROTTLE_RATES": {
+        "community_story_submissions": "5/hour",
+    },
+}
+
 WAGTAILADMIN_BASE_URL = os.environ.get(
     "WAGTAILADMIN_BASE_URL",
     "http://localhost:8000",
