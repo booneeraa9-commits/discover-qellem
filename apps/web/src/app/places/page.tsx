@@ -21,7 +21,7 @@ function toCardData(place: Place): PlaceCardData {
     name: place.name,
     teaser: place.tagline,
     image: place.heroImage,
-    statLabel: population?.label ?? { en: "Population", om: "Uummata" },
+    statLabel: population?.label ?? { en: "Population", om: "Uummata", am: "[AM draft]" },
     statValue,
   };
 }

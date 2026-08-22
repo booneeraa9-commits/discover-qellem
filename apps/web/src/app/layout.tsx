@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { Fraunces, Inter } from "next/font/google";
+import { Fraunces, Inter, Noto_Sans_Ethiopic } from "next/font/google";
 import Footer from "@/components/Footer";
 import Nav from "@/components/Nav";
 import Providers from "@/components/Providers";
@@ -24,6 +24,16 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
+// Amharic script font. Loaded without preloading (it is large and only used
+// once <html lang="am"> is set, via the :lang(am) font stacks in globals.css).
+const notoSansEthiopic = Noto_Sans_Ethiopic({
+  subsets: ["ethiopic"],
+  display: "swap",
+  variable: "--font-noto-ethiopic",
+  weight: ["400", "500", "600", "700"],
+  preload: false,
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Discover Qellem — Kellem Wollega · Oromia",
@@ -40,6 +50,14 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Discover Qellem",
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "om-ET": "/",
+      en: "/",
+      am: "/",
+    },
   },
   openGraph: {
     title: "Discover Qellem — Kellem Wollega · Oromia",
@@ -91,7 +109,7 @@ export default function RootLayout({
       lang="en"
       data-theme="light"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${inter.variable}`}
+      className={`${fraunces.variable} ${inter.variable} ${notoSansEthiopic.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />

@@ -1,4 +1,4 @@
-// Bilingual EN/OM string system (scaffold).
+// Bilingual EN/OM string system (scaffold) — now tri-lingual (om | en | am).
 //
 // This module is intentionally free of any React dependency and of any
 // "use client" directive so it can be imported from both server and client
@@ -7,24 +7,31 @@
 //
 // Language rules (see CONTRIBUTING.md):
 //   - Afaan Oromoo (om) is the authoritative content language; EN is reviewed.
-//   - No Amharic anywhere.
-//   - Strings that are not yet translated carry a "[OM] " marker so reviewers
-//     can spot untranslated UI at a glance. See TODO(i18n) notes below.
+//   - Amharic (am) is scaffolded as "[AM draft]" placeholders. Editors will
+//     finalize real Amharic via Wagtail before deploy — do not hand-translate.
+//   - Strings that are not yet translated carry a "[OM] " (Oromo) or
+//     "[AM draft]" (Amharic) marker so reviewers can spot them at a glance.
+//     See TODO(i18n) notes below.
 
-export type Lang = "en" | "om";
+export type Lang = "om" | "en" | "am";
 
-/** A string expressed in both supported languages. OM is authoritative; EN is the review copy. */
+/** A string expressed in the three supported languages. OM is authoritative;
+ *  EN is the review copy; AM is a draft placeholder until editors fill it. */
 export interface LocalizedText {
   en: string;
   om: string;
+  am: string;
 }
 
-/** Resolve a bilingual string for the active language, falling back to English. */
+/** Resolve a localized string for the active language, falling back to English. */
 export function localize(text: LocalizedText, lang: Lang): string {
   return text[lang] ?? text.en;
 }
 
-export const LANGS: readonly Lang[] = ["en", "om"];
+// "am" is part of the Lang union but is intentionally NOT selectable in the
+// language switcher yet (disabled "Coming soon" option). It stays here so the
+// type system forces am-awareness across the codebase.
+export const LANGS: readonly Lang[] = ["om", "en", "am"];
 
 export const DEFAULT_LANG: Lang = "en";
 
@@ -47,6 +54,13 @@ export const dict: Record<Lang, Record<string, string>> = {
 
     "lang.switch": "Switch language",
     "theme.toggle": "Toggle dark mode",
+
+    // Language menu (endonyms are proper nouns — shown untranslated).
+    "lang.menu": "Language",
+    "lang.amComingSoon": "Coming soon",
+    "lang.name.om": "Afaan Oromoo",
+    "lang.name.en": "English",
+    "lang.name.am": "አማርኛ",
 
     "common.readMore": "Read more",
 
@@ -256,6 +270,13 @@ export const dict: Record<Lang, Record<string, string>> = {
     "lang.switch": "[OM] Switch language",
     "theme.toggle": "[OM] Toggle dark mode",
 
+    // Language menu (endonyms are proper nouns — shown untranslated).
+    "lang.menu": "Afaan",
+    "lang.amComingSoon": "Dhiyootti",
+    "lang.name.om": "Afaan Oromoo",
+    "lang.name.en": "English",
+    "lang.name.am": "አማርኛ",
+
     "common.readMore": "Dabalataan ilaali",
 
     // TODO(i18n): get reviewed OM for the skip link from the content agent.
@@ -459,6 +480,180 @@ export const dict: Record<Lang, Record<string, string>> = {
     "notfound.title": "Fuulli argamuu hin dandeenye",
     "notfound.sub": "Barbaaddaa jirtu fuulli jiraachuu dide.",
     "notfound.back": "Gara fuula duraa deebi'i",
+  },
+  am: {
+    "brand.title": "[AM draft]",
+    "brand.sub": "[AM draft]",
+    "nav.home": "[AM draft]",
+    "nav.places": "[AM draft]",
+    "nav.news": "[AM draft]",
+    "nav.history": "[AM draft]",
+    "nav.support": "[AM draft]",
+    "nav.main": "[AM draft]",
+    "nav.openMenu": "[AM draft]",
+    "nav.closeMenu": "[AM draft]",
+    "lang.switch": "[AM draft]",
+    "theme.toggle": "[AM draft]",
+    "lang.menu": "[AM draft]",
+    "lang.amComingSoon": "[AM draft]",
+    "lang.name.om": "Afaan Oromoo",
+    "lang.name.en": "English",
+    "lang.name.am": "አማርኛ",
+    "common.readMore": "[AM draft]",
+    "skip.content": "[AM draft]",
+    "lightbox.label": "[AM draft]",
+    "lightbox.close": "[AM draft]",
+    "lightbox.previous": "[AM draft]",
+    "lightbox.next": "[AM draft]",
+    "lightbox.open": "[AM draft]",
+    "footer.about": "[AM draft]",
+    "footer.explore": "[AM draft]",
+    "footer.resources": "[AM draft]",
+    "footer.contact": "[AM draft]",
+    "footer.contribute": "[AM draft]",
+    "footer.aboutProject": "[AM draft]",
+    "footer.rights": "[AM draft]",
+    "footer.staff": "[AM draft]",
+    "footer.sources": "[AM draft]",
+    "footer.contact.location": "[AM draft]",
+    "footer.social.mail": "[AM draft]",
+    "footer.social.site": "[AM draft]",
+    "footer.social.news": "[AM draft]",
+    "footer.install": "[AM draft]",
+    "install.banner.title": "[AM draft]",
+    "install.banner.sub": "[AM draft]",
+    "install.banner.install": "[AM draft]",
+    "install.banner.dismiss": "[AM draft]",
+    "install.ios.title": "[AM draft]",
+    "install.ios.sub": "[AM draft]",
+    "offline.title": "[AM draft]",
+    "offline.sub": "[AM draft]",
+    "offline.retry": "[AM draft]",
+    "home.hero.imageAlt": "[AM draft]",
+    "home.hero.kicker": "[AM draft]",
+    "home.hero.title.1": "[AM draft]",
+    "home.hero.title.2": "[AM draft]",
+    "home.hero.title.3": "[AM draft]",
+    "home.hero.tagline": "[AM draft]",
+    "home.cta.explore": "[AM draft]",
+    "home.cta.support": "[AM draft]",
+    "home.quickfacts.population.label": "[AM draft]",
+    "home.quickfacts.population.value": "[AM draft]",
+    "home.quickfacts.area.label": "[AM draft]",
+    "home.quickfacts.area.value": "[AM draft]",
+    "home.quickfacts.woredas.label": "[AM draft]",
+    "home.quickfacts.woredas.value": "[AM draft]",
+    "home.quickfacts.coffee.label": "[AM draft]",
+    "home.quickfacts.coffee.value": "[AM draft]",
+    "home.stats.kicker": "[AM draft]",
+    "home.stats.title": "[AM draft]",
+    "home.stats.sub": "[AM draft]",
+    "home.stats.population.label": "[AM draft]",
+    "home.stats.population.sub": "[AM draft]",
+    "home.stats.area.label": "[AM draft]",
+    "home.stats.area.sub": "[AM draft]",
+    "home.stats.woredas.label": "[AM draft]",
+    "home.stats.woredas.sub": "[AM draft]",
+    "home.stats.coffee.label": "[AM draft]",
+    "home.stats.coffee.sub": "[AM draft]",
+    "home.stats.livestock.label": "[AM draft]",
+    "home.stats.livestock.sub": "[AM draft]",
+    "home.stats.beehives.label": "[AM draft]",
+    "home.stats.beehives.sub": "[AM draft]",
+    "home.features.kicker": "[AM draft]",
+    "home.features.title": "[AM draft]",
+    "home.features.sub": "[AM draft]",
+    "home.features.explore.title": "[AM draft]",
+    "home.features.explore.text": "[AM draft]",
+    "home.features.history.title": "[AM draft]",
+    "home.features.history.text": "[AM draft]",
+    "home.features.visit.title": "[AM draft]",
+    "home.features.visit.text": "[AM draft]",
+    "home.map.kicker": "[AM draft]",
+    "home.map.title": "[AM draft]",
+    "home.map.sub": "[AM draft]",
+    "home.glance.kicker": "[AM draft]",
+    "home.glance.title": "[AM draft]",
+    "home.glance.sub": "[AM draft]",
+    "home.glance.col.indicator": "[AM draft]",
+    "home.glance.col.value": "[AM draft]",
+    "home.glance.col.note": "[AM draft]",
+    "home.woredas.kicker": "[AM draft]",
+    "home.woredas.title": "[AM draft]",
+    "home.woredas.sub": "[AM draft]",
+    "home.woredas.viewAll": "[AM draft]",
+    "home.news.kicker": "[AM draft]",
+    "home.news.title": "[AM draft]",
+    "home.news.sub": "[AM draft]",
+    "home.news.viewAll": "[AM draft]",
+    "home.notable.kicker": "[AM draft]",
+    "home.notable.title": "[AM draft]",
+    "home.support.kicker": "[AM draft]",
+    "home.support.title": "[AM draft]",
+    "home.support.sub": "[AM draft]",
+    "home.support.cta": "[AM draft]",
+    "place.breadcrumb": "[AM draft]",
+    "place.type.woreda": "[AM draft]",
+    "place.type.capital": "[AM draft]",
+    "place.intro.kicker": "[AM draft]",
+    "place.intro.title": "[AM draft]",
+    "place.notable.kicker": "[AM draft]",
+    "place.notable.title": "[AM draft]",
+    "place.visit.kicker": "[AM draft]",
+    "place.visit.title": "[AM draft]",
+    "place.map.comingSoon": "[AM draft]",
+    "place.map.title": "[AM draft]",
+    "place.map.open": "[AM draft]",
+    "place.back": "[AM draft]",
+    "places.title": "[AM draft]",
+    "places.sub": "[AM draft]",
+    "news.title": "[AM draft]",
+    "news.sub": "[AM draft]",
+    "news.filter.all": "[AM draft]",
+    "news.readMore": "[AM draft]",
+    "news.back": "[AM draft]",
+    "pagination.prev": "[AM draft]",
+    "pagination.next": "[AM draft]",
+    "pagination.page": "[AM draft]",
+    "history.kicker": "[AM draft]",
+    "history.title": "[AM draft]",
+    "history.sub": "[AM draft]",
+    "history.timeline.title": "[AM draft]",
+    "support.kicker": "[AM draft]",
+    "support.title": "[AM draft]",
+    "support.sub": "[AM draft]",
+    "support.donate": "[AM draft]",
+    "support.comingSoon": "[AM draft]",
+    "support.toast.comingSoon": "[AM draft]",
+    "support.sponsors.kicker": "[AM draft]",
+    "support.sponsors.title": "[AM draft]",
+    "support.sponsors.sub": "[AM draft]",
+    "support.supporters.title": "[AM draft]",
+    "support.supporters.sub": "[AM draft]",
+    "contribute.kicker": "[AM draft]",
+    "contribute.title": "[AM draft]",
+    "contribute.sub": "[AM draft]",
+    "contribute.name": "[AM draft]",
+    "contribute.email": "[AM draft]",
+    "contribute.titleField": "[AM draft]",
+    "contribute.story": "[AM draft]",
+    "contribute.photo": "[AM draft]",
+    "contribute.submit": "[AM draft]",
+    "contribute.toast.comingSoon": "[AM draft]",
+    "staff.kicker": "[AM draft]",
+    "staff.title": "[AM draft]",
+    "staff.sub": "[AM draft]",
+    "staff.cta": "[AM draft]",
+    "about.kicker": "[AM draft]",
+    "about.body": "[AM draft]",
+    "article.source": "[AM draft]",
+    "article.share": "[AM draft]",
+    "article.copyLink": "[AM draft]",
+    "article.gallery.title": "[AM draft]",
+    "article.copied": "[AM draft]",
+    "notfound.title": "[AM draft]",
+    "notfound.sub": "[AM draft]",
+    "notfound.back": "[AM draft]",
   },
 };
 
