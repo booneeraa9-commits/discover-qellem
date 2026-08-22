@@ -2,12 +2,61 @@
 
 - **Owner:** QA Engineer
 - **Status:** Living document — update as pages port and gates change
-- **Last run of gates:** 2026-08-22 against `main` @ `e6cec87` (Sprint 2 merged, PR #77)
+- **Last run of gates:** 2026-08-22 against `main` @ `8a9e7f3` (Sprint 4 merged; Sprint 5 in flight)
 - **Reference build:** `demo-vanilla-reference` branch (visual + content spec)
 
 Every PR is blocked from merge until QA posts the sign-off block (see
 `qa/PR_REVIEW_TEMPLATE.md`). This plan is the definition of "done" that block
 refers to.
+
+---
+
+## Sprint 5 status (updated as PRs land)
+
+**On `main` @ `8a9e7f3` (Sprint 4):** CMS is wired end-to-end —
+Wagtail v2 API (7 endpoints), 9-category taxonomy, Amharic `*_am` fields +
+`?lang=om|en|am` projection (#107), story-submission endpoint (#108), QA
+contract doc + tests (#109), i18n test plan + harness (#110), README env fix
+(#111), typed CMS client (#113), route wiring with mock fallback (#114),
+person-slug fix (#115). Frontend renders from CMS data with mock fallback.
+
+**Sprint 5 review status (QA, 2026-08-22):**
+- **#126 (pre-flip FE: contrast fixes + share-a-story form + hide /components)**
+  — verified: build/lint/tsc pass; #67 fully fixed, #82 sponsor-initials fixed,
+  #80 dark items fixed, /components excluded from prod build. **CHANGES
+  REQUESTED** — 3 contrast residuals: `.lang-label` pill 2.54:1 dark, light
+  photo-hero `.active` 1.21:1, `.chip.gold` "Coming soon/Chapa" 4.37:1 (+ new
+  #128 duplicate-key `OG`).
+- **#127 (i18n flip, stacked on #126)** — harness **24/24** (first-paint OM,
+  toggles, cookie persistence, 404 + /offline in AM, Ethiopic gating,
+  `[AM draft]` AM-only, hreflang om-ET/en/am/x-default). **HELD** until the 3
+  contrast residuals above are zero.
+- **#117 (BE: partner display_name_en/am + Amharic category labels + strict
+  am→om fallback)** — verified live: 347 tests, backfilled EN names,
+  `NEWS_CATEGORY_LABELS_AM` (9 Ethiopic labels), `FALLBACK_ORDER=("om",)`.
+  **APPROVED.**
+- **#118 (BE: image renditions)** — verified live: top-level `renditions` with
+  fill-400x300 / fill-800x600 / max-1600x1200 / original (absolute URLs), 339
+  tests. **APPROVED.**
+- **#125 (QA contract tests + docs)** — 20 active + 7 gated tests green on
+  main; all 27 green against combined #117+#118. Ready for merge.
+
+**Sign-off log:**
+| PR | Result | Date |
+|---|---|---|
+| #65 (pytest/ruff tooling) | APPROVED | 2026-08-21 |
+| #77 (Sprint 2 UI) | merged by PM | 2026-08-21 |
+| #78–#102 (backend chain) | merged by PM | 2026-08-22 |
+| #109 (API contract + tests) | merged by PM | 2026-08-22 |
+| #110 (i18n test plan + harness) | merged by PM | 2026-08-22 |
+| #117 (partner i18n + am labels) | APPROVED (QA) | 2026-08-22 |
+| #118 (image renditions) | APPROVED (QA) | 2026-08-22 |
+| #126 (pre-flip FE) | CHANGES REQUESTED (QA) | 2026-08-22 |
+| #127 (i18n flip) | HELD (QA) | 2026-08-22 |
+
+**Hold:** flip PR (#127) — no QA sign-off until the contrast residuals
+(`.lang-label` 2.54:1, light-hero `.active` 1.21:1, `.chip.gold` 4.37:1) are at
+zero. Backend PRs — sign-off posted per PR as the PM marks them Ready.
 
 ---
 
@@ -551,29 +600,29 @@ before launch (issue **#44**).
 
 ## 9. Bug register
 
-Summary (updated 2026-08-22 after Sprint 2, PR #77):
+**Canonical live index:** `qa/bugs/README.md` (kept in sync with GitHub).
+Summary of the Sprint 5 state (main @ `8a9e7f3`):
 
-| GitHub | Severity | Lane | Title | Status |
+| GitHub | Sev | Lane | Title | Status |
 |---|---|---|---|---|
-| [#59](https://github.com/booneeraa9-commits/discover-qellem/issues/59) | P1 | backend | pytest + ruff not installed/enforced | FIXED (PR #65, APPROVED) |
-| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` warnings | OPEN |
-| [#61](https://github.com/booneeraa9-commits/discover-qellem/issues/61) | P1 | content | Inauguration gallery order | RESOLVED on main (project13,6,3,1,2 verified) |
-| [#62](https://github.com/booneeraa9-commits/discover-qellem/issues/62) | P1 | content | Place slug divergence | RESOLVED on main (canonical OM slugs used) |
-| [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` ignored; no `.env` load | OPEN (retested) |
-| [#64](https://github.com/booneeraa9-commits/discover-qellem/issues/64) | P1 | frontend | Closed drawer in tab order | FIXED (Sprint 2 commit db09f8e, `inert`); verified |
-| [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets <44px | PARTIAL — icon-btn/social/page-btn fixed; nav 39, drawer/footer 32, Staff 19, mailto 22 remain (retested) |
-| [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | brand-400-on-paper contrast 4.24:1 | OPEN, extended: also `.tl-year`, `.person-role` |
-| [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` blocks chunks for 127.0.0.1 | OPEN (retested, `allowedDevOrigins` still missing) |
-| [#80](https://github.com/booneeraa9-commits/discover-qellem/issues/80) | P1 | frontend | Dark-mode contrast: active nav 2.54, chips 2.54, card chips 1.41 | NEW (Sprint 3 sweep) |
-| [#81](https://github.com/booneeraa9-commits/discover-qellem/issues/81) | P2 | frontend | Dev-only `/components` page ships in production build | NEW |
-| [#82](https://github.com/booneeraa9-commits/discover-qellem/issues/82) | P2 | frontend | Gold sponsor initials 4.37:1 (light mode) | NEW |
+| [#60](https://github.com/booneeraa9-commits/discover-qellem/issues/60) | P2 | backend | 11 × `treebeard.E001` | DEFERRED (PM) |
+| [#63](https://github.com/booneeraa9-commits/discover-qellem/issues/63) | P1 | backend/docs | README `DATABASE_URL` docs | **CLOSED by #111** |
+| [#66](https://github.com/booneeraa9-commits/discover-qellem/issues/66) | P2 | frontend | Touch targets (nav 39, brand 42, tabs 40) | open |
+| [#67](https://github.com/booneeraa9-commits/discover-qellem/issues/67) | P2 | frontend | `.tl-year`/`.person-role`/`.story-author` 4.11–4.24:1 dark | open |
+| [#68](https://github.com/booneeraa9-commits/discover-qellem/issues/68) | P2 | frontend | `next dev` 127.0.0.1 chunks blocked | open |
+| [#80](https://github.com/booneeraa9-commits/discover-qellem/issues/80) | P1 | frontend | Dark active-nav/chips 2.54 & 1.41; light photo-hero active-nav 1.21 | open |
+| [#81](https://github.com/booneeraa9-commits/discover-qellem/issues/81) | P2 | frontend | `/components` ships in prod build | open |
+| [#82](https://github.com/booneeraa9-commits/discover-qellem/issues/82) | P2 | frontend | Gold 4.37:1 sponsor initials + `.chip.gold` | open |
+| [#106](https://github.com/booneeraa9-commits/discover-qellem/issues/106) | P1 | content | Person slug inconsistency | **CLOSED by #115** (canonical `jaal-laggasaa-wagii`) |
+| [#112](https://github.com/booneeraa9-commits/discover-qellem/issues/112) | P2 | backend | Image rendition URLs missing | open (contract test skipped) |
+| [#119](https://github.com/booneeraa9-commits/discover-qellem/issues/119) | P1 | frontend/backend | CMS gallery images 404 (`/media/` not rewritten) | NEW |
+| [#121](https://github.com/booneeraa9-commits/discover-qellem/issues/121) | P2 | frontend | `.lang-soon` pill 3.09/3.49:1 | NEW |
+| [#122](https://github.com/booneeraa9-commits/discover-qellem/issues/122) | P1 | backend/content | Partners `display_name_en/am` + `?lang=` | NEW (BE pending) |
+| [#123](https://github.com/booneeraa9-commits/discover-qellem/issues/123) | P1 | backend/content | NewsCategory Amharic labels | NEW (BE pending) |
 
-Sprint 2 verified clean: no emojis, no `any`, no console.log/print, no
-hardcoded hex outside `globals.css` (only `themeColor` meta), all 12 canonical
-OM names + slugs, no horizontal scroll, no broken images, no missing `alt`,
-drawer + lightbox keyboard behavior pass, reduced-motion honored.
-
-Already tracked on GitHub (do not re-file): Wagtail API v2 not wired (**#22**).
+Sprint 5 sweep (CMS-wired): no hscroll, no missing alt, no console errors,
+except the #119 gallery 404s. Contrast fixes (#80/#67/#82) have **not** landed
+— measurements logged unchanged. i18n flip (#85) not landed — harness 12/20.
 
 ---
 

@@ -48,19 +48,19 @@ The harness asserts the TARGET behaviour and prints PASS/FAIL per check. Until
   `document.documentElement.lang === <code>`; reload → still `<code>` (cookie/
   localStorage read back). Harness checks per language.
 
-## 3. hreflang tags render om-ET / en / am on every page
+## 3. hreflang tags render om-ET / en / am / x-default on every page
 
 - **CURRENT:** root `layout.tsx` sets `alternates.languages = {"om-ET": "/",
-  en: "/", am: "/"}` — all three hrefs are `"/"` regardless of page, and only
-  the root layout defines them.
+  en: "/", am: "/"}` — three codes, no `x-default`, and all hrefs are `"/"`
+  regardless of page.
 - **TARGET:** every route emits `<link rel="alternate" hreflang="om-ET">`,
-  `hreflang="en"`, `hreflang="am"`, each pointing at **that page's own URL**
-  (not all `"/"`). Amharic hreflang should be `am` (per PM; flag if it should
-  be `am-ET`).
+  `hreflang="en"`, `hreflang="am"`, **plus `hreflang="x-default"` pointing at
+  the OM default**, each pointing at **that page's own URL** (not all `"/"`).
+  Amharic hreflang should be `am` (per PM; flag if it should be `am-ET`).
 - **Test:** on `/`, `/places`, `/place/dambi-doolloo`, `/news`, `/history`,
-  assert three alternates with the correct language codes AND hrefs matching
-  the current pathname (language-independent since the routes are
-  language-neutral). Harness checks on `/` + spot routes.
+  assert four alternates with the correct codes AND hrefs matching the current
+  pathname. Harness checks 3a–3d on `/` + spot routes.
+- **CURRENT gap:** no `x-default` (harness `3d` fails until the flip PR adds it).
 
 ## 4. Noto Sans Ethiopic only when lang=am
 
@@ -125,10 +125,23 @@ The harness asserts the TARGET behaviour and prints PASS/FAIL per check. Until
 - Dark mode still readable with Ethiopic glyphs (gold/brand tokens unchanged).
 - `[AM draft]` never appears in EN/OM; no emojis; `<html lang>` correct;
   hreflang correct; touch targets unchanged.
-- The Sprint-3 contrast bugs (#80/#82) must not regress in AM.
+- The Sprint-3 contrast bugs (#80/#82/#121) must not regress in AM.
 
 ## 9. Sign-off bar
 
-The flip PR is APPROVED by QA only when harness items 1–7 pass and the §8
-sweep is clean. File bugs (frontend lane) for anything that fails, with the
-harness line that caught it.
+The flip PR is APPROVED by QA only when the harness (`qa/scripts/i18n/lang-check.js`,
+now 20 checks) reports **20/20**:
+
+- 1a/1b — OM first paint (no EN flash).
+- 2a/2b — `<html lang>` tracks the switcher and the pref **persists across reload**.
+- 2c — `/404` and `/offline` render in the toggled language.
+- 3a–3d — hreflang `om-ET` / `en` / `am` / `x-default` present.
+- 4a–4c — Ethiopic font only when lang=am.
+- 5a–5c — `[AM draft]` shown in AM only; OM fallback visible where AM is blank;
+  no EN leak; never in EN/OM.
+- 6a–6f — AM option enabled end-to-end (aria-disabled removed, click → cookie →
+  Amharic re-render + Ethiopic).
+
+File bugs (frontend lane) for anything that fails, with the harness line that
+caught it. Also confirm the §1 pre-paint script and the §3 `x-default` addition
+are part of the flip PR scope.

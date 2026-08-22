@@ -17,6 +17,7 @@ comments):
    approval.
 """
 
+import unittest
 from pathlib import PurePosixPath
 
 from django.contrib.auth import get_user_model
@@ -277,3 +278,193 @@ class PeopleContractTests(TestCase):
             "People slug set mismatch — reconcile the canonical slug for "
             "Jaal Laggasaa Wagi (see qa/API_CONTRACT.md and the content bug).",
         )
+
+
+# =============================================================================
+# Sprint 5 additions (issue #84 follow-up + pending BE).
+# =============================================================================
+
+class LanguageProjectionContractTests(TestCase):
+    """?lang=om|en|am projection (landed in #107, strict OM-only fallback in #117)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        from archive.models import ArchiveIndexPage, NewsArticle
+
+        cls.index = ArchiveIndexPage.objects.get()
+        cls.article = NewsArticle(
+            title="OM BODY",
+            slug="lang-fallback-contract",
+            title_om="OM BODY",
+            title_en="EN BODY",
+            title_am="",
+            body_om="<p>OM BODY</p>",
+            body_en="<p>EN BODY</p>",
+            body_am="",
+            category=NewsCategory.DEVELOPMENT,
+            published_date="2026-08-21",
+        )
+        cls.index.add_child(instance=cls.article)
+
+    def _detail(self, params):
+        return self.client.get(
+            f"/api/v2/pages/{self.article.pk}/",
+            {**params, "format": "json"},
+        )
+
+    def test_lang_am_falls_back_to_om_not_en(self):
+        # The PM's exact assertion: am="" om="OM BODY" en="EN BODY" → ?lang=am
+        # returns "OM BODY" and never "EN BODY".
+        response = self._detail({"lang": "am"})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["title"], "OM BODY")
+        self.assertEqual(payload["body"], "<p>OM BODY</p>")
+        self.assertNotIn("EN BODY", payload["title"])
+        self.assertNotIn("EN BODY", payload["body"])
+
+    def test_lang_om_and_en_resolve_their_own_language(self):
+        self.assertEqual(self._detail({"lang": "om"}).json()["title"], "OM BODY")
+        self.assertEqual(self._detail({"lang": "en"}).json()["title"], "EN BODY")
+
+    def test_lang_projection_removes_suffixed_keys(self):
+        payload = self._detail({"lang": "am"}).json()
+        for key in ("title_om", "title_en", "title_am", "body_om", "body_en", "body_am"):
+            self.assertNotIn(key, payload, f"suffixed key {key} should be removed")
+
+    def test_invalid_lang_returns_400(self):
+        response = self._detail({"lang": "fr"})
+        self.assertEqual(response.status_code, 400)
+
+    @unittest.skip("pending Sprint 5 BE #117: strict OM-only fallback (FALLBACK_ORDER=('om',))")
+    def test_lang_am_with_empty_om_never_falls_back_to_en(self):
+        # Edge case #117 tightens: when the requested language AND OM are both
+        # empty, the projection must still never surface the EN value (main
+        # currently falls back OM→EN). Because the model forbids blank OM, this
+        # is exercised at the projection layer, not via a saved page.
+        from qellem_cms.i18n_api import _transform
+
+        data = {
+            "title_om": "",
+            "title_en": "EN BODY",
+            "title_am": "",
+            "body_om": "",
+            "body_en": "EN BODY",
+            "body_am": "",
+        }
+        _transform(data, "am")
+        self.assertNotIn("EN BODY", data.get("title", ""))
+        self.assertNotIn("EN BODY", data.get("body", ""))
+
+
+class PartnerBilingualFieldContractTests(TestCase):
+    """Sprint 5 BE #117: partner display_name_en/_am companions (PENDING until #117 merges)."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.reviewer = get_user_model().objects.create_superuser(
+            username="partner-i18n-reviewer",
+            email="partner-i18n@example.invalid",
+            password="test-only-password",
+        )
+
+    def _approve(self, record, is_person=False):
+        record.is_active = True
+        record.public_display_status = PublicDisplayStatus.APPROVED
+        record.reviewed_by = self.reviewer
+        record.reviewed_at = timezone.now()
+        record.approval_notes = "Approved in a contract test."
+        if is_person:
+            record.consent_status = ConsentStatus.CONFIRMED
+        record.save()
+
+    def _listing(self, url):
+        return self.client.get(url, {"format": "json"}).json()["items"]
+
+    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
+    def test_sponsors_expose_display_name_en_and_am(self):
+        sponsor = Sponsor.objects.first()
+        self._approve(sponsor)
+        items = self._listing("/api/v2/sponsors/")
+        self.assertTrue(items, "expected at least one approved sponsor")
+        for item in items:
+            self.assertIn("display_name_en", item)
+            self.assertIn("display_name_am", item)
+            # EN is backfilled for every seeded sponsor; AM is intentionally blank.
+            self.assertTrue(item["display_name_en"])
+            self.assertEqual(item["display_name_am"], "")
+
+    @unittest.skip("pending Sprint 5 BE #117: partners display_name_en/am")
+    def test_supporters_expose_display_name_en_and_am(self):
+        supporter = Collaborator.objects.filter(partner_kind=PartnerKind.PERSON).first()
+        self._approve(supporter, is_person=True)
+        items = self._listing("/api/v2/supporters/")
+        self.assertTrue(items, "expected at least one approved supporter")
+        for item in items:
+            self.assertIn("display_name_en", item)
+            self.assertIn("display_name_am", item)
+
+
+class NewsCategoryAmharicLabelContractTests(TestCase):
+    @unittest.skip("pending Sprint 5 BE #117: NEWS_CATEGORY_LABELS_AM mapping")
+    def test_news_category_labels_include_amharic(self):
+        from archive.models import NEWS_CATEGORY_LABELS_AM
+
+        # Covers exactly the 9 canonical keys with Ethiopic-script values.
+        self.assertEqual(
+            {choice for choice in NewsCategory},
+            set(NEWS_CATEGORY_LABELS_AM.keys()),
+        )
+        for choice, am_label in NEWS_CATEGORY_LABELS_AM.items():
+            ethiopic = any("\u1200" <= ch <= "\u137f" for ch in str(am_label))
+            self.assertTrue(
+                ethiopic,
+                f"{choice.name} Amharic label has no Ethiopic: {am_label!r}",
+            )
+
+    @unittest.skip("pending Sprint 5 BE #117: NewsArticle serializes category_label_am")
+    def test_news_detail_serializes_category_label_am(self):
+        from archive.models import NewsArticle
+
+        article = NewsArticle.objects.filter(slug="dembi-dollo-inauguration-2026").first()
+        self.assertIsNotNone(article)
+        response = self.client.get(f"/api/v2/pages/{article.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        label_am = response.json().get("category_label_am")
+        ethiopic = any("\u1200" <= ch <= "\u137f" for ch in str(label_am))
+        self.assertTrue(ethiopic, f"category_label_am not Amharic: {label_am!r}")
+
+
+class ImageRenditionContractTests(TestCase):
+    """Sprint 5 BE #118: top-level rendition URLs on /api/v2/images/ (issue #112)."""
+
+    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
+    def test_image_detail_exposes_rendition_urls(self):
+        from wagtail.images import get_image_model
+
+        Image = get_image_model()
+        image = Image.objects.first()
+        if image is None:
+            self.skipTest("no seeded images")
+        response = self.client.get(f"/api/v2/images/{image.pk}/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        renditions = response.json().get("renditions", {})
+        for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
+            url = renditions.get(name)
+            self.assertTrue(url, f"missing or empty rendition {name}")
+            self.assertTrue(url.startswith("http"), f"rendition URL not absolute: {url}")
+        # The stock contract fields remain intact.
+        self.assertIn("meta", response.json())
+        self.assertIn("download_url", response.json()["meta"])
+
+    @unittest.skip("pending Sprint 5 BE #118: top-level renditions on images")
+    def test_image_listing_items_carry_renditions(self):
+        response = self.client.get("/api/v2/images/", {"format": "json"})
+        self.assertEqual(response.status_code, 200)
+        items = response.json()["items"]
+        if not items:
+            self.skipTest("no seeded images")
+        for item in items:
+            renditions = item.get("renditions", {})
+            for name in ("fill-400x300", "fill-800x600", "max-1600x1200", "original"):
+                self.assertIn(name, renditions, f"missing rendition {name} in listing")

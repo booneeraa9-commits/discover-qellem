@@ -210,25 +210,66 @@ project13, project6, project3, project1, project2 (§3d).
 
 ---
 
-## 7. Upcoming `?lang=om|en|am` + `*_am` fields (Sprint 4 backend)
+## 7. `?lang=om|en|am` + `*_am` fields (LANDED for archive/places in #107)
 
-Not landed as of `main @ 9798162` (a `?lang=` query currently 400s). When the
-backend adds the third language, the contract extends as follows — **the FE
-client types and the tests below must be added at that point**:
+**Status on `main @ 8a9e7f3`:** `?lang=` is live on `pages`, `people`, and
+`timeline` (via `LanguageAwareAPIViewSetMixin`). `*_am` companions exist on
+`NewsArticle`, `Event`, `CommunityStory`, and `GeographyProfilePage`.
 
-- `?lang=om|en|am` on `pages`/`people`/`timeline`/`news` must return the
-  requested language's field set (or the full object with per-language keys —
-  the BE must pick one and document it; QA locks whichever).
-- `*_am` fields (`title_am`, `body_am`, `caption_am`, …) are **optional**:
-  empty/absent when untranslated. The API must always return the key (empty
-  string) rather than omitting it, so the FE can null-safely fall back.
-- Fallback order is **OM first, then EN** (`getTranslatedField`), never
-  AM-first.
-- `lang=am` on a field that is empty must fall back to OM (not EN) in the FE.
-- Default language becomes `om` (Sprint 4 #85); the API must keep `locale: om`
-  as the primary page locale.
-- Amharic fields must never render the `[AM draft]` placeholder in EN/OM; the
-  placeholder only ever appears for AM content the editor has not filled.
+Behaviour (verified live + by contract tests):
+
+- `?lang=<code>` resolves every companion group (`title`, `body`, …) to a
+  single value under the **generic base key**, preferring the requested
+  language, then falling back **OM → EN** (`FALLBACK_ORDER = ("om", "en")`).
+  (Sprint 5 #117 tightens this to OM-only — see §7b-i.)
+- With `?lang`, the suffixed keys (`title_om`/`title_en`/`title_am`, …) are
+  **removed** from the response.
+- Without `?lang`, every suffixed key is kept and a `translations` object is
+  added mapping each base key to its three language values.
+- Invalid `?lang=` (anything but om/en/am) → 400
+  `{"message": "lang must be one of: om, en, am"}`.
+- **`?lang=am` with an empty `*_am` field returns the OM value — never EN.**
+  (Contract test `LanguageProjectionContractTests` asserts exactly this:
+  `title_am=""`, `title_om="OM BODY"`, `title_en="EN BODY"` → `?lang=am`
+  returns `"OM BODY"` and never `"EN BODY"`.)
+- Default language is still `en` (FE `DEFAULT_LANG`) until #85 flips it; the
+  API keeps `locale: om` as the primary page locale regardless.
+
+---
+
+## 7b. Sprint 5 BE additions (pending — gated by contract tests)
+
+These are documented targets; the matching contract tests are
+`@unittest.skip("pending Sprint 5 BE …")` today and must be un-skipped by the
+BE PR that lands them. **All three shapes below were verified against the open
+BE branches (PR #117, #118) on 2026-08-22.**
+
+### 7b-i. Partners bilingual fields (PR #117 → issues #122/#116)
+- `Sponsor` + `Collaborator` add `display_name_en` and `display_name_am`
+  (both optional); the existing `display_name` stays the required canonical OM
+  name. EN names are **backfilled** by data migration `partners/0004`;
+  `display_name_am` is intentionally blank everywhere.
+- Both fields serialize top-level in `/api/v2/sponsors/` and
+  `/api/v2/supporters/` listing + detail.
+- **Strict fallback:** `FALLBACK_ORDER` becomes `("om",)` — the EN leg is
+  removed. `?lang=am` returns `*_am` when present, else `*_om`, and **never
+  `*_en`** even when `*_om` is also empty. (Contract test
+  `test_lang_am_with_empty_om_never_falls_back_to_en` gates this.)
+- `category_label_am` is serialized on `NewsArticle` detail (resolved from the
+  companion mapping, not from the enum label).
+
+### 7b-ii. NewsCategory Amharic labels (PR #117 → issue #123)
+- A companion mapping `NEWS_CATEGORY_LABELS_AM` covers all 9 keys with
+  Ethiopic-script values (`ልማት, ኢኮኖሚ, አካባቢ, ማዕድናት, ግብርና, ጤና, ትምህርት,
+  ባህል, ንግድ`). Note: Amharic lives in this mapping, **not** in the enum
+  `label` (Python enum labels stay `(value, label)` two-tuples).
+
+### 7b-iii. Image renditions (PR #118 → issue #112)
+- `/api/v2/images/` listing items and `/api/v2/images/<id>/` detail expose a
+  **top-level** `renditions` object (NOT under `meta`) with four absolute URLs:
+  `fill-400x300`, `fill-800x600`, `max-1600x1200`, `original`.
+- Existing contract fields (`id`, `title`, `width`, `height`,
+  `meta.download_url`) are unchanged.
 
 ---
 
